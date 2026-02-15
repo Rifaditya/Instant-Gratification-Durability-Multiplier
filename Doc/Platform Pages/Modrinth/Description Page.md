@@ -48,10 +48,16 @@ Built on the **Vanilla Tag System**. Works **automatically** with items from oth
 
 ### 💬 Tooltip Display
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Rifaditya/Instant-Gratification-Durability-Multiplier/refs/heads/main/Images/Unbreak.png" height="100">
-  <img src="https://raw.githubusercontent.com/Rifaditya/Instant-Gratification-Durability-Multiplier/refs/heads/main/Images/4x%20tools.png" height="100">
-</p>
+<table align="center" style="border: none; background: none;">
+  <tr style="border: none; background: none;">
+    <td align="center" style="border: none; background: none;">
+      <img src="https://raw.githubusercontent.com/Rifaditya/Instant-Gratification-Durability-Multiplier/refs/heads/main/Images/Unbreak.png" height="100">
+    </td>
+    <td align="center" style="border: none; background: none;">
+      <img src="https://raw.githubusercontent.com/Rifaditya/Instant-Gratification-Durability-Multiplier/refs/heads/main/Images/4x%20tools.png" height="100">
+    </td>
+  </tr>
+</table>
 
 Hover over any item to see its durability status:
 
