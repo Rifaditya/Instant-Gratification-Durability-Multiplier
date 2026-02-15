@@ -127,7 +127,7 @@ public final class DurabilityHelper {
                 case ELYTRA -> "Elytra";
                 case OTHER -> "Global";
             };
-            return multiplier + "x " + catName;
+            return multiplier + "x " + catName + " Durability";
         }
         return null;
     }
@@ -180,7 +180,7 @@ public final class DurabilityHelper {
                 case ELYTRA -> "Elytra";
                 case OTHER -> "Global";
             };
-            return multiplier + "x " + catName;
+            return multiplier + "x " + catName + " Durability";
         }
         return null;
     }

@@ -1,5 +1,11 @@
 # Changelog History
 
+## [1.0.2] - 2026-02-16
+
+### Changed
+
+- Updated tooltip format to be more explicit: "4x Tools" -> "4x Tools Durability".
+
 ## [1.0.1] - 2026-02-16
 
 ### Fixed
