@@ -1,0 +1,31 @@
+{
+    "schemaVersion": 1,
+    "id": "durability-multiplier",
+    "version": "${version}",
+    "name": "Durability Multiplier",
+    "description": "Stop babysitting your tools. Multiply durability or go God Mode — it's just a GameRule away.",
+    "authors": [
+        "DasikIgaijin"
+    ],
+    "contact": {
+        "homepage": "https://github.com/Rifaditya/Instant-Gratification-Durability-Multiplier",
+        "sources": "https://github.com/Rifaditya/Instant-Gratification-Durability-Multiplier"
+    },
+    "license": "GPL-3.0-or-later",
+    "icon": "assets/durability-multiplier/icon.png",
+    "environment": "*",
+    "entrypoints": {
+        "main": [
+            "net.instantgratification.durabilitymultiplier.DurabilityMultiplierFabric"
+        ]
+    },
+    "mixins": [
+        "durability-multiplier.mixins.json"
+    ],
+    "depends": {
+        "fabricloader": ">=0.16.9",
+        "minecraft": "~26.1-",
+        "java": ">=25",
+        "fabric-api": "*"
+    }
+}

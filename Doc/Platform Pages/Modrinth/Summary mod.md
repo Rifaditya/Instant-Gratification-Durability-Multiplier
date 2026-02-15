@@ -1,0 +1,1 @@
+Complete control over item durability in Minecraft 26.1+. Multiply durability by any factor or make items completely unbreakable — all through GameRules. Works automatically with modded items via vanilla tags. Part of the Instant Gratification Collection.
