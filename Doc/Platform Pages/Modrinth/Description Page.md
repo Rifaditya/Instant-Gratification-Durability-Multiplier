@@ -59,11 +59,11 @@ Hover over any item to see its durability status:
 - **`✦ UNBREAKABLE`** — gold bold text when God Mode is active
 - Can be toggled with `dm_show_tooltip`.
 
+### ⚙️ Pure GameRules
+
 <p align="center">
   <img src="https://raw.githubusercontent.com/Rifaditya/Instant-Gratification-Durability-Multiplier/refs/heads/main/Images/2026-02-15_11.24.45.png">
 </p>
-
-### ⚙️ Pure GameRules
 
 No config files to manage. Everything lives in the **Edit Game Rules** screen or `/gamerule` commands.
 
