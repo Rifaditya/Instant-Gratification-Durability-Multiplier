@@ -48,6 +48,11 @@ Built on the **Vanilla Tag System**. Works **automatically** with items from oth
 
 ### 💬 Tooltip Display
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Rifaditya/Instant-Gratification-Durability-Multiplier/refs/heads/main/Images/Unbreak.png" height="100">
+  <img src="https://raw.githubusercontent.com/Rifaditya/Instant-Gratification-Durability-Multiplier/refs/heads/main/Images/4x%20tools.png" height="100">
+</p>
+
 Hover over any item to see its durability status:
 
 - **`⟨4x Durability⟩`** — gray text showing active multiplier
@@ -55,6 +60,10 @@ Hover over any item to see its durability status:
 - Can be toggled with `dm_show_tooltip`.
 
 ### ⚙️ Pure GameRules
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Rifaditya/Instant-Gratification-Durability-Multiplier/refs/heads/main/Images/2026-02-15_11.24.45.png">
+</p>
 
 No config files to manage. Everything lives in the **Edit Game Rules** screen or `/gamerule` commands.
 
