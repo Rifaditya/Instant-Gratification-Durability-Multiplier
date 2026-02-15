@@ -17,6 +17,9 @@
     "entrypoints": {
         "main": [
             "net.instantgratification.durabilitymultiplier.DurabilityMultiplierFabric"
+        ],
+        "client": [
+            "net.instantgratification.durabilitymultiplier.DurabilityMultiplierFabricClient"
         ]
     },
     "mixins": [

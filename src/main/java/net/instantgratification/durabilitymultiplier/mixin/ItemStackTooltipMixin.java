@@ -19,6 +19,9 @@ import java.util.function.Consumer;
 /**
  * Injects durability status into the item tooltip.
  * Displays "✦ UNBREAKABLE" (gold/bold) or "⟨Nx Category⟩" (gray).
+ *
+ * <p>Client-side: reads from synced {@link net.instantgratification.durabilitymultiplier.network.DurabilityClientState}.
+ * Server-side (integrated server): reads GameRules directly.</p>
  */
 @Mixin(ItemStack.class)
 public abstract class ItemStackTooltipMixin {
@@ -29,17 +32,24 @@ public abstract class ItemStackTooltipMixin {
             Consumer<Component> builder, CallbackInfo ci) {
         if (player == null)
             return;
-        if (!(player.level() instanceof ServerLevel serverLevel))
-            return;
 
         ItemStack self = (ItemStack) (Object) this;
         if (!self.isDamageableItem())
             return;
 
-        if (!DurabilityHelper.shouldShowTooltip(serverLevel))
-            return;
+        String label;
+        if (player.level() instanceof ServerLevel serverLevel) {
+            // Integrated server — read GameRules directly
+            if (!DurabilityHelper.shouldShowTooltip(serverLevel))
+                return;
+            label = DurabilityHelper.getTooltipLabel(serverLevel, self);
+        } else {
+            // Dedicated/remote client — read from synced cache
+            if (!DurabilityHelper.shouldShowTooltipClient())
+                return;
+            label = DurabilityHelper.getTooltipLabelClient(self);
+        }
 
-        String label = DurabilityHelper.getTooltipLabel(serverLevel, self);
         if (label == null)
             return;
 

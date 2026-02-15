@@ -1,5 +1,6 @@
 package net.instantgratification.durabilitymultiplier;
 
+import net.instantgratification.durabilitymultiplier.network.DurabilityClientState;
 import net.instantgratification.durabilitymultiplier.registry.DurabilityRules;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.ItemTags;
@@ -7,13 +8,16 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 /**
- * Core durability logic. Stateless, server-side only.
+ * Core durability logic.
  *
  * <h3>Hierarchy</h3>
  * <ol>
  * <li>Tag-specific infinity → Global infinity</li>
- * <li>Tag-specific multiplier (if > 0) → Global multiplier</li>
+ * <li>Tag-specific multiplier (if &gt; 0) → Global multiplier</li>
  * </ol>
+ *
+ * <p>Server-side methods take {@link ServerLevel}; client-side overloads
+ * (suffixed {@code Client}) read from {@link DurabilityClientState}.</p>
  */
 public final class DurabilityHelper {
 
@@ -114,6 +118,59 @@ public final class DurabilityHelper {
             return "UNBREAKABLE";
 
         int multiplier = getEffectiveMultiplier(level, stack);
+        if (multiplier > 1) {
+            ItemCategory cat = classifyItem(stack);
+            String catName = switch (cat) {
+                case SWORD -> "Swords";
+                case TOOL -> "Tools";
+                case ARMOR -> "Armor";
+                case ELYTRA -> "Elytra";
+                case OTHER -> "Global";
+            };
+            return multiplier + "x " + catName;
+        }
+        return null;
+    }
+
+    // ==================== Client-Side API (synced cache) ====================
+
+    /** Client-side infinity check using synced GameRule values. */
+    public static boolean isInfiniteClient(ItemStack stack) {
+        ItemCategory cat = classifyItem(stack);
+        return switch (cat) {
+            case SWORD -> DurabilityClientState.infinitySwords() || DurabilityClientState.infinityGlobal();
+            case TOOL -> DurabilityClientState.infinityTools() || DurabilityClientState.infinityGlobal();
+            case ARMOR -> DurabilityClientState.infinityArmor() || DurabilityClientState.infinityGlobal();
+            case ELYTRA -> DurabilityClientState.infinityElytra() || DurabilityClientState.infinityGlobal();
+            case OTHER -> DurabilityClientState.infinityGlobal();
+        };
+    }
+
+    /** Client-side multiplier using synced GameRule values. */
+    public static int getEffectiveMultiplierClient(ItemStack stack) {
+        ItemCategory cat = classifyItem(stack);
+        int specific = switch (cat) {
+            case SWORD -> DurabilityClientState.multiplierSwords();
+            case TOOL -> DurabilityClientState.multiplierTools();
+            case ARMOR -> DurabilityClientState.multiplierArmor();
+            case ELYTRA -> DurabilityClientState.multiplierElytra();
+            case OTHER -> 0;
+        };
+        if (specific > 0)
+            return specific;
+        return Math.max(DurabilityClientState.multiplierGlobal(), 1);
+    }
+
+    /** Client-side tooltip visibility using synced GameRule values. */
+    public static boolean shouldShowTooltipClient() {
+        return DurabilityClientState.showTooltip();
+    }
+
+    /** Client-side tooltip label using synced GameRule values. */
+    public static String getTooltipLabelClient(ItemStack stack) {
+        if (isInfiniteClient(stack))
+            return "UNBREAKABLE";
+        int multiplier = getEffectiveMultiplierClient(stack);
         if (multiplier > 1) {
             ItemCategory cat = classifyItem(stack);
             String catName = switch (cat) {

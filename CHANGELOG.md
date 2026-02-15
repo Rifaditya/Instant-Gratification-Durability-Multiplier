@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.1] - 2026-02-16
+
+### Fixed
+
+- Tooltips not displaying: client-side rendering could not access server-side GameRules
+- Added Fabric Networking sync: GameRule values are now sent to clients on join
+- Tooltip mixin is now side-aware   (client reads synced cache, integrated server reads directly)
+
 ## [1.0.0] - 2026-02-15
 
 ### Added
