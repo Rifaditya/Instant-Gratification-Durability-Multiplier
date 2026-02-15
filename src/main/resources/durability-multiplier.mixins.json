@@ -5,7 +5,8 @@
     "refmap": "durability-multiplier-refmap.json",
     "mixins": [
         "ItemStackDurabilityMixin",
-        "ItemStackTooltipMixin"
+        "ItemStackTooltipMixin",
+        "GameRulesMixin"
     ],
     "injectors": {
         "defaultRequire": 1

@@ -43,9 +43,14 @@ public final class DurabilityNetworking {
     }
 
     /** Broadcast the current GameRule snapshot to all connected players. */
-    public static void syncToAll(ServerLevel level) {
-        for (ServerPlayer player : level.getServer().getPlayerList().getPlayers()) {
+    public static void syncToAll(net.minecraft.server.MinecraftServer server) {
+        for (ServerPlayer player : server.getPlayerList().getPlayers()) {
             syncToPlayer(player);
         }
+    }
+
+    /** Broadcast the current GameRule snapshot to all connected players (legacy/helper). */
+    public static void syncToAll(ServerLevel level) {
+         syncToAll(level.getServer());
     }
 }

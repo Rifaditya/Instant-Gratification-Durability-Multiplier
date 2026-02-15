@@ -1,5 +1,11 @@
 # Changelog History
 
+## [1.0.3] - 2026-02-15
+
+### Fixed
+
+- Tooltip changes now apply immediately without requiring a world/game reload (synced on gamerule change).
+
 ## [1.0.2] - 2026-02-16
 
 ### Changed
