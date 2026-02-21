@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.0.3+build.4] - 2026-02-21
+
+### Fixed
+
+- **Build**: Updated Gradle wrapper from 7.3.1 to 9.3.0 (fixes "Unsupported class file major version 69" with Java 25).
+- **Target**: Updated Minecraft target from `26.1-snapshot-4` to `26.1-snapshot-8`.
+
+## [1.0.3+build.3] - 2026-02-21
+
+### Changed
+
+- **Documentation**: Replaced "Architect" with "Creator" in Platform Page Author roles.
+
+## [1.0.3+build.1] - 2026-02-19
+
+### Changed
+
+- **DasikLibrary Integration**: Switched to standalone dependency (JiJ removed).
+- **Versioning**: Adopted strict Build Number policy.
+
 ## [1.0.3] - 2026-02-15
 
 ### Fixed

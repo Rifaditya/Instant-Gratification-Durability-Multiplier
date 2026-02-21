@@ -29,15 +29,29 @@ public final class DurabilityNetworking {
         ServerLevel level = player.level();
         DurabilityPayload payload = new DurabilityPayload(
                 level.getGameRules().get(DurabilityRules.DM_MULTIPLIER_GLOBAL),
+                level.getGameRules().get(DurabilityRules.DM_MULTIPLIER_WEAPONS),
                 level.getGameRules().get(DurabilityRules.DM_MULTIPLIER_SWORDS),
+                level.getGameRules().get(DurabilityRules.DM_MULTIPLIER_SPEARS),
+                level.getGameRules().get(DurabilityRules.DM_MULTIPLIER_TRIDENTS),
+                level.getGameRules().get(DurabilityRules.DM_MULTIPLIER_MACES),
+                level.getGameRules().get(DurabilityRules.DM_MULTIPLIER_BOWS),
+                level.getGameRules().get(DurabilityRules.DM_MULTIPLIER_CROSSBOWS),
                 level.getGameRules().get(DurabilityRules.DM_MULTIPLIER_TOOLS),
                 level.getGameRules().get(DurabilityRules.DM_MULTIPLIER_ARMOR),
                 level.getGameRules().get(DurabilityRules.DM_MULTIPLIER_ELYTRA),
+
                 level.getGameRules().get(DurabilityRules.DM_INFINITY_GLOBAL),
+                level.getGameRules().get(DurabilityRules.DM_INFINITY_WEAPONS),
                 level.getGameRules().get(DurabilityRules.DM_INFINITY_SWORDS),
+                level.getGameRules().get(DurabilityRules.DM_INFINITY_SPEARS),
+                level.getGameRules().get(DurabilityRules.DM_INFINITY_TRIDENTS),
+                level.getGameRules().get(DurabilityRules.DM_INFINITY_MACES),
+                level.getGameRules().get(DurabilityRules.DM_INFINITY_BOWS),
+                level.getGameRules().get(DurabilityRules.DM_INFINITY_CROSSBOWS),
                 level.getGameRules().get(DurabilityRules.DM_INFINITY_TOOLS),
                 level.getGameRules().get(DurabilityRules.DM_INFINITY_ARMOR),
                 level.getGameRules().get(DurabilityRules.DM_INFINITY_ELYTRA),
+
                 level.getGameRules().get(DurabilityRules.DM_SHOW_TOOLTIP));
         ServerPlayNetworking.send(player, payload);
     }

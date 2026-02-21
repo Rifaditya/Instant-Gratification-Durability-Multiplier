@@ -6,6 +6,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.dasik.social.api.gamerule.DynamicGameRuleManager;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.gamerules.GameRule;
 
 /**
  * Core durability logic.
@@ -26,7 +30,7 @@ public final class DurabilityHelper {
 
     /** Item classification for tag-based rule lookup. */
     public enum ItemCategory {
-        SWORD, TOOL, ARMOR, ELYTRA, OTHER
+        SWORD, TOOL, ARMOR, ELYTRA, MACE, SPEAR, TRIDENT, BOW, CROSSBOW, WEAPON_GLOBAL, OTHER
     }
 
     // ==================== Public API ====================
@@ -37,8 +41,36 @@ public final class DurabilityHelper {
      */
     public static boolean isInfinite(ServerLevel level, ItemStack stack) {
         ItemCategory cat = classifyItem(stack);
+
+        if (cat == ItemCategory.OTHER) {
+            Identifier id = BuiltInRegistries.ITEM.getKey(stack.getItem());
+            String ruleName = "ig_infinity_" + id.getNamespace() + "_" + id.getPath();
+            GameRule<Boolean> dynamicRule = DynamicGameRuleManager.registerBoolean(ruleName, DurabilityRules.DURABILITY_MULTIPLIER, false);
+            if (DynamicGameRuleManager.getBoolean(level, dynamicRule)) {
+                return true;
+            }
+        }
+
         return switch (cat) {
             case SWORD -> DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_SWORDS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_WEAPONS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_GLOBAL);
+            case SPEAR -> DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_SPEARS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_WEAPONS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_GLOBAL);
+            case TRIDENT -> DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_TRIDENTS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_WEAPONS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_GLOBAL);
+            case MACE -> DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_MACES)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_WEAPONS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_GLOBAL);
+            case BOW -> DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_BOWS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_WEAPONS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_GLOBAL);
+            case CROSSBOW -> DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_CROSSBOWS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_WEAPONS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_GLOBAL);
+            case WEAPON_GLOBAL -> DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_WEAPONS)
                     || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_GLOBAL);
             case TOOL -> DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_TOOLS)
                     || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_GLOBAL);
@@ -58,8 +90,23 @@ public final class DurabilityHelper {
      */
     public static int getEffectiveMultiplier(ServerLevel level, ItemStack stack) {
         ItemCategory cat = classifyItem(stack);
+
+        if (cat == ItemCategory.OTHER) {
+            Identifier id = BuiltInRegistries.ITEM.getKey(stack.getItem());
+            String ruleName = "ig_multiplier_" + id.getNamespace() + "_" + id.getPath();
+            GameRule<Integer> dynamicRule = DynamicGameRuleManager.registerInteger(ruleName, DurabilityRules.DURABILITY_MULTIPLIER, 0);
+            int dynamicVal = DynamicGameRuleManager.getInt(level, dynamicRule);
+            if (dynamicVal > 0) return dynamicVal;
+        }
+
         int specific = switch (cat) {
             case SWORD -> DurabilityRules.getInt(level, DurabilityRules.DM_MULTIPLIER_SWORDS);
+            case SPEAR -> DurabilityRules.getInt(level, DurabilityRules.DM_MULTIPLIER_SPEARS);
+            case TRIDENT -> DurabilityRules.getInt(level, DurabilityRules.DM_MULTIPLIER_TRIDENTS);
+            case MACE -> DurabilityRules.getInt(level, DurabilityRules.DM_MULTIPLIER_MACES);
+            case BOW -> DurabilityRules.getInt(level, DurabilityRules.DM_MULTIPLIER_BOWS);
+            case CROSSBOW -> DurabilityRules.getInt(level, DurabilityRules.DM_MULTIPLIER_CROSSBOWS);
+            case WEAPON_GLOBAL -> 0; // Handled as fallback
             case TOOL -> DurabilityRules.getInt(level, DurabilityRules.DM_MULTIPLIER_TOOLS);
             case ARMOR -> DurabilityRules.getInt(level, DurabilityRules.DM_MULTIPLIER_ARMOR);
             case ELYTRA -> DurabilityRules.getInt(level, DurabilityRules.DM_MULTIPLIER_ELYTRA);
@@ -67,6 +114,13 @@ public final class DurabilityHelper {
         };
         if (specific > 0)
             return specific;
+
+        if (cat == ItemCategory.SWORD || cat == ItemCategory.SPEAR || cat == ItemCategory.TRIDENT || 
+            cat == ItemCategory.MACE || cat == ItemCategory.BOW || cat == ItemCategory.CROSSBOW || 
+            cat == ItemCategory.WEAPON_GLOBAL) {
+            int weaponGlobal = DurabilityRules.getInt(level, DurabilityRules.DM_MULTIPLIER_WEAPONS);
+            if (weaponGlobal > 0) return weaponGlobal;
+        }
 
         int global = DurabilityRules.getInt(level, DurabilityRules.DM_MULTIPLIER_GLOBAL);
         return Math.max(global, 1);
@@ -122,10 +176,16 @@ public final class DurabilityHelper {
             ItemCategory cat = classifyItem(stack);
             String catName = switch (cat) {
                 case SWORD -> "Swords";
+                case SPEAR -> "Spears";
+                case TRIDENT -> "Tridents";
+                case MACE -> "Maces";
+                case BOW -> "Bows";
+                case CROSSBOW -> "Crossbows";
+                case WEAPON_GLOBAL -> "Weapons";
                 case TOOL -> "Tools";
                 case ARMOR -> "Armor";
                 case ELYTRA -> "Elytra";
-                case OTHER -> "Global";
+                case OTHER -> "Modded";
             };
             return multiplier + "x " + catName + " Durability";
         }
@@ -136,13 +196,17 @@ public final class DurabilityHelper {
 
     /** Client-side infinity check using synced GameRule values. */
     public static boolean isInfiniteClient(ItemStack stack) {
+        // NOTE: Dynamic client sync will be added here via DynamicGameRuleManager later if requested.
+        // For basic categories, read from DurabilityClientState
         ItemCategory cat = classifyItem(stack);
         return switch (cat) {
             case SWORD -> DurabilityClientState.infinitySwords() || DurabilityClientState.infinityGlobal();
+            // TODO: Expand DurabilityClientState to hold granular weapon values for tooltips
             case TOOL -> DurabilityClientState.infinityTools() || DurabilityClientState.infinityGlobal();
             case ARMOR -> DurabilityClientState.infinityArmor() || DurabilityClientState.infinityGlobal();
             case ELYTRA -> DurabilityClientState.infinityElytra() || DurabilityClientState.infinityGlobal();
-            case OTHER -> DurabilityClientState.infinityGlobal();
+            case MACE -> DurabilityClientState.infinityMaces() || DurabilityClientState.infinityGlobal();
+            default -> DurabilityClientState.infinityGlobal();
         };
     }
 
@@ -154,7 +218,8 @@ public final class DurabilityHelper {
             case TOOL -> DurabilityClientState.multiplierTools();
             case ARMOR -> DurabilityClientState.multiplierArmor();
             case ELYTRA -> DurabilityClientState.multiplierElytra();
-            case OTHER -> 0;
+            case MACE -> DurabilityClientState.multiplierMaces();
+            default -> 0;
         };
         if (specific > 0)
             return specific;
@@ -175,10 +240,16 @@ public final class DurabilityHelper {
             ItemCategory cat = classifyItem(stack);
             String catName = switch (cat) {
                 case SWORD -> "Swords";
+                case SPEAR -> "Spears";
+                case TRIDENT -> "Tridents";
+                case MACE -> "Maces";
+                case BOW -> "Bows";
+                case CROSSBOW -> "Crossbows";
+                case WEAPON_GLOBAL -> "Weapons";
                 case TOOL -> "Tools";
                 case ARMOR -> "Armor";
                 case ELYTRA -> "Elytra";
-                case OTHER -> "Global";
+                case OTHER -> "Modded";
             };
             return multiplier + "x " + catName + " Durability";
         }
@@ -188,21 +259,28 @@ public final class DurabilityHelper {
     // ==================== Item Classification ====================
 
     public static ItemCategory classifyItem(ItemStack stack) {
-        if (stack.is(ItemTags.SWORDS))
-            return ItemCategory.SWORD;
+        if (stack.is(ItemTags.SWORDS)) return ItemCategory.SWORD;
+        if (stack.is(Items.TRIDENT)) return ItemCategory.TRIDENT;
+        if (stack.is(ItemTags.SPEARS)) return ItemCategory.SPEAR;
+        if (stack.is(Items.MACE)) return ItemCategory.MACE;
+        if (stack.is(Items.BOW)) return ItemCategory.BOW;
+        if (stack.is(Items.CROSSBOW)) return ItemCategory.CROSSBOW;
+
         if (stack.is(ItemTags.AXES)
                 || stack.is(ItemTags.PICKAXES)
                 || stack.is(ItemTags.SHOVELS)
-                || stack.is(ItemTags.HOES)
-                || stack.is(ItemTags.SPEARS))
+                || stack.is(ItemTags.HOES))
             return ItemCategory.TOOL;
+
         if (stack.is(ItemTags.HEAD_ARMOR)
                 || stack.is(ItemTags.CHEST_ARMOR)
                 || stack.is(ItemTags.LEG_ARMOR)
                 || stack.is(ItemTags.FOOT_ARMOR))
             return ItemCategory.ARMOR;
+
         if (stack.is(Items.ELYTRA))
             return ItemCategory.ELYTRA;
+
         return ItemCategory.OTHER;
     }
 }

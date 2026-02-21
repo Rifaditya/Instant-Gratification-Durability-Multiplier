@@ -52,3 +52,9 @@ Comma-separated item ID list. Deferred because vanilla GameRule API has no strin
 - 5 multiplier rules (`dm_multiplier_global`, `_swords`, `_tools`, `_armor`, `_elytra`)
 - 5 infinity toggles (`dm_infinity_global`, `_swords`, `_tools`, `_armor`, `_elytra`)
 - 1 tooltip toggle (`dm_show_tooltip`)
+
+## To Do
+
+- [ ] **Mace Category**: Create specific category for Maces.
+  - [ ] **Verify Tags**: Check for `#minecraft:maces` or `#c:maces`. If not present, use explicit `minecraft:mace` content.
+  - [ ] **Enchantments**: Note that Maces have unique enchantments (`density`, `breach`, `wind_burst`) which might be relevant for future logic.

@@ -21,20 +21,33 @@ public class DurabilityRules {
 
     // ==================== Multipliers ====================
     public static GameRule<Integer> DM_MULTIPLIER_GLOBAL;
+    public static GameRule<Integer> DM_MULTIPLIER_WEAPONS;
     public static GameRule<Integer> DM_MULTIPLIER_SWORDS;
+    public static GameRule<Integer> DM_MULTIPLIER_SPEARS;
+    public static GameRule<Integer> DM_MULTIPLIER_TRIDENTS;
+    public static GameRule<Integer> DM_MULTIPLIER_MACES;
+    public static GameRule<Integer> DM_MULTIPLIER_BOWS;
+    public static GameRule<Integer> DM_MULTIPLIER_CROSSBOWS;
     public static GameRule<Integer> DM_MULTIPLIER_TOOLS;
     public static GameRule<Integer> DM_MULTIPLIER_ARMOR;
     public static GameRule<Integer> DM_MULTIPLIER_ELYTRA;
 
     // ==================== Infinity (God Mode) ====================
     public static GameRule<Boolean> DM_INFINITY_GLOBAL;
+    public static GameRule<Boolean> DM_INFINITY_WEAPONS;
     public static GameRule<Boolean> DM_INFINITY_SWORDS;
+    public static GameRule<Boolean> DM_INFINITY_SPEARS;
+    public static GameRule<Boolean> DM_INFINITY_TRIDENTS;
+    public static GameRule<Boolean> DM_INFINITY_MACES;
+    public static GameRule<Boolean> DM_INFINITY_BOWS;
+    public static GameRule<Boolean> DM_INFINITY_CROSSBOWS;
     public static GameRule<Boolean> DM_INFINITY_TOOLS;
     public static GameRule<Boolean> DM_INFINITY_ARMOR;
     public static GameRule<Boolean> DM_INFINITY_ELYTRA;
 
     // ==================== Misc ====================
     public static GameRule<Boolean> DM_SHOW_TOOLTIP;
+    public static GameRule<Boolean> DM_GRANULAR_SETTINGS;
 
     // ==================== Accessors ====================
 
@@ -54,18 +67,31 @@ public class DurabilityRules {
 
     public static void register() {
         DM_MULTIPLIER_GLOBAL = registerInteger("dm_multiplier_global", DURABILITY_MULTIPLIER, 2);
+        DM_MULTIPLIER_WEAPONS = registerInteger("dm_multiplier_weapons", DURABILITY_MULTIPLIER, 0);
         DM_MULTIPLIER_SWORDS = registerInteger("dm_multiplier_swords", DURABILITY_MULTIPLIER, 0);
+        DM_MULTIPLIER_SPEARS = registerInteger("dm_multiplier_spears", DURABILITY_MULTIPLIER, 0);
+        DM_MULTIPLIER_TRIDENTS = registerInteger("dm_multiplier_tridents", DURABILITY_MULTIPLIER, 0);
+        DM_MULTIPLIER_MACES = registerInteger("dm_multiplier_maces", DURABILITY_MULTIPLIER, 0);
+        DM_MULTIPLIER_BOWS = registerInteger("dm_multiplier_bows", DURABILITY_MULTIPLIER, 0);
+        DM_MULTIPLIER_CROSSBOWS = registerInteger("dm_multiplier_crossbows", DURABILITY_MULTIPLIER, 0);
         DM_MULTIPLIER_TOOLS = registerInteger("dm_multiplier_tools", DURABILITY_MULTIPLIER, 0);
         DM_MULTIPLIER_ARMOR = registerInteger("dm_multiplier_armor", DURABILITY_MULTIPLIER, 0);
         DM_MULTIPLIER_ELYTRA = registerInteger("dm_multiplier_elytra", DURABILITY_MULTIPLIER, 0);
 
         DM_INFINITY_GLOBAL = registerBoolean("dm_infinity_global", DURABILITY_MULTIPLIER, false);
+        DM_INFINITY_WEAPONS = registerBoolean("dm_infinity_weapons", DURABILITY_MULTIPLIER, false);
         DM_INFINITY_SWORDS = registerBoolean("dm_infinity_swords", DURABILITY_MULTIPLIER, false);
+        DM_INFINITY_SPEARS = registerBoolean("dm_infinity_spears", DURABILITY_MULTIPLIER, false);
+        DM_INFINITY_TRIDENTS = registerBoolean("dm_infinity_tridents", DURABILITY_MULTIPLIER, false);
+        DM_INFINITY_MACES = registerBoolean("dm_infinity_maces", DURABILITY_MULTIPLIER, false);
+        DM_INFINITY_BOWS = registerBoolean("dm_infinity_bows", DURABILITY_MULTIPLIER, false);
+        DM_INFINITY_CROSSBOWS = registerBoolean("dm_infinity_crossbows", DURABILITY_MULTIPLIER, false);
         DM_INFINITY_TOOLS = registerBoolean("dm_infinity_tools", DURABILITY_MULTIPLIER, false);
         DM_INFINITY_ARMOR = registerBoolean("dm_infinity_armor", DURABILITY_MULTIPLIER, false);
         DM_INFINITY_ELYTRA = registerBoolean("dm_infinity_elytra", DURABILITY_MULTIPLIER, false);
 
         DM_SHOW_TOOLTIP = registerBoolean("dm_show_tooltip", DURABILITY_MULTIPLIER, true);
+        DM_GRANULAR_SETTINGS = registerBoolean("dm_granular_settings", DURABILITY_MULTIPLIER, false);
     }
 
     // ==================== Helpers ====================
