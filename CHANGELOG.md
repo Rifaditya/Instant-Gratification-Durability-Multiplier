@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.0.3+build.6] - 2026-02-21
+
+### Fixed
+
+- **Localization**: Added 13 missing translation entries for granular weapon categories (Weapons, Spears, Tridents, Maces, Bows, Crossbows) and the Granular Settings toggle.
+
+## [1.0.3+build.5] - 2026-02-21
+
+### Fixed
+
+- **Compatibility**: Reverted Mixin compatibility level from `JAVA_25` to `JAVA_22` to resolve warning.
+- **Cleanup**: Removed stale `refmap` entry from `durability-multiplier.mixins.json`.
+
 ## [1.0.3+build.4] - 2026-02-21
 
 ### Fixed
@@ -38,20 +51,12 @@
 
 - Tooltips not displaying: client-side rendering could not access server-side GameRules
 - Added Fabric Networking sync: GameRule values are now sent to clients on join
-- Tooltip mixin is now side-aware   (client reads synced cache, integrated server reads directly)
+- Tooltip mixin is now side-aware (client reads synced cache, integrated server reads directly)
 
 ## [1.0.0] - 2026-02-15
 
 ### Added
 
-- Initial release
-- 11 GameRules under custom "Durability Multiplier" category
-  - 5 multiplier rules (Global, Swords, Tools, Armor, Elytra)
-  - 5 infinity/God Mode toggles (Global, Swords, Tools, Armor, Elytra)
-  - 1 tooltip toggle
-- Hierarchy-based resolution: tag-specific overrides global
-- Integer overflow safety (long math + clamp)
-- Probabilistic damage reduction for exact long-term multiplier effect
-- Tooltip visualization: "✦ UNBREAKABLE" (gold/bold) or "⟨Nx Category⟩" (gray)
-- Full en_us.json localization with verbose descriptions
-- Native mod compatibility via Vanilla Tag System (#minecraft:swords, etc.)
+- Initial release.
+- Global and Tool specific durability scaling.
+- In-game GameRule support.
