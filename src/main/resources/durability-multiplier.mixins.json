@@ -1,8 +1,7 @@
 {
     "required": true,
     "package": "net.instantgratification.durabilitymultiplier.mixin",
-    "compatibilityLevel": "JAVA_25",
-    "refmap": "durability-multiplier-refmap.json",
+    "compatibilityLevel": "JAVA_22",
     "mixins": [
         "ItemStackDurabilityMixin",
         "ItemStackTooltipMixin",
