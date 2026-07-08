@@ -13,10 +13,10 @@ Welcome to the **Durability Multiplier** development documentation.
 
 | Component | Purpose |
 | :--- | :--- |
-| [DurabilityRules](file:///e:/Minecraft%20Project/Instant%20Gratification%20Collection/durability-multiplier/src/main/java/net/instantgratification/durabilitymultiplier/registry/DurabilityRules.java) | Registers 11 GameRules under custom category |
-| [DurabilityHelper](file:///e:/Minecraft%20Project/Instant%20Gratification%20Collection/durability-multiplier/src/main/java/net/instantgratification/durabilitymultiplier/DurabilityHelper.java) | Stateless logic: hierarchy resolution, overflow safety, damage reduction |
-| [ItemStackDurabilityMixin](file:///e:/Minecraft%20Project/Instant%20Gratification%20Collection/durability-multiplier/src/main/java/net/instantgratification/durabilitymultiplier/mixin/ItemStackDurabilityMixin.java) | Intercepts `hurtAndBreak()` to reduce/cancel damage |
-| [ItemStackTooltipMixin](file:///e:/Minecraft%20Project/Instant%20Gratification%20Collection/durability-multiplier/src/main/java/net/instantgratification/durabilitymultiplier/mixin/ItemStackTooltipMixin.java) | Injects durability status into tooltips |
+| [DurabilityRules](../../src/main/java/net/instantgratification/durabilitymultiplier/registry/DurabilityRules.java) | Registers 11 GameRules under custom category |
+| [DurabilityHelper](../../src/main/java/net/instantgratification/durabilitymultiplier/DurabilityHelper.java) | Stateless logic: hierarchy resolution, overflow safety, damage reduction |
+| [ItemStackDurabilityMixin](../../src/main/java/net/instantgratification/durabilitymultiplier/mixin/ItemStackDurabilityMixin.java) | Intercepts `hurtAndBreak()` to reduce/cancel damage |
+| [ItemStackTooltipMixin](../../src/main/java/net/instantgratification/durabilitymultiplier/mixin/ItemStackTooltipMixin.java) | Injects durability status into tooltips |
 
 ## Key Design Decisions
 

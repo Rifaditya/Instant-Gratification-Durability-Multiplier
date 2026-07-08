@@ -1,6 +1,6 @@
 # Concept: Durability Multiplier (Ironbound)
 
-> Original source: [`concept_durability_multiplier.yaml`](file:///e:/Minecraft%20Project/Instant%20Gratification%20Collection/Plans%20and%20Ideas/concept_durability_multiplier.yaml)
+> Original source: `concept_durability_multiplier.yaml` (legacy)
 
 ## Philosophy Fit
 

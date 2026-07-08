@@ -1,5 +1,108 @@
 # Changelog History
 
+## [1.1.8+A-26.1.2] - 2026-06-12
+
+### Changed
+
+- **Performance Optimization**: Implemented a thread-safe `ConcurrentHashMap` item classification cache in `DurabilityHelper` to cache resolved item categories, preventing redundant component scans and tag evaluations on every frame (tooltips) and every damage event.
+- **Compliance Sanitisation**: Aligned mod comments with the Anonymity Mandate by removing references to the forbidden name from source file header comments in `ClothConfigScreenHelper` and `DurabilityConfig`.
+
+## [1.1.7+A-26.1.2] - 2026-06-11
+
+### Changed
+
+- **Performance Optimization**: Refactored the durability damage reduction calculations in `DurabilityHelper` and `ItemStackDurabilityMixin` to perform item classification only once per damage event. This avoids redundant GameRule checks and tag/component inspections in the hot execution path.
+
+## [1.1.6+R-26.1.2] - 2026-06-08
+
+### Changed
+
+- **Release**: Promoted Durability Multiplier to stable release stage.
+
+## [1.1.5+A-26.1.2] - 2026-06-08
+
+### Changed
+
+- **Modded Items Config Explanation**: Updated the "No modded items found" explanation string on the configuration screen to clarify that standard modded weapons, tools, and armor are already automatically covered under the main categories (Multipliers and God Mode), and that only custom/uncategorized modded items are listed in the dynamic section.
+
+## [1.1.4+A-26.1.2] - 2026-06-08
+
+### Fixed
+
+- **Mod Menu Configuration GUI (NPE Crash)**: Fixed a crash where clicking the configuration gear in Mod Menu threw `java.lang.NullPointerException: Components not bound yet`. This occurred because `ClothConfigScreenHelper` scanned `BuiltInRegistries.ITEM` and queried `item.getDefaultInstance().getMaxDamage()` before item components were bound to their holder references. Fixed by caching discovered dynamic items during the registry freeze phase in a static list, and using `item.getDescriptionId()` (translatable component) instead of calling `item.getDefaultInstance()`.
+- **Registry Scan (Reflection Access Exception)**: Fixed startup warning log spam `Failed to check durability... java.lang.IllegalAccessException` during item scanning. This was caused by the nested helper record `DataComponentInitializers$InitializerEntry` being package-private, preventing direct reflection invocation of its public methods. Resolved by calling `setAccessible(true)` on `key()` and `initializer()` method objects.
+
+## [1.1.3+A-26.1.2] - 2026-06-08 [CRASHING / BROKEN - DO NOT PUBLISH]
+
+### Fixed (Incomplete)
+
+- **Registry Freeze Startup Crash (Data Components Check)**: Rewrote dynamic scanning to use reflection on `DATA_COMPONENT_INITIALIZERS` to bypass early `ItemStack` instantiation.
+- **Broken / Crashing in Game**:
+  - **Reflection Exception**: Threw `IllegalAccessException` for every scanned item because reflected methods lacked `setAccessible(true)`, flooding logs with warning stack traces and failing to detect dynamic items.
+  - **Config Screen Crash**: Clicking the config button in Mod Menu crashed the client with `NullPointerException: Components not bound yet` due to `item.getDefaultInstance()` call in `ClothConfigScreenHelper`.
+
+## [1.1.2+A-26.1.2] - 2026-06-08 [CRASHING - DO NOT PUBLISH]
+
+### Fixed (Broken)
+
+- **Registry Freeze Startup Crash**: Attempted to fix startup NPE by moving registry scanning to MappedRegistry freeze mixin.
+- **Crashing in Game**: Crashed on startup with `NullPointerException: Components not bound yet` for mods that register items early before components are bound.
+
+## [1.1.1+A-26.1.2] - 2026-06-08
+
+### Added
+
+- **Dynamic Modded Item Support**: Added automatic scanning of `BuiltInRegistries.ITEM` on startup to dynamically register GameRules for modded items (which do not fit into standard tool/weapon categories) and listen to late modded item registrations.
+- **Dynamic Config GUI**: Added a dynamically populated "Modded Items" category in the Cloth Config configuration screen, rendering translatable item names, allowing multiplier/infinity adjustments, and syncing settings to active server GameRules in real time.
+
+### Changed
+
+- **Tooltip Name Resolution**: Upgraded tooltips for uncategorized modded items to dynamically render the item's specific localized hover name (e.g., `4x Blood Katana Durability`) instead of a generic label.
+
+## [1.1.0+A-26.1.2] - 2026-06-08
+
+### Changed
+
+- **Item Classification**: Upgraded the item classification system to support modded items using class-based (e.g. `instanceof ShieldItem`, `instanceof BowItem`) and component-based (e.g. `DataComponents.GLIDER`, `DataComponents.EQUIPPABLE`, `DataComponents.TOOL`) checks instead of hardcoded vanilla item references.
+
+## [1.0.8+R-26.1.2] - 2026-06-08
+
+### Changed
+
+- **Release**: Promoted Durability Multiplier to stable release stage.
+
+## [1.0.7+A-26.1.2] - 2026-06-08
+
+### Added
+
+- **Config**: Added an optional configuration GUI using Cloth Config and ModMenu with safe dynamic class loading.
+- **Support**: Added a "Support the Project" section to the README with Modrinth and CurseForge links.
+
+## [1.0.6+A-26.1.2] - 2026-06-04
+
+### Changed
+
+- **API Compliance**: Updated custom rule category and network payload registration to use the non-legacy `Identifier.fromNamespaceAndPath` API.
+- **Code Quality**: Refactored dynamic GameRules registration to utilize the non-deprecated builder APIs (`integerRule` and `booleanRule` chains).
+- **Localization**: Added explicit default values (`Default: [value]`) to all 25 game rule description strings in the localization file.
+- **Repository Boundary**: Added `Doc/Marketing/` directory to `.gitignore` under the Hype & Marketing Exclusion Policy.
+
+## [1.0.5+A-26.1.2] - 2026-06-04
+
+### Removed
+
+- **GameRules**: Removed the unused `ig:dm_granular_settings` GameRule registry and related localization keys.
+
+### Changed
+
+- **Build**: Aligned build toolchain and dependencies (Fabric Loom 1.15.2, Fabric API 0.145.4+26.1.2, Fabric Loader 0.19.1, DasikLibrary 1.7.4, and Java toolchain 25) with Minecraft 26.1.2 standards to resolve compile-time symbol resolution issues.
+
+## [1.0.4+build.1] - 2026-03-08
+
+### Fixed
+
+- **Screen**: Fixed untranslated gamerule keys on the Durability Multiplier screen by correcting the translation namespace from `minecraft` to `ig`.
+
 ## [1.0.3+build.6] - 2026-02-21
 
 ### Fixed
@@ -25,6 +128,13 @@
 ### Changed
 
 - **Documentation**: Replaced "Architect" with "Creator" in Platform Page Author roles.
+
+## [1.0.3+build.1] - 2026-02-19
+
+### Changed
+
+- **DasikLibrary Integration**: Switched to standalone dependency (JiJ removed).
+- **Versioning**: Adopted strict Build Number policy.
 
 ## [1.0.3] - 2026-02-15
 
