@@ -1,7 +1,7 @@
 <div align="center">
 
 <!-- Banner placeholder — replace URL when banner is uploaded -->
-<!-- ![Durability Multiplier Banner](https://media.forgecdn.net/attachments/XXXX/XXXX/banner.jpg) -->
+<!-- ![Durability Multiplier Banner](https://example.com/banner.jpg) -->
 
 </div>
 <p align="center">
@@ -14,41 +14,36 @@
 
 # ⚒️ Durability Multiplier
 
-**No Backports:** This mod targets **Minecraft 26.1+** (Snapshot 4). Older versions are unsupported.
+**No Backports:** This mod targets **Minecraft 26.1+**. Older versions are unsupported.
 
 > **Stop babysitting your tools. Focus on the adventure.**
 
-**Durability Multiplier** gives you complete control over item longevity. Whether you want double durability or complete invincibility (God Mode), it's just a GameRule away. Part of the **Instant Gratification Collection** — mods that respect the player's time.
+**Durability Multiplier** gives you complete control over item longevity. Whether you want double durability or complete invincibility (God Mode), it's just a GameRule away. 
+
+Part of the **Instant Gratification Collection** — mods that respect the player's time.
 
 ---
 
 ## ✨ Features
-
+ 
 ### 🔧 Multiplier System
-
 Make items last 2x, 10x, or even 2,147,483,647x longer.
-
 - **Global Multiplier**: One rule to affect all damageable items.
-- **Category Overrides**: Separate multipliers for Swords, Tools, Armor, and Elytra.
+- **12+ Granular Categories**: Separate multipliers for Swords, Spears, Tridents, Maces, Bows, Crossbows, Tools, Armor, Elytra, and Shields.
 - **Overflow Protection**: Uses `long` math internally to prevent integer overflow — items cap at max durability instead of breaking instantly.
-
+ 
 ### 🛡️ God Mode (Infinity)
-
 Toggle complete invincibility for item categories.
-
 - **Per-Category Control**: Make only your armor unbreakable, or make everything invincible.
-- **Priority System**: Infinity always takes precedence over multipliers.
-- **Hierarchy**: Tag-specific settings override Global settings.
-
-### 🏷️ Native Mod Compatibility
-
-Built on the **Vanilla Tag System**. Works **automatically** with items from other mods (Better Nether, Mythic Metals, etc.) as long as they use standard tags like `#minecraft:swords` or `#minecraft:chest_armor`.
-
-- **Zero Config**: Install a new mod, and its items inherit your multipliers instantly.
-- **Tag Categories**: Swords, Tools (Pickaxes, Axes, Shovels, Hoes, Spears), Armor (all pieces), Elytra.
-
+- **Hierarchy**: Category-specific settings override Global settings. Infinity always takes precedence.
+ 
+### 📦 Dynamic Modded Item Support
+Automatically scans items on startup to dynamically register multipliers and infinity rules for custom modded items that don't fit into standard categories.
+- **Dynamic Config GUI**: Customize modded items directly from the in-game configuration screen.
+ 
 ### 💬 Tooltip Display
-
+Hover over any item to see its durability status directly in its tooltip:
+ 
 <table align="center" style="border: none; background: none;">
   <tr style="border: none; background: none;">
     <td align="center" style="border: none; background: none;">
@@ -59,76 +54,70 @@ Built on the **Vanilla Tag System**. Works **automatically** with items from oth
     </td>
   </tr>
 </table>
-
-Hover over any item to see its durability status:
-
-- **`⟨4x Durability⟩`** — gray text showing active multiplier
-- **`✦ UNBREAKABLE`** — gold bold text when God Mode is active
-- Can be toggled with `dm_show_tooltip`.
-
-### ⚙️ Pure GameRules
-
+ 
+- **`⟨Nx Category/Item Durability⟩`** — showing the active multiplier, dynamically rendering localized modded item names (e.g., `⟨4x Blood Katana Durability⟩`).
+- **`✦ UNBREAKABLE`** — gold bold text when God Mode is active.
+- Fully togglable via GameRule.
+ 
+---
+ 
+## ⚙️ Configuration (Native Game Rules & Config GUI)
+ 
+Configure everything in-game using the **Edit Game Rules** screen, via standard commands, or through the optional configuration GUI (requires **ModMenu** + **Cloth Config**).
+ 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Rifaditya/Instant-Gratification-Durability-Multiplier/refs/heads/main/Images/2026-02-15_11.24.45.png">
+  <img src="https://raw.githubusercontent.com/Rifaditya/Instant-Gratification-Durability-Multiplier/refs/heads/main/Images/2026-02-15_11.24.45.png" alt="Native GameRules UI">
 </p>
-
-No config files to manage. Everything lives in the **Edit Game Rules** screen or `/gamerule` commands.
-
----
-
-## 📋 Quick Start
-
+ 
+```sql
+/gamerule ig:dm_multiplier_global 4      → 4x durability for everything
+/gamerule ig:dm_infinity_swords true     → Swords never break
+/gamerule ig:dm_multiplier_armor 10      → 10x armor durability
+/gamerule ig:dm_infinity_global true     → Everything is unbreakable
+/gamerule ig:dm_show_tooltip false       → Hide tooltip indicator
+/gamerule ig:multiplier_mymod_cool_item 5 → 5x durability for a specific modded item
 ```
-/gamerule dm_multiplier_global 4      → 4x durability for everything
-/gamerule dm_infinity_swords true     → Swords never break
-/gamerule dm_multiplier_armor 10      → 10x armor durability
-/gamerule dm_infinity_global true     → Everything is unbreakable
-/gamerule dm_show_tooltip false       → Hide tooltip indicator
-```
-
+ 
 ---
-
-## 📦 Install
-
-1. Install **[Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api)**.
-2. Download `durability-multiplier-1.0.0.jar` and place it in your `mods` folder.
-3. Launch the game — default settings give **2x durability** to all items.
-
----
-
+ 
 ## ☕ Support
-
+ 
 If you enjoy the **Instant Gratification** collection, consider fueling the next update!
-
-[![Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20Me-FF5E5B?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/dasikigaijin/tip)
-[![SocioBuzz](https://img.shields.io/badge/SocioBuzz-Local_Support-7BB32E?style=for-the-badge)](https://sociabuzz.com/dasikigaijin/tribe)
-
-> [!NOTE]
-> **Indonesian Users:** SocioBuzz supports local payment methods (Gopay, OVO, Dana, etc.) if you want to support me without using PayPal/Ko-fi!
-
+ 
+<p>
+    <a href="https://ko-fi.com/dasikigaijin/tip"><img src="https://img.shields.io/badge/Ko--fi-Support%20Me-FF5E5B?style=for-the-badge&logo=ko-fi&logoColor=white" alt="Ko-fi"></a>
+    <a href="https://sociabuzz.com/dasikigaijin/tribe"><img src="https://img.shields.io/badge/SocioBuzz-Local_Support-7BB32E?style=for-the-badge" alt="SocioBuzz"></a>
+    <a href="https://saweria.co/DasikIgaijinn"><img src="https://img.shields.io/badge/Saweria-Local_Support-FFA500?style=for-the-badge" alt="Saweria"></a>
+</p>
+ 
+<blockquote>
+    <strong>Indonesian Users:</strong> SocioBuzz and Saweria support local payment methods (Gopay, OVO, Dana, etc.) if you want to support me without using PayPal/Ko-fi!
+</blockquote>
+ 
 ---
-
+ 
 ## 📜 Credits
-
+ 
 | Role | Author |
 | :--- | :--- |
-| **Architect** | **Rifaditya** (Dasik) |
+| **Creator** | **Rifaditya** (Dasik) |
 | **Collection** | Instant Gratification |
 | **License** | GPLv3 |
-
+ 
 ---
-
-> [!IMPORTANT]
-> **Modpack Permissions:** You are free to include this mod in modpacks, **provided the modpack is hosted on the same platform** (e.g. CurseForge).
->
-> **Cross-platform distribution is not permitted.** If you download this mod from CurseForge, your modpack must also be published on CurseForge.
-
+ 
+<blockquote>
+    <strong>Modpack Permissions:</strong> You are free to include this mod in modpacks, <strong>provided the modpack is hosted on the same platform</strong> (e.g. CurseForge).
+    <br><br>
+    <strong>Cross-platform distribution is not permitted.</strong> If you download this mod from CurseForge, your modpack must also be published on CurseForge.
+</blockquote>
+ 
 ---
-
+ 
 <div align="center">
-
+ 
 **Made with ❤️ for the Minecraft community**
-
+ 
 *Part of the Instant Gratification Collection*
-
+ 
 </div>
