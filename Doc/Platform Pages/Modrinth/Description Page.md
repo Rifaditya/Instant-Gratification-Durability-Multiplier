@@ -1,4 +1,4 @@
-<div align="center">
+﻿<div align="center">
 
 <!-- Banner placeholder — replace URL when banner is uploaded -->
 <!-- ![Durability Multiplier Banner](https://example.com/banner.jpg) -->
@@ -14,7 +14,7 @@
 
 # ⚒️ Durability Multiplier
 
-**No Backports:** This mod targets **Minecraft 26.1+**. Older versions are unsupported.
+**Active Version Policy:** I build **1 JAR for 1 Version**. I only update and maintain the latest active Minecraft version (e.g. when 26.3 is released, 26.2 is retired). No backports or legacy version maintenance. Please do not ask.
 
 > **Stop babysitting your tools. Focus on the adventure.**
 
@@ -44,13 +44,13 @@ Automatically scans items on startup to dynamically register multipliers and inf
 ### 💬 Tooltip Display
 Hover over any item to see its durability status directly in its tooltip:
  
-<table align="center" style="border: none; background: none;">
+<table align="center" style="border: none; background: none; width: 100%;">
   <tr style="border: none; background: none;">
-    <td align="center" style="border: none; background: none;">
-      <img src="https://raw.githubusercontent.com/Rifaditya/Instant-Gratification-Durability-Multiplier/refs/heads/main/Images/Unbreak.png" height="100">
+    <td align="center" style="border: none; background: none; width: 50%;">
+      <img src="https://raw.githubusercontent.com/Rifaditya/Instant-Gratification-Durability-Multiplier/refs/heads/main/Images/Unbreak.png" width="100%">
     </td>
-    <td align="center" style="border: none; background: none;">
-      <img src="https://raw.githubusercontent.com/Rifaditya/Instant-Gratification-Durability-Multiplier/refs/heads/main/Images/4x%20tools.png" height="100">
+    <td align="center" style="border: none; background: none; width: 50%;">
+      <img src="https://raw.githubusercontent.com/Rifaditya/Instant-Gratification-Durability-Multiplier/refs/heads/main/Images/4x%20tools.png" width="100%">
     </td>
   </tr>
 </table>
@@ -64,6 +64,10 @@ Hover over any item to see its durability status directly in its tooltip:
 ## ⚙️ Configuration (Native Game Rules & Config GUI)
  
 Configure everything in-game using the **Edit Game Rules** screen, via standard commands, or through the optional configuration GUI (requires **ModMenu** + **Cloth Config**).
+
+> [!WARNING]
+> **GameRule & Config Separation:** Changing values in the configuration file or ModMenu configuration screen only defines default settings for **newly generated worlds**. 
+> To modify settings in an **existing world**, you must change them in-game using `/gamerule` commands or through the standard GameRules edit screen.
  
 <p align="center">
   <img src="https://raw.githubusercontent.com/Rifaditya/Instant-Gratification-Durability-Multiplier/refs/heads/main/Images/2026-02-15_11.24.45.png" alt="Native GameRules UI">
@@ -104,9 +108,10 @@ If you enjoy the **Instant Gratification** collection, consider fueling the next
 ---
 
 > [!IMPORTANT]
-> **Modpack Permissions:** You are free to include this mod in modpacks, **provided the modpack is hosted on the same platform** (e.g. Modrinth).
->
-> **Cross-platform distribution is not permitted.** If you download this mod from Modrinth, your modpack must also be published on Modrinth.
+> **📦 Modpack Permissions & Distribution:** You are free to include this mod in any modpack on any platform. However, the mod itself must be downloaded from its official distribution pages on **Modrinth** or **CurseForge**. Re-uploading or redistributing the mod jar file to third-party sites is strictly prohibited unless explicitly permitted by the creator.
+> 
+> **License & Forks:** Since the source code is licensed under **GNU GPLv3**, you are fully permitted to fork the repository, make modifications, build your own versions, and distribute them under the terms of the GPLv3. The prohibition on third-party redistribution applies exclusively to the official compiled releases/jars published by the original creator (Dasik/Rifaditya). Forks must be published as distinct projects, not direct re-uploads of official builds.
+
 
 ---
 

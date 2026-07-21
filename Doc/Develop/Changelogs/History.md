@@ -1,5 +1,12 @@
 # Changelog History
 
+## [1.1.9+26.1.2] - 2026-07-11
+
+### Remove Live Config Sync & Add Standardized Warning Notice
+* **What**: Removed live GameRule sync block from the Cloth configuration save handler. Appended `§6Notice:§r` warning text into all GameRule descriptions.
+* **Why**: To keep GameRule settings isolated on a per-world basis so each world has different settings, and clearly warn the user to use `/gamerule` for existing worlds.
+* **How**: Updated `ClothConfigScreenHelper.java` save block to only save config files and cleaned up unused imports. Updated `en_us.json` to append the gold notice to all description values.
+
 ## [1.1.8+A-26.1.2] - 2026-06-12
 
 ### Changed
