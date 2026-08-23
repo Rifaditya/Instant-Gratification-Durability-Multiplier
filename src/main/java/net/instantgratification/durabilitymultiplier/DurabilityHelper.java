@@ -65,12 +65,15 @@ public final class DurabilityHelper {
      * Resolve whether the item should take zero damage (God Mode) with pre-resolved category.
      */
     public static boolean isInfinite(ServerLevel level, ItemStack stack, ItemCategory cat) {
-        if (cat == ItemCategory.OTHER) {
-            Identifier id = BuiltInRegistries.ITEM.getKey(stack.getItem());
-            String ruleName = "ig:infinity_" + id.getNamespace() + "_" + id.getPath();
-            GameRule<Boolean> dynamicRule = DynamicGameRuleManager.booleanRule(ruleName,
-                    DurabilityRules.DURABILITY_MULTIPLIER, false).register();
-            if (DynamicGameRuleManager.getBoolean(level, dynamicRule)) {
+        Identifier id = BuiltInRegistries.ITEM.getKey(stack.getItem());
+        if (id != null && !id.getNamespace().equals("minecraft") && !id.getNamespace().equals("c")) {
+            String infinityRuleName = "ig:infinity_" + id.getNamespace() + "_" + id.getPath();
+            @SuppressWarnings("unchecked")
+            GameRule<Boolean> dynamicInfinityRule = (GameRule<Boolean>) DynamicGameRuleManager.getDynamicRules().get(infinityRuleName);
+            if (dynamicInfinityRule == null) {
+                dynamicInfinityRule = DynamicGameRuleManager.booleanRule(infinityRuleName, DurabilityRules.DURABILITY_MULTIPLIER, false).register();
+            }
+            if (dynamicInfinityRule != null && DynamicGameRuleManager.getBoolean(level, dynamicInfinityRule)) {
                 return true;
             }
         }
@@ -149,7 +152,7 @@ public final class DurabilityHelper {
 
     /**
      * Resolve the effective durability percentage.
-     * Priority: tag-specific (if > 0) → parent category fallback → weapons fallback (if weapon) → global fallback → 100%.
+     * Priority: individual per-item override (if > 0) → tag-specific (if > 0) → parent category fallback → weapons fallback (if weapon) → global fallback → 100%.
      *
      * @return durability percentage (e.g. 100 = 100% vanilla, 200 = 200% double durability, 50 = 50% half).
      */
@@ -161,14 +164,21 @@ public final class DurabilityHelper {
      * Resolve the effective durability percentage with pre-resolved category.
      */
     public static int getEffectivePercent(ServerLevel level, ItemStack stack, ItemCategory cat) {
-        if (cat == ItemCategory.OTHER) {
-            Identifier id = BuiltInRegistries.ITEM.getKey(stack.getItem());
+        Identifier id = BuiltInRegistries.ITEM.getKey(stack.getItem());
+        if (id != null && !id.getNamespace().equals("minecraft") && !id.getNamespace().equals("c")) {
             String ruleName = "ig:percent_" + id.getNamespace() + "_" + id.getPath();
-            GameRule<Integer> dynamicRule = DynamicGameRuleManager.integerRule(ruleName,
-                    DurabilityRules.DURABILITY_MULTIPLIER, 0).min(0).register();
-            int dynamicVal = DynamicGameRuleManager.getInt(level, dynamicRule);
-            if (dynamicVal > 0)
-                return dynamicVal;
+            @SuppressWarnings("unchecked")
+            GameRule<Integer> dynamicRule = (GameRule<Integer>) DynamicGameRuleManager.getDynamicRules().get(ruleName);
+            if (dynamicRule == null) {
+                dynamicRule = DynamicGameRuleManager.integerRule(ruleName,
+                        DurabilityRules.DURABILITY_MULTIPLIER, 0).min(0).register();
+            }
+            if (dynamicRule != null) {
+                int dynamicVal = DynamicGameRuleManager.getInt(level, dynamicRule);
+                if (dynamicVal > 0) {
+                    return dynamicVal;
+                }
+            }
         }
 
         int specific = switch (cat) {
@@ -291,6 +301,11 @@ public final class DurabilityHelper {
 
     /** Client-side infinity check using synced GameRule values. */
     public static boolean isInfiniteClient(ItemStack stack) {
+        Identifier id = BuiltInRegistries.ITEM.getKey(stack.getItem());
+        if (id != null && DurabilityClientState.getDynamicInfinity(id.toString())) {
+            return true;
+        }
+
         ItemCategory cat = classifyItem(stack);
         return switch (cat) {
             case SWORD -> DurabilityClientState.infinitySwords() || DurabilityClientState.infinityWeapons() || DurabilityClientState.infinityGlobal();
@@ -325,6 +340,14 @@ public final class DurabilityHelper {
 
     /** Client-side percentage using synced GameRule values. */
     public static int getEffectivePercentClient(ItemStack stack) {
+        Identifier id = BuiltInRegistries.ITEM.getKey(stack.getItem());
+        if (id != null) {
+            int dynamicVal = DurabilityClientState.getDynamicPercent(id.toString());
+            if (dynamicVal > 0) {
+                return dynamicVal;
+            }
+        }
+
         ItemCategory cat = classifyItem(stack);
         int specific = switch (cat) {
             case SWORD -> DurabilityClientState.percentSwords();

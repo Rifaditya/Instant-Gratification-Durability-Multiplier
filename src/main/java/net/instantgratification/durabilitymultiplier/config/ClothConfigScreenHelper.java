@@ -368,36 +368,63 @@ public class ClothConfigScreenHelper {
         modded.addEntry(entryBuilder.startTextDescription(Component.translatable("config.durability-multiplier.warning")).build());
 
         boolean hasModdedItems = !net.instantgratification.durabilitymultiplier.registry.DurabilityRules.DYNAMIC_ITEMS.isEmpty();
-        for (Identifier id : net.instantgratification.durabilitymultiplier.registry.DurabilityRules.DYNAMIC_ITEMS) {
-            Item item = BuiltInRegistries.ITEM.getValue(id);
-            if (item == null) continue;
+        if (hasModdedItems) {
+            java.util.Map<String, java.util.List<Identifier>> byMod = new java.util.TreeMap<>();
+            for (Identifier id : net.instantgratification.durabilitymultiplier.registry.DurabilityRules.DYNAMIC_ITEMS) {
+                byMod.computeIfAbsent(id.getNamespace(), k -> new java.util.ArrayList<>()).add(id);
+            }
 
-            String itemKey = id.toString();
+            for (java.util.Map.Entry<String, java.util.List<Identifier>> entry : byMod.entrySet()) {
+                String modNamespace = entry.getKey();
+                String modTitle = formatModNamespace(modNamespace);
+                var modCategory = entryBuilder.startSubCategory(
+                        Component.literal("§6" + modTitle + "§r (" + modNamespace + ")"));
 
-            // Add Percentage field
-            modded.addEntry(entryBuilder.startIntField(
-                Component.translatable(item.getDescriptionId()).append(" Percent"),
-                config.dynamicPercentages.getOrDefault(itemKey, 0))
-                    .setDefaultValue(0)
-                    .setMin(0)
-                    .setTooltip(Component.literal("Durability percentage for " + itemKey + " (100 = vanilla, 200 = 2x, 50 = 0.5x)"))
-                    .setSaveConsumer(val -> config.dynamicPercentages.put(itemKey, val))
-                    .build());
+                for (Identifier id : entry.getValue()) {
+                    Item item = BuiltInRegistries.ITEM.getValue(id);
+                    if (item == null) continue;
 
-            // Add Infinity toggle
-            modded.addEntry(entryBuilder.startBooleanToggle(
-                Component.translatable(item.getDescriptionId()).append(" Infinity"),
-                config.dynamicInfinities.getOrDefault(itemKey, false))
-                    .setDefaultValue(false)
-                    .setTooltip(Component.literal("Enable unbreakable status for " + itemKey))
-                    .setSaveConsumer(val -> config.dynamicInfinities.put(itemKey, val))
-                    .build());
-        }
+                    String itemKey = id.toString();
 
-        if (!hasModdedItems) {
+                    // Add Percentage field
+                    modCategory.add(entryBuilder.startIntField(
+                        Component.translatable(item.getDescriptionId()).append(" Percent"),
+                        config.dynamicPercentages.getOrDefault(itemKey, 0))
+                            .setDefaultValue(0)
+                            .setMin(0)
+                            .setTooltip(Component.literal("Specific percentage for " + itemKey + ". Overrides category/global if > 0. Set to 0 to inherit. Default: 0."))
+                            .setSaveConsumer(val -> config.dynamicPercentages.put(itemKey, val))
+                            .build());
+
+                    // Add Infinity toggle
+                    modCategory.add(entryBuilder.startBooleanToggle(
+                        Component.translatable(item.getDescriptionId()).append(" God Mode"),
+                        config.dynamicInfinities.getOrDefault(itemKey, false))
+                            .setDefaultValue(false)
+                            .setTooltip(Component.literal("Enable unbreakable god mode for " + itemKey + ". Default: false."))
+                            .setSaveConsumer(val -> config.dynamicInfinities.put(itemKey, val))
+                            .build());
+                }
+
+                modded.addEntry(modCategory.build());
+            }
+        } else {
             modded.addEntry(entryBuilder.startTextDescription(Component.translatable("config.durability-multiplier.no_modded_items")).build());
         }
 
         return builder.build();
+    }
+
+    private static String formatModNamespace(String namespace) {
+        if (namespace == null || namespace.isEmpty()) return "Unknown Mod";
+        String[] parts = namespace.split("[_-]");
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < parts.length; i++) {
+            String part = parts[i];
+            if (part.isEmpty()) continue;
+            sb.append(Character.toUpperCase(part.charAt(0))).append(part.substring(1));
+            if (i < parts.length - 1) sb.append(" ");
+        }
+        return sb.toString();
     }
 }

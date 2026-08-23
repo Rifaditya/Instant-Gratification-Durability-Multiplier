@@ -78,7 +78,10 @@ public final class DurabilityNetworking {
                 DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_BOOTS),
                 DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_ELYTRA),
 
-                DurabilityRules.getBoolean(level, DurabilityRules.DM_SHOW_TOOLTIP));
+                DurabilityRules.getBoolean(level, DurabilityRules.DM_SHOW_TOOLTIP),
+
+                DurabilityRules.getActiveDynamicPercentages(level),
+                DurabilityRules.getActiveDynamicInfinities(level));
         ServerPlayNetworking.send(player, payload);
     }
 
