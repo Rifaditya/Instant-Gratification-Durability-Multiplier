@@ -195,13 +195,68 @@ public class DurabilityConfig {
             modified = true;
         }
         if (!forcedPercentages.containsKey(itemId)) {
-            forcedPercentages.put(itemId, 0);
+            if (dynamicPercentages != null && dynamicPercentages.containsKey(itemId)) {
+                forcedPercentages.put(itemId, dynamicPercentages.get(itemId));
+            } else {
+                forcedPercentages.put(itemId, 0);
+            }
             modified = true;
+        }
+        if (dynamicPercentages != null && dynamicPercentages.containsKey(itemId) && !forcedPercentages.containsKey(itemId)) {
+            forcedPercentages.put(itemId, dynamicPercentages.get(itemId));
+            modified = true;
+        }
+        if (dynamicInfinities != null && dynamicInfinities.containsKey(itemId)) {
+            if (forcedInfinities == null) forcedInfinities = new java.util.HashMap<>();
+            if (!forcedInfinities.containsKey(itemId)) {
+                forcedInfinities.put(itemId, dynamicInfinities.get(itemId));
+                modified = true;
+            }
+        }
+        if (dynamicSingleUses != null && dynamicSingleUses.containsKey(itemId)) {
+            if (forcedSingleUses == null) forcedSingleUses = new java.util.HashMap<>();
+            if (!forcedSingleUses.containsKey(itemId)) {
+                forcedSingleUses.put(itemId, dynamicSingleUses.get(itemId));
+                modified = true;
+            }
         }
         if (modified) {
             dirty = true;
         }
         return modified;
+    }
+
+    public synchronized void setForcedPercent(String itemId, int percent) {
+        if (itemId == null || itemId.isEmpty()) return;
+        if (forcedPercentages == null) forcedPercentages = new java.util.HashMap<>();
+        if (dynamicPercentages == null) dynamicPercentages = new java.util.HashMap<>();
+        if (forcedItems == null) forcedItems = new java.util.ArrayList<>();
+        forcedPercentages.put(itemId, percent);
+        dynamicPercentages.put(itemId, percent);
+        if (!forcedItems.contains(itemId)) forcedItems.add(itemId);
+        dirty = true;
+    }
+
+    public synchronized void setForcedInfinity(String itemId, boolean infinity) {
+        if (itemId == null || itemId.isEmpty()) return;
+        if (forcedInfinities == null) forcedInfinities = new java.util.HashMap<>();
+        if (dynamicInfinities == null) dynamicInfinities = new java.util.HashMap<>();
+        if (forcedItems == null) forcedItems = new java.util.ArrayList<>();
+        forcedInfinities.put(itemId, infinity);
+        dynamicInfinities.put(itemId, infinity);
+        if (!forcedItems.contains(itemId)) forcedItems.add(itemId);
+        dirty = true;
+    }
+
+    public synchronized void setForcedSingleUse(String itemId, boolean singleUse) {
+        if (itemId == null || itemId.isEmpty()) return;
+        if (forcedSingleUses == null) forcedSingleUses = new java.util.HashMap<>();
+        if (dynamicSingleUses == null) dynamicSingleUses = new java.util.HashMap<>();
+        if (forcedItems == null) forcedItems = new java.util.ArrayList<>();
+        forcedSingleUses.put(itemId, singleUse);
+        dynamicSingleUses.put(itemId, singleUse);
+        if (!forcedItems.contains(itemId)) forcedItems.add(itemId);
+        dirty = true;
     }
 
     public static synchronized void load(Path configDir) {
@@ -229,6 +284,31 @@ public class DurabilityConfig {
         if (multiplierArmor != null && multiplierArmor > 0) percentArmor = multiplierArmor * 100;
         if (multiplierElytra != null && multiplierElytra > 0) percentElytra = multiplierElytra * 100;
         if (multiplierShields != null && multiplierShields > 0) percentShields = multiplierShields * 100;
+
+        if (dynamicPercentages != null) {
+            if (forcedPercentages == null) forcedPercentages = new java.util.HashMap<>();
+            if (forcedItems == null) forcedItems = new java.util.ArrayList<>();
+            for (java.util.Map.Entry<String, Integer> e : dynamicPercentages.entrySet()) {
+                forcedPercentages.putIfAbsent(e.getKey(), e.getValue());
+                if (!forcedItems.contains(e.getKey())) forcedItems.add(e.getKey());
+            }
+        }
+        if (dynamicInfinities != null) {
+            if (forcedInfinities == null) forcedInfinities = new java.util.HashMap<>();
+            if (forcedItems == null) forcedItems = new java.util.ArrayList<>();
+            for (java.util.Map.Entry<String, Boolean> e : dynamicInfinities.entrySet()) {
+                forcedInfinities.putIfAbsent(e.getKey(), e.getValue());
+                if (!forcedItems.contains(e.getKey())) forcedItems.add(e.getKey());
+            }
+        }
+        if (dynamicSingleUses != null) {
+            if (forcedSingleUses == null) forcedSingleUses = new java.util.HashMap<>();
+            if (forcedItems == null) forcedItems = new java.util.ArrayList<>();
+            for (java.util.Map.Entry<String, Boolean> e : dynamicSingleUses.entrySet()) {
+                forcedSingleUses.putIfAbsent(e.getKey(), e.getValue());
+                if (!forcedItems.contains(e.getKey())) forcedItems.add(e.getKey());
+            }
+        }
     }
 
     public static synchronized void save() {
