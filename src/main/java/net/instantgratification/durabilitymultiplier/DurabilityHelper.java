@@ -72,7 +72,11 @@ public final class DurabilityHelper {
             @SuppressWarnings("unchecked")
             GameRule<Boolean> dynamicInfinityRule = (GameRule<Boolean>) DynamicGameRuleManager.getDynamicRules().get(infinityRuleName);
             if (dynamicInfinityRule == null) {
-                dynamicInfinityRule = DynamicGameRuleManager.booleanRule(infinityRuleName, DurabilityRules.DURABILITY_MULTIPLIER, false).register();
+                boolean defInf = DurabilityConfig.get().getForcedInfinity(id.toString());
+                dynamicInfinityRule = DynamicGameRuleManager.booleanRule(infinityRuleName, DurabilityRules.DURABILITY_MULTIPLIER, defInf).register();
+                if (dynamicInfinityRule != null && !DurabilityRules.DYNAMIC_ITEMS.contains(id)) {
+                    DurabilityRules.DYNAMIC_ITEMS.add(id);
+                }
             }
             if (dynamicInfinityRule != null && DynamicGameRuleManager.getBoolean(level, dynamicInfinityRule)) {
                 return true;
@@ -171,6 +175,13 @@ public final class DurabilityHelper {
             String ruleName = "ig:single_use_" + id.getNamespace() + "_" + id.getPath();
             @SuppressWarnings("unchecked")
             GameRule<Boolean> dynamicRule = (GameRule<Boolean>) DynamicGameRuleManager.getDynamicRules().get(ruleName);
+            if (dynamicRule == null) {
+                boolean defSingleUse = DurabilityConfig.get().getForcedSingleUse(id.toString());
+                dynamicRule = DynamicGameRuleManager.booleanRule(ruleName, DurabilityRules.DURABILITY_MULTIPLIER, defSingleUse).register();
+                if (dynamicRule != null && !DurabilityRules.DYNAMIC_ITEMS.contains(id)) {
+                    DurabilityRules.DYNAMIC_ITEMS.add(id);
+                }
+            }
             if (dynamicRule != null && DynamicGameRuleManager.getBoolean(level, dynamicRule)) {
                 return true;
             }
@@ -269,8 +280,12 @@ public final class DurabilityHelper {
             @SuppressWarnings("unchecked")
             GameRule<Integer> dynamicRule = (GameRule<Integer>) DynamicGameRuleManager.getDynamicRules().get(ruleName);
             if (dynamicRule == null) {
+                int defPercent = DurabilityConfig.get().getForcedPercent(id.toString());
                 dynamicRule = DynamicGameRuleManager.integerRule(ruleName,
-                        DurabilityRules.DURABILITY_MULTIPLIER, 0).min(-1).register();
+                        DurabilityRules.DURABILITY_MULTIPLIER, defPercent).min(-1).register();
+                if (dynamicRule != null && !DurabilityRules.DYNAMIC_ITEMS.contains(id)) {
+                    DurabilityRules.DYNAMIC_ITEMS.add(id);
+                }
             }
             if (dynamicRule != null) {
                 int dynamicVal = DynamicGameRuleManager.getInt(level, dynamicRule);
@@ -405,8 +420,10 @@ public final class DurabilityHelper {
     /** Client-side infinity check using synced GameRule values. */
     public static boolean isInfiniteClient(ItemStack stack) {
         Identifier id = BuiltInRegistries.ITEM.getKey(stack.getItem());
-        if (id != null && DurabilityClientState.getDynamicInfinity(id.toString())) {
-            return true;
+        if (id != null) {
+            if (DurabilityClientState.getDynamicInfinity(id.toString()) || DurabilityConfig.get().getForcedInfinity(id.toString())) {
+                return true;
+            }
         }
 
         ItemCategory cat = classifyItem(stack);
@@ -448,8 +465,10 @@ public final class DurabilityHelper {
         }
 
         Identifier id = BuiltInRegistries.ITEM.getKey(stack.getItem());
-        if (id != null && DurabilityClientState.getDynamicSingleUse(id.toString())) {
-            return true;
+        if (id != null) {
+            if (DurabilityClientState.getDynamicSingleUse(id.toString()) || DurabilityConfig.get().getForcedSingleUse(id.toString())) {
+                return true;
+            }
         }
 
         ItemCategory cat = classifyItem(stack);
@@ -491,6 +510,10 @@ public final class DurabilityHelper {
             int dynamicVal = DurabilityClientState.getDynamicPercent(id.toString());
             if (dynamicVal != 0) {
                 return dynamicVal < 0 ? -1 : dynamicVal;
+            }
+            int forcedVal = DurabilityConfig.get().getForcedPercent(id.toString());
+            if (forcedVal != 0) {
+                return forcedVal < 0 ? -1 : forcedVal;
             }
         }
 

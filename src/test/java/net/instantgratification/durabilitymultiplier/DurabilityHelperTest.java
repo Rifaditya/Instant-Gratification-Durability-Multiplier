@@ -145,8 +145,19 @@ public class DurabilityHelperTest {
     }
 
     @Test
-    @DisplayName("Cache Invalidation: clearCategoryCache executes cleanly")
-    void testClearCategoryCache() {
-        assertDoesNotThrow(DurabilityHelper::clearCategoryCache);
+    @DisplayName("Forced Items: config getters and aliases resolve correctly")
+    void testForcedItemConfigResolution() {
+        DurabilityConfig config = DurabilityConfig.get();
+        config.forcedItems.add("watersgems:moonstone_sword");
+        config.forcedPercentages.put("watersgems:moonstone_sword", 300);
+        config.forcedInfinities.put("watersgems:ruby_axe", true);
+        config.forcedSingleUses.put("watersgems:glass_dagger", true);
+
+        assertTrue(config.isForced("watersgems:moonstone_sword"));
+        assertTrue(config.isForced("watersgems:ruby_axe"));
+        assertTrue(config.isForced("watersgems:glass_dagger"));
+        assertEquals(300, config.getForcedPercent("watersgems:moonstone_sword"));
+        assertTrue(config.getForcedInfinity("watersgems:ruby_axe"));
+        assertTrue(config.getForcedSingleUse("watersgems:glass_dagger"));
     }
 }
