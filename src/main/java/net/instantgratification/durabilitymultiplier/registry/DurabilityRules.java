@@ -209,6 +209,10 @@ public class DurabilityRules {
                 processItemRegistration(id, item);
             }
         }
+        net.instantgratification.durabilitymultiplier.DurabilityMultiplier.LOGGER.info(
+            "Discovered {} dynamic modded damageable items. Registered {} dynamic item GameRules.",
+            DYNAMIC_ITEMS.size(), DYNAMIC_ITEMS.size() * 3
+        );
     }
 
     private static void processItemRegistration(Identifier id, Item item) {
