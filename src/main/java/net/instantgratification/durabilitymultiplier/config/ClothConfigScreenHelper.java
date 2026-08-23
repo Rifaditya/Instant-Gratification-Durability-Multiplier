@@ -33,168 +33,168 @@ public class ClothConfigScreenHelper {
 
         percentages.addEntry(entryBuilder.startIntField(Component.translatable("gamerule.ig.dm_percent_global"), config.percentGlobal)
             .setDefaultValue(200)
-            .setMin(0)
+            .setMin(-1)
             .setTooltip(Component.translatable("gamerule.ig.dm_percent_global.description"))
             .setSaveConsumer(val -> config.percentGlobal = val)
             .build());
 
         percentages.addEntry(entryBuilder.startIntField(Component.translatable("gamerule.ig.dm_percent_weapons"), config.percentWeapons)
             .setDefaultValue(0)
-            .setMin(0)
+            .setMin(-1)
             .setTooltip(Component.translatable("gamerule.ig.dm_percent_weapons.description"))
             .setSaveConsumer(val -> config.percentWeapons = val)
             .build());
 
         percentages.addEntry(entryBuilder.startIntField(Component.translatable("gamerule.ig.dm_percent_swords"), config.percentSwords)
             .setDefaultValue(0)
-            .setMin(0)
+            .setMin(-1)
             .setTooltip(Component.translatable("gamerule.ig.dm_percent_swords.description"))
             .setSaveConsumer(val -> config.percentSwords = val)
             .build());
 
         percentages.addEntry(entryBuilder.startIntField(Component.translatable("gamerule.ig.dm_percent_spears"), config.percentSpears)
             .setDefaultValue(0)
-            .setMin(0)
+            .setMin(-1)
             .setTooltip(Component.translatable("gamerule.ig.dm_percent_spears.description"))
             .setSaveConsumer(val -> config.percentSpears = val)
             .build());
 
         percentages.addEntry(entryBuilder.startIntField(Component.translatable("gamerule.ig.dm_percent_tridents"), config.percentTridents)
             .setDefaultValue(0)
-            .setMin(0)
+            .setMin(-1)
             .setTooltip(Component.translatable("gamerule.ig.dm_percent_tridents.description"))
             .setSaveConsumer(val -> config.percentTridents = val)
             .build());
 
         percentages.addEntry(entryBuilder.startIntField(Component.translatable("gamerule.ig.dm_percent_maces"), config.percentMaces)
             .setDefaultValue(0)
-            .setMin(0)
+            .setMin(-1)
             .setTooltip(Component.translatable("gamerule.ig.dm_percent_maces.description"))
             .setSaveConsumer(val -> config.percentMaces = val)
             .build());
 
         percentages.addEntry(entryBuilder.startIntField(Component.translatable("gamerule.ig.dm_percent_bows"), config.percentBows)
             .setDefaultValue(0)
-            .setMin(0)
+            .setMin(-1)
             .setTooltip(Component.translatable("gamerule.ig.dm_percent_bows.description"))
             .setSaveConsumer(val -> config.percentBows = val)
             .build());
 
         percentages.addEntry(entryBuilder.startIntField(Component.translatable("gamerule.ig.dm_percent_crossbows"), config.percentCrossbows)
             .setDefaultValue(0)
-            .setMin(0)
+            .setMin(-1)
             .setTooltip(Component.translatable("gamerule.ig.dm_percent_crossbows.description"))
             .setSaveConsumer(val -> config.percentCrossbows = val)
             .build());
 
         percentages.addEntry(entryBuilder.startIntField(Component.translatable("gamerule.ig.dm_percent_tools"), config.percentTools)
             .setDefaultValue(0)
-            .setMin(0)
+            .setMin(-1)
             .setTooltip(Component.translatable("gamerule.ig.dm_percent_tools.description"))
             .setSaveConsumer(val -> config.percentTools = val)
             .build());
 
         percentages.addEntry(entryBuilder.startIntField(Component.translatable("gamerule.ig.dm_percent_pickaxes"), config.percentPickaxes)
             .setDefaultValue(0)
-            .setMin(0)
+            .setMin(-1)
             .setTooltip(Component.translatable("gamerule.ig.dm_percent_pickaxes.description"))
             .setSaveConsumer(val -> config.percentPickaxes = val)
             .build());
 
         percentages.addEntry(entryBuilder.startIntField(Component.translatable("gamerule.ig.dm_percent_axes"), config.percentAxes)
             .setDefaultValue(0)
-            .setMin(0)
+            .setMin(-1)
             .setTooltip(Component.translatable("gamerule.ig.dm_percent_axes.description"))
             .setSaveConsumer(val -> config.percentAxes = val)
             .build());
 
         percentages.addEntry(entryBuilder.startIntField(Component.translatable("gamerule.ig.dm_percent_shovels"), config.percentShovels)
             .setDefaultValue(0)
-            .setMin(0)
+            .setMin(-1)
             .setTooltip(Component.translatable("gamerule.ig.dm_percent_shovels.description"))
             .setSaveConsumer(val -> config.percentShovels = val)
             .build());
 
         percentages.addEntry(entryBuilder.startIntField(Component.translatable("gamerule.ig.dm_percent_hoes"), config.percentHoes)
             .setDefaultValue(0)
-            .setMin(0)
+            .setMin(-1)
             .setTooltip(Component.translatable("gamerule.ig.dm_percent_hoes.description"))
             .setSaveConsumer(val -> config.percentHoes = val)
             .build());
 
         percentages.addEntry(entryBuilder.startIntField(Component.translatable("gamerule.ig.dm_percent_shears"), config.percentShears)
             .setDefaultValue(0)
-            .setMin(0)
+            .setMin(-1)
             .setTooltip(Component.translatable("gamerule.ig.dm_percent_shears.description"))
             .setSaveConsumer(val -> config.percentShears = val)
             .build());
 
         percentages.addEntry(entryBuilder.startIntField(Component.translatable("gamerule.ig.dm_percent_fishing_rods"), config.percentFishingRods)
             .setDefaultValue(0)
-            .setMin(0)
+            .setMin(-1)
             .setTooltip(Component.translatable("gamerule.ig.dm_percent_fishing_rods.description"))
             .setSaveConsumer(val -> config.percentFishingRods = val)
             .build());
 
         percentages.addEntry(entryBuilder.startIntField(Component.translatable("gamerule.ig.dm_percent_brushes"), config.percentBrushes)
             .setDefaultValue(0)
-            .setMin(0)
+            .setMin(-1)
             .setTooltip(Component.translatable("gamerule.ig.dm_percent_brushes.description"))
             .setSaveConsumer(val -> config.percentBrushes = val)
             .build());
 
         percentages.addEntry(entryBuilder.startIntField(Component.translatable("gamerule.ig.dm_percent_flint_and_steel"), config.percentFlintAndSteel)
             .setDefaultValue(0)
-            .setMin(0)
+            .setMin(-1)
             .setTooltip(Component.translatable("gamerule.ig.dm_percent_flint_and_steel.description"))
             .setSaveConsumer(val -> config.percentFlintAndSteel = val)
             .build());
 
         percentages.addEntry(entryBuilder.startIntField(Component.translatable("gamerule.ig.dm_percent_armor"), config.percentArmor)
             .setDefaultValue(0)
-            .setMin(0)
+            .setMin(-1)
             .setTooltip(Component.translatable("gamerule.ig.dm_percent_armor.description"))
             .setSaveConsumer(val -> config.percentArmor = val)
             .build());
 
         percentages.addEntry(entryBuilder.startIntField(Component.translatable("gamerule.ig.dm_percent_helmets"), config.percentHelmets)
             .setDefaultValue(0)
-            .setMin(0)
+            .setMin(-1)
             .setTooltip(Component.translatable("gamerule.ig.dm_percent_helmets.description"))
             .setSaveConsumer(val -> config.percentHelmets = val)
             .build());
 
         percentages.addEntry(entryBuilder.startIntField(Component.translatable("gamerule.ig.dm_percent_chestplates"), config.percentChestplates)
             .setDefaultValue(0)
-            .setMin(0)
+            .setMin(-1)
             .setTooltip(Component.translatable("gamerule.ig.dm_percent_chestplates.description"))
             .setSaveConsumer(val -> config.percentChestplates = val)
             .build());
 
         percentages.addEntry(entryBuilder.startIntField(Component.translatable("gamerule.ig.dm_percent_leggings"), config.percentLeggings)
             .setDefaultValue(0)
-            .setMin(0)
+            .setMin(-1)
             .setTooltip(Component.translatable("gamerule.ig.dm_percent_leggings.description"))
             .setSaveConsumer(val -> config.percentLeggings = val)
             .build());
 
         percentages.addEntry(entryBuilder.startIntField(Component.translatable("gamerule.ig.dm_percent_boots"), config.percentBoots)
             .setDefaultValue(0)
-            .setMin(0)
+            .setMin(-1)
             .setTooltip(Component.translatable("gamerule.ig.dm_percent_boots.description"))
             .setSaveConsumer(val -> config.percentBoots = val)
             .build());
 
         percentages.addEntry(entryBuilder.startIntField(Component.translatable("gamerule.ig.dm_percent_elytra"), config.percentElytra)
             .setDefaultValue(0)
-            .setMin(0)
+            .setMin(-1)
             .setTooltip(Component.translatable("gamerule.ig.dm_percent_elytra.description"))
             .setSaveConsumer(val -> config.percentElytra = val)
             .build());
 
         percentages.addEntry(entryBuilder.startIntField(Component.translatable("gamerule.ig.dm_percent_shields"), config.percentShields)
             .setDefaultValue(0)
-            .setMin(0)
+            .setMin(-1)
             .setTooltip(Component.translatable("gamerule.ig.dm_percent_shields.description"))
             .setSaveConsumer(val -> config.percentShields = val)
             .build());
@@ -538,8 +538,8 @@ public class ClothConfigScreenHelper {
                         Component.translatable(item.getDescriptionId()).append(" Percent"),
                         config.dynamicPercentages.getOrDefault(itemKey, 0))
                             .setDefaultValue(0)
-                            .setMin(0)
-                            .setTooltip(Component.literal("Specific percentage for " + itemKey + ". Overrides category/global if > 0. Set to 0 to inherit. Default: 0."))
+                            .setMin(-1)
+                            .setTooltip(Component.literal("Specific percentage for " + itemKey + " (-1 = Single-Use, 0 = Inherit, >0 = Percentage). Default: 0."))
                             .setSaveConsumer(val -> config.dynamicPercentages.put(itemKey, val))
                             .build());
 
