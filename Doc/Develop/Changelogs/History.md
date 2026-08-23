@@ -1,6 +1,25 @@
 # Changelog History
 
-## [1.1.9+26.1.2] - 2026-07-11
+## [1.1.12+26.1.2] - 2026-08-23
+
+### Granular Tag GameRules & Subcategory Expansion
+* **What**: Expanded GameRules and config options from broad categories to individual tool tags (`pickaxes`, `axes`, `shovels`, `hoes`, `shears`, `fishing_rods`, `brushes`, `flint_and_steel`) and armor tags (`helmets`, `chestplates`, `leggings`, `boots`).
+* **Why**: To grant players and modpack creators precise control over individual tool and armor durability and God Mode states without having to lump all tools or all armor together.
+* **How**: Expanded `ItemCategory` enum with granular variants, implemented multi-tier fallback cascade (`Sub-tag > Parent Category > Global > 100%`), additive infinity boolean evaluation, extended `DurabilityPayload` network synchronization, and structured grouped sections in Cloth Config GUI.
+
+## [1.1.11+26.1.2] - 2026-08-23
+
+### Universal Item Classification & Conventional Tags
+* **What**: Upgraded item categorization in `DurabilityHelper` with Fabric Conventional Tags (`#c:*`), fixed the modern sword-to-tool trapping bug, added prioritized identifier path heuristics (`_sword`, `_pickaxe`, `_helmet`), and added classification cache invalidation (`clearCategoryCache()`).
+* **Why**: To fix external community mod items (such as *Water's Gems* and *Simply Swords*) failing to be identified or getting misclassified into the `TOOL` category due to attached `DataComponents.TOOL` (cobweb-destruction rules).
+* **How**: Added static `TagKey<Item>` references for `#c:*` conventional tags, placed sword tag and path evaluations ahead of generic tool component checks, and implemented substring path pattern matching as a zero-failure fallback.
+
+## [1.1.10+26.1.2] - 2026-08-21
+
+### Fractional Durability Scaling & Display Customization
+* **What**: Upgraded durability scaling and GameRules from integer multipliers to percentage-based values (`ig:dm_percent_*`), allowing durability reductions below 1x (e.g., 50% = half durability / 2x wear, 25% = quarter durability) as well as boosts (e.g. 200% = 2x double durability). Added a client-side `tooltipFormat` option (`ADAPTIVE`, `PERCENTAGE`, `MULTIPLIER`) in Cloth Config.
+* **Why**: To address community feature request (Issue #1) for finer-grained durability adjustments and custom wear penalties without violating Minecraft's integer GameRule parser constraints.
+* **How**: Formulated unified probabilistic integer damage division math (`(originalAmount * 100) / percent` with remainder check). Migrated configuration from v1 to v2 with automated multiplier-to-percentage migration. Registered unit test suite verifying damage scaling and formatting.
 
 ### Remove Live Config Sync & Add Standardized Warning Notice
 * **What**: Removed live GameRule sync block from the Cloth configuration save handler. Appended `§6Notice:§r` warning text into all GameRule descriptions.

@@ -12,32 +12,36 @@
 
 ---
 
-**Durability Multiplier** gives you surgical control over item longevity. Whether you want double durability or complete invincibility (God Mode), it's just a GameRule away. Part of the **Instant Gratification Collection** — Respect the Player's Time, Not the Game's Rules.
+**Durability Multiplier** gives you surgical control over item longevity. Whether you want double durability, fine-tuned fractional wear penalties, or complete invincibility (God Mode), it's just a GameRule away. Part of the **Instant Gratification Collection** — Respect the Player's Time, Not the Game's Rules.
 
 ## ✨ Features
 
-- **🛡️ Custom Multipliers**: Scale durability by any factor (2x, 10x, 1000x...).
+- **🛡️ Custom Durability Scaling**: Scale durability by any percentage (200% = 2x, 50% = 0.5x, 150% = 1.5x, 1000% = 10x...).
+- **🔒 100% World-Save Safe**: Probabilistic damage interception (like vanilla *Unbreaking*) never mutates item save components. Install, tweak, or remove safely anytime.
 - **✦ God Mode**: Make items completely unbreakable per category.
 - **🎯 Granular Control**: 12+ categories including **Spears**, **Shields**, **Maces**, and more.
-- **⚖️ Hierarchy Override**: Specific rules override global defaults (e.g., God Mode swords with 2x tools).
-- **👁️ Tooltip Indicators**: Dynamic tooltips show "✦ UNBREAKABLE" or "⟨Nx⟩" indicators.
-- **📦 Native Compatibility**: Works with all modded items using vanilla tags.
+- **⚖️ Hierarchy Override**: Specific rules override global defaults (e.g., God Mode swords with 200% tools).
+- **👁️ Tooltip Indicators**: Dynamic tooltips show "✦ UNBREAKABLE" or "⟨2x⟩" / "⟨50%⟩" indicators with customizable display formats.
+- **📦 Native Compatibility**: Works with all modded items using vanilla tags and components.
 
 ## ⚙️ Configuration
 
 All settings are **Server-Side GameRules**. Change them via `/gamerule ig:` or the Edit Game Rules screen.
 
-### 📈 Multipliers (Integer)
+> [!NOTE]
+> **Use Whole Percentages, Not Decimals**: Enter `50` for 50% half durability (2x wear), `150` for 1.5x durability, and `200` for 2x double durability. Do **not** enter decimals like `0.5` or `1.5` because Minecraft GameRules only accept integer values.
+
+### 📈 Durability Percentages (Integer)
 | Rule | Default | Description |
 | :--- | :---: | :--- |
-| `ig:dm_multiplier_global` | 2 | Base multiplier for all damageable items. |
-| `ig:dm_multiplier_weapons` | 0 | Multiplier for all weapons. Overrides Global if > 0. |
-| `ig:dm_multiplier_swords` | 0 | Specific multiplier for Swords. |
-| `ig:dm_multiplier_spears` | 0 | Specific multiplier for Spears (Snapshot 11+). |
-| `ig:dm_multiplier_shields` | 0 | Specific multiplier for Shields. |
-| `ig:dm_multiplier_tools` | 0 | Specific multiplier for Pickaxes, Axes, Shears, etc. |
-| `ig:dm_multiplier_armor` | 0 | Specific multiplier for all Armor pieces. |
-| `ig:dm_multiplier_elytra` | 0 | Specific multiplier for Elytra. |
+| `ig:dm_percent_global` | 200 | Base percentage for all damageable items (100 = 1x, 200 = 2x, 50 = 0.5x). |
+| `ig:dm_percent_weapons` | 0 | Percentage for all weapons. Overrides Global if > 0. |
+| `ig:dm_percent_swords` | 0 | Specific percentage for Swords. |
+| `ig:dm_percent_spears` | 0 | Specific percentage for Spears. |
+| `ig:dm_percent_shields` | 0 | Specific percentage for Shields. |
+| `ig:dm_percent_tools` | 0 | Specific percentage for Pickaxes, Axes, Shears, etc. |
+| `ig:dm_percent_armor` | 0 | Specific percentage for all Armor pieces. |
+| `ig:dm_percent_elytra` | 0 | Specific percentage for Elytra. |
 
 ### ♾️ God Mode (Boolean)
 | Rule | Default | Description |

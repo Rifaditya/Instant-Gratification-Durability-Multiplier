@@ -1,10 +1,38 @@
 # Changelog
 
+## [1.1.12+26.1.2] - 2026-08-23
+
+### Added
+- **Granular Tag GameRules & Subcategory Expansion**: Introduced distinct, dedicated GameRules and config options for individual tool subcategories (`pickaxes`, `axes`, `shovels`, `hoes`, `shears`, `fishing_rods`, `brushes`, `flint_and_steel`) and armor subcategories (`helmets`, `chestplates`, `leggings`, `boots`).
+- **Multi-Tier Cascade Hierarchy**: Implemented clean fallback logic (`Sub-tag > 0` overrides `Parent Category > 0` overrides `Global > 0` overrides `100%`) for all percentage modifiers.
+- **Additive Infinity Union**: Enabled additive boolean logic across subcategories, parent categories, and global God Mode rules.
+- **Extended Networking & GUI Support**: Expanded server-to-client network synchronization payload (`DurabilityPayload`) and Cloth Config GUI screens with categorized sections for tool and armor breakdowns.
+
+## [1.1.11+26.1.2] - 2026-08-23
+
+### Fixed
+- **Universal Item Classification Engine**: Upgraded item categorization in `DurabilityHelper` with Fabric Conventional Tags (`#c:swords`, `#c:tools`, `#c:pickaxes`, `#c:axes`, `#c:shovels`, `#c:hoes`, `#c:mining_tool`, `#c:armors`, `#c:shields`, `#c:bows`, `#c:crossbows`, `#c:spears`).
+- **Sword-to-Tool Trapping Bug**: Reordered classification checks so all sword tags, classes, and path heuristics execute before generic `DataComponents.TOOL` inspection. Prevents modded swords with cobweb-mining rules from being misclassified into the `TOOL` category.
+- **Identifier Path Heuristics**: Added prioritized name matching (`_sword`, `_katana`, `_pickaxe`, `_axe`, `_helmet`, etc.) as a robust fallback for custom mod items that omit tags.
+- **Classification Cache Invalidation**: Added `clearCategoryCache()` method to clear cached item categories upon datapack tag reloads.
+
+## [1.1.10+26.1.2] - 2026-08-21
+
+### Added
+- **Fractional Durability & Percentage Scaling**: Upgraded durability math and GameRules from whole integer multipliers to granular percentages (`ig:dm_percent_*`), fully supporting durability reductions below 1x (e.g. 50 = 50% half durability / 2x wear, 25 = 25% quarter durability) as well as boosts (e.g. 200 = 200% double durability, 150 = 150% 1.5x durability).
+- **Tooltip Display Format Setting**: Added `tooltipFormat` option in config and Cloth Config GUI with three selectable modes: `ADAPTIVE` (shows `2x` for round multiples, `50%` / `150%` for fractions/reductions), `PERCENTAGE` (always `%`), and `MULTIPLIER` (always `x`).
+- **Automated Durability Test Suite**: Added comprehensive JUnit 5 test suite (`DurabilityHelperTest`) asserting probabilistic damage distribution, boundary cases, and tooltip formatting across all modes.
+
+### Changed
+- **Config Version 2 Migration**: Bumped `DurabilityConfig` to version 2 with automated backward-compatible migration (`multiplier * 100`) from existing v1 configuration files.
+- **Rule Renaming**: Migrated gamerules to `ig:dm_percent_global`, `ig:dm_percent_weapons`, `ig:dm_percent_swords`, etc. Default global is 200% (2x), with specific category overrides defaulting to 0 (inherit).
+
 ## [1.1.9+26.1.2] - 2026-07-11
 
 ### Removed
 - Removed live GameRule sync on config save. Changing config values now only defines default settings for new worlds, allowing each world to maintain independent GameRule settings.
 - Appended `§6Notice:§r` warning notice to all gamerule descriptions to warn players about the config-only behavior when altering settings in ModMenu config screen.
+
 
 ## [1.1.8+A-26.1.2] - 2026-06-12
 
