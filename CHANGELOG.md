@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.2.14+26.2] - 2026-08-24
+
+### Fixed
+- **Strict Durability Filtering**: Enforced strict `DataComponents.MAX_DAMAGE > 0` validation in `DurabilityRules.isItemDamageable(Item)`, eliminating false-positive discovery of furniture, decoration blocks, and non-durability items.
+- **Keyword Boundary Collision Guard**: Tightened keyword boundary heuristics in `DurabilityHelper.classifyItemRaw` (e.g. `_robe` with explicit `wardrobe` exclusion, `_cap`, and `_saw`), preventing furniture items like `mcwfurnitures:spruce_wardrobe` or chairs from generating unwanted GameRules.
+
 ## [1.2.13+26.2] - 2026-08-23
 
 ### Added

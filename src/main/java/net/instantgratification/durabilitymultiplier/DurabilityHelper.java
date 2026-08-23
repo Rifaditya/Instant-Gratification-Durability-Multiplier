@@ -763,11 +763,12 @@ public final class DurabilityHelper {
         EquipmentSlot slot = (equippable != null) ? equippable.slot() : null;
 
         if (stack.is(ItemTags.HEAD_ARMOR) || stack.is(C_HELMETS) || slot == EquipmentSlot.HEAD
-                || path.contains("helmet") || path.contains("crown") || path.contains("cap") || path.contains("hood") || path.contains("mask")) {
+                || path.contains("helmet") || path.contains("crown") || path.endsWith("_cap") || path.startsWith("cap_") || path.contains("_cap_") || path.equals("cap") || path.contains("hood") || path.contains("mask")) {
             return ItemCategory.HELMET;
         }
         if (stack.is(ItemTags.CHEST_ARMOR) || stack.is(C_CHESTPLATES) || slot == EquipmentSlot.CHEST
-                || path.contains("chestplate") || path.contains("tunic") || path.contains("cuirass") || path.contains("robe")) {
+                || path.contains("chestplate") || path.contains("tunic") || path.contains("cuirass")
+                || ((path.endsWith("_robe") || path.contains("_robe_") || path.startsWith("robe_") || path.equals("robe")) && !path.contains("wardrobe"))) {
             return ItemCategory.CHESTPLATE;
         }
         if (stack.is(ItemTags.LEG_ARMOR) || stack.is(C_LEGGINGS) || slot == EquipmentSlot.LEGS
@@ -789,7 +790,8 @@ public final class DurabilityHelper {
             return ItemCategory.PICKAXE;
         }
         if (stack.is(ItemTags.AXES) || stack.is(C_AXES) || stack.getItem() instanceof AxeItem
-                || (path.contains("axe") && !path.contains("pickaxe")) || path.contains("hatchet") || path.contains("saw")) {
+                || (path.contains("axe") && !path.contains("pickaxe")) || path.contains("hatchet")
+                || ((path.endsWith("_saw") || path.contains("saw_") || path.contains("_saw_") || path.equals("saw") || path.contains("chainsaw") || path.contains("buzzsaw")) && !path.contains("jigsaw"))) {
             return ItemCategory.AXE;
         }
         if (stack.is(ItemTags.SHOVELS) || stack.is(C_SHOVELS) || stack.getItem() instanceof ShovelItem

@@ -239,12 +239,7 @@ public class DurabilityRules {
                 return true;
             }
             Integer maxDamage = item.components().get(DataComponents.MAX_DAMAGE);
-            if (maxDamage != null && maxDamage > 0) {
-                return true;
-            }
-            // Fallback check: check category
-            ItemStack dummyStack = new ItemStack(item);
-            return DurabilityHelper.classifyItem(dummyStack) != DurabilityHelper.ItemCategory.OTHER;
+            return maxDamage != null && maxDamage > 0;
         } catch (Throwable t) {
             return false;
         }
