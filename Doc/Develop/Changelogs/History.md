@@ -1,11 +1,54 @@
 # Changelog History
 
+## [1.2.5+26.2] - 2026-08-23
+
+### Granular Tag GameRules & Subcategory Expansion
+* **What**: Expanded GameRules and config options from broad categories to individual tool tags (`pickaxes`, `axes`, `shovels`, `hoes`, `shears`, `fishing_rods`, `brushes`, `flint_and_steel`) and armor tags (`helmets`, `chestplates`, `leggings`, `boots`).
+* **Why**: To grant players and modpack creators precise control over individual tool and armor durability and God Mode states without having to lump all tools or all armor together.
+* **How**: Expanded `ItemCategory` enum with granular variants, implemented multi-tier fallback cascade (`Sub-tag > Parent Category > Global > 100%`), additive infinity boolean evaluation, extended `DurabilityPayload` network synchronization, and structured grouped sections in Cloth Config GUI.
+
+## [1.2.4+26.2] - 2026-08-23
+
+### Universal Item Classification & Conventional Tags
+* **What**: Upgraded item categorization in `DurabilityHelper` with Fabric Conventional Tags (`#c:*`), fixed the modern sword-to-tool trapping bug, added prioritized identifier path heuristics (`_sword`, `_pickaxe`, `_helmet`), and added classification cache invalidation (`clearCategoryCache()`).
+* **Why**: To fix external community mod items (such as *Water's Gems* and *Simply Swords*) failing to be identified or getting misclassified into the `TOOL` category due to attached `DataComponents.TOOL` (cobweb-destruction rules).
+* **How**: Added static `TagKey<Item>` references for `#c:*` conventional tags, placed sword tag and path evaluations ahead of generic tool component checks, and implemented substring path pattern matching as a zero-failure fallback.
+
+## [1.2.3+26.2] - 2026-08-21
+
+### Fractional Durability Scaling & Display Customization
+* **What**: Upgraded durability scaling and GameRules from integer multipliers to percentage-based values (`ig:dm_percent_*`), allowing durability reductions below 1x (e.g., 50% = half durability / 2x wear, 25% = quarter durability) as well as boosts (e.g. 200% = 2x double durability). Added a client-side `tooltipFormat` option (`ADAPTIVE`, `PERCENTAGE`, `MULTIPLIER`) in Cloth Config.
+* **Why**: To address community feature request (Issue #1) for finer-grained durability adjustments and custom wear penalties without violating Minecraft's integer GameRule parser constraints.
+* **How**: Formulated unified probabilistic integer damage division math (`(originalAmount * 100) / percent` with remainder check). Migrated configuration from v1 to v2 with automated multiplier-to-percentage migration. Registered unit test suite verifying damage scaling and formatting.
+
+## [1.2.2+26.2] - 2026-07-22
+
+### ModVersionGuard Protection Banner
+* **What**: Updated `ModVersionGuard.java` to use Knot ClassLoader resolution (`Thread.currentThread().getContextClassLoader()`) and display explicit pre-release protection warnings upon an API mismatch.
+* **Why**: To prevent world corruption and silent crashes on incompatible Minecraft drops.
+* **How**: Refactored ClassLoader lookup in `ModVersionGuard.java`.
+
+## [1.2.1+26.2] - 2026-07-22
+
+### Forward Compatibility & Version Guard
+* **What**: Configured `fabric.mod.json` with `"minecraft": ">=26.2-"` and added `ModVersionGuard` check in `onInitialize`.
+* **Why**: To safely enable open-ended forward compatibility while guarding runtime classloading safety.
+* **How**: Updated `fabric.mod.json` dependency bounds and added startup guard check.
+
+## [1.2.0+26.2] - 2026-07-22
+
+### Minecraft 26.2 Port
+* **What**: Upgraded Durability Multiplier to Minecraft 26.2 target using Java 25 and Fabric Loom 1.15.2.
+* **Why**: Minecraft 26.2 annual drop release compatibility.
+* **How**: Updated dependencies, mappings, and toolchain configurations for MC 26.2.
+
 ## [1.1.9+26.1.2] - 2026-07-11
 
 ### Remove Live Config Sync & Add Standardized Warning Notice
 * **What**: Removed live GameRule sync block from the Cloth configuration save handler. Appended `§6Notice:§r` warning text into all GameRule descriptions.
 * **Why**: To keep GameRule settings isolated on a per-world basis so each world has different settings, and clearly warn the user to use `/gamerule` for existing worlds.
 * **How**: Updated `ClothConfigScreenHelper.java` save block to only save config files and cleaned up unused imports. Updated `en_us.json` to append the gold notice to all description values.
+
 
 ## [1.1.8+A-26.1.2] - 2026-06-12
 

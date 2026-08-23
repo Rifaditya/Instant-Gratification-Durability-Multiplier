@@ -40,11 +40,6 @@ public abstract class ItemStackDurabilityMixin {
 
         ItemStack self = (ItemStack) (Object) this;
 
-        if (DurabilityHelper.isInfinite(level, self)) {
-            ci.cancel();
-            return;
-        }
-
         int reduced = DurabilityHelper.reduceDamage(amount, level, self);
         if (reduced == 0) {
             ci.cancel();

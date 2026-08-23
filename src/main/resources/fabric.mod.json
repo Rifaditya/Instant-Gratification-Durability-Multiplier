@@ -3,13 +3,14 @@
     "id": "durability-multiplier",
     "version": "${version}",
     "name": "Durability Multiplier",
-    "description": "Stop babysitting your tools. Multiply durability or go God Mode — it's just a GameRule away.",
+    "description": "Stop babysitting your tools. Multiply durability or go God Mode - it's just a GameRule away.",
     "authors": [
-        "DasikIgaijin"
+        "Dasik (Rifaditya)"
     ],
     "contact": {
-        "homepage": "https://github.com/Rifaditya/Instant-Gratification-Durability-Multiplier",
-        "sources": "https://github.com/Rifaditya/Instant-Gratification-Durability-Multiplier"
+        "homepage": "https://modrinth.com/mod/instant-gratification-durability-multiplier",
+        "sources": "https://github.com/Rifaditya/Instant-Gratification-Durability-Multiplier",
+        "issues": "https://github.com/Rifaditya/Instant-Gratification-Durability-Multiplier/issues"
     },
     "license": "GPL-3.0-or-later",
     "icon": "assets/durability-multiplier/icon.png",
@@ -20,16 +21,24 @@
         ],
         "client": [
             "net.instantgratification.durabilitymultiplier.DurabilityMultiplierFabricClient"
+        ],
+        "modmenu": [
+            "net.instantgratification.durabilitymultiplier.config.ModMenuIntegration"
         ]
     },
     "mixins": [
         "durability-multiplier.mixins.json"
     ],
+    "custom": {
+        "modrinth": {
+            "slug": "instant-gratification-durability-multiplier"
+        }
+    },
     "depends": {
         "fabricloader": ">=0.16.9",
-        "minecraft": "~26.1-",
+        "minecraft": ">=26.2-",
         "java": ">=25",
         "fabric-api": "*",
-        "dasik-library": "*"
+        "dasik-library": ">=1.8.0"
     }
 }

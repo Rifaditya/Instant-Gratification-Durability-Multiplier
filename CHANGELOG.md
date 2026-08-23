@@ -1,5 +1,50 @@
 # Changelog
 
+## [1.2.5+26.2] - 2026-08-23
+
+### Added
+- **Granular Tag GameRules & Subcategory Expansion**: Introduced distinct, dedicated GameRules and config options for individual tool subcategories (`pickaxes`, `axes`, `shovels`, `hoes`, `shears`, `fishing_rods`, `brushes`, `flint_and_steel`) and armor subcategories (`helmets`, `chestplates`, `leggings`, `boots`).
+- **Multi-Tier Cascade Hierarchy**: Implemented clean fallback logic (`Sub-tag > 0` overrides `Parent Category > 0` overrides `Global > 0` overrides `100%`) for all percentage modifiers.
+- **Additive Infinity Union**: Enabled additive boolean logic across subcategories, parent categories, and global God Mode rules.
+- **Extended Networking & GUI Support**: Expanded server-to-client network synchronization payload (`DurabilityPayload`) and Cloth Config GUI screens with categorized sections for tool and armor breakdowns.
+
+## [1.2.4+26.2] - 2026-08-23
+
+### Fixed
+- **Universal Item Classification Engine**: Upgraded item categorization in `DurabilityHelper` with Fabric Conventional Tags (`#c:swords`, `#c:tools`, `#c:pickaxes`, `#c:axes`, `#c:shovels`, `#c:hoes`, `#c:mining_tool`, `#c:armors`, `#c:shields`, `#c:bows`, `#c:crossbows`, `#c:spears`).
+- **Sword-to-Tool Trapping Bug**: Reordered classification checks so all sword tags, classes, and path heuristics execute before generic `DataComponents.TOOL` inspection. Prevents modded swords with cobweb-mining rules from being misclassified into the `TOOL` category.
+- **Identifier Path Heuristics**: Added prioritized name matching (`_sword`, `_katana`, `_pickaxe`, `_axe`, `_helmet`, etc.) as a robust fallback for custom mod items that omit tags.
+- **Classification Cache Invalidation**: Added `clearCategoryCache()` method to clear cached item categories upon datapack tag reloads.
+
+## [1.2.3+26.2] - 2026-08-21
+
+### Added
+- **Fractional Durability & Percentage Scaling**: Upgraded durability math and GameRules from whole integer multipliers to granular percentages (`ig:dm_percent_*`), fully supporting durability reductions below 1x (e.g. 50 = 50% half durability / 2x wear, 25 = 25% quarter durability) as well as boosts (e.g. 200 = 200% double durability, 150 = 150% 1.5x durability).
+- **Tooltip Display Format Setting**: Added `tooltipFormat` option in config and Cloth Config GUI with three selectable modes: `ADAPTIVE` (shows `2x` for round multiples, `50%` / `150%` for fractions/reductions), `PERCENTAGE` (always `%`), and `MULTIPLIER` (always `x`).
+- **Automated Durability Test Suite**: Added comprehensive JUnit 5 test suite (`DurabilityHelperTest`) asserting probabilistic damage distribution, boundary cases, and tooltip formatting across all modes.
+
+### Changed
+- **Config Version 2 Migration**: Bumped `DurabilityConfig` to version 2 with automated backward-compatible migration (`multiplier * 100`) from existing v1 configuration files.
+- **Rule Renaming**: Migrated gamerules to `ig:dm_percent_global`, `ig:dm_percent_weapons`, `ig:dm_percent_swords`, etc. Default global is 200% (2x), with specific category overrides defaulting to 0 (inherit).
+
+## [1.2.2+26.2] - 2026-07-22
+
+### ⚠️ Version Guard Notice
+- Includes zero-dependency `ModVersionGuard` pre-release protection. Halts startup with an explicit warning banner if run on incompatible Minecraft drops or missing core dependencies to prevent world save corruption.
+
+### Fixed
+- **ModVersionGuard Protection Banner**: Updated `ModVersionGuard.java` to use Knot ClassLoader resolution (`Thread.currentThread().getContextClassLoader()`) and display explicit pre-release protection warnings upon an API mismatch.
+
+## [1.2.1+26.2] - 2026-07-22
+
+### Added
+- **Forward Compatibility & Version Guard**: Configured `fabric.mod.json` with `"minecraft": ">=26.2-"` for open-ended forward compatibility. Added zero-dependency `ModVersionGuard` check on startup to display human-readable guidance if an incompatible Minecraft API version is encountered.
+
+## [1.2.0+26.2] - 2026-07-22
+
+### Added
+- **Minecraft 26.2 Port**: Upgraded Durability Multiplier to Minecraft 26.2 target using Java 25 and Fabric Loom 1.15.2.
+
 ## [1.1.9+26.1.2] - 2026-07-11
 
 ### Removed

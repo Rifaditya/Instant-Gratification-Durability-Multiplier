@@ -1,4 +1,4 @@
-﻿<div align="center">
+<div align="center">
 
 <!-- Banner placeholder — replace URL when banner is uploaded -->
 <!-- ![Durability Multiplier Banner](https://example.com/banner.jpg) -->
@@ -18,7 +18,7 @@
 
 > **Stop babysitting your tools. Focus on the adventure.**
 
-**Durability Multiplier** gives you complete control over item longevity. Whether you want double durability or complete invincibility (God Mode), it's just a GameRule away. 
+**Durability Multiplier** gives you complete control over item longevity. Whether you want double durability, fine-tuned fractional wear penalties, or complete invincibility (God Mode), it's just a GameRule away. 
 
 Part of the **Instant Gratification Collection** — mods that respect the player's time.
 
@@ -26,11 +26,15 @@ Part of the **Instant Gratification Collection** — mods that respect the playe
 
 ## ✨ Features
  
-### 🔧 Multiplier System
-Make items last 2x, 10x, or even 2,147,483,647x longer.
-- **Global Multiplier**: One rule to affect all damageable items.
-- **12+ Granular Categories**: Separate multipliers for Swords, Spears, Tridents, Maces, Bows, Crossbows, Tools, Armor, Elytra, and Shields.
-- **Overflow Protection**: Uses `long` math internally to prevent integer overflow — items cap at max durability instead of breaking instantly.
+### 🔧 Durability Scaling & Multipliers
+Scale durability by any percentage (200% = 2x, 50% = 0.5x, 150% = 1.5x, 1000% = 10x...).
+- **Global Durability**: One rule to affect all damageable items (`ig:dm_percent_global`).
+- **12+ Granular Categories**: Separate percentages for Swords, Spears, Tridents, Maces, Bows, Crossbows, Tools, Armor, Elytra, and Shields.
+- **Reductions & Boosts**: Fully supports wear penalties (e.g. 50% durability) as well as extensions (200% double durability).
+- **🛡️ 100% World-Save Safe**: Uses probabilistic damage interception (just like vanilla *Unbreaking*). It **never** mutates item NBT or save files, meaning you can safely install, change settings, or remove the mod at any time without corrupting your items or world.
+
+> [!NOTE]
+> **Use Whole Percentages, Not Decimals**: Enter `50` for 50% (half durability), `150` for 1.5x, and `200` for 2x double durability. Do **not** enter decimals like `0.5` or `1.5` because Minecraft GameRules only accept integers.
  
 ### 🛡️ God Mode (Infinity)
 Toggle complete invincibility for item categories.
@@ -38,7 +42,7 @@ Toggle complete invincibility for item categories.
 - **Hierarchy**: Category-specific settings override Global settings. Infinity always takes precedence.
  
 ### 📦 Dynamic Modded Item Support
-Automatically scans items on startup to dynamically register multipliers and infinity rules for custom modded items that don't fit into standard categories.
+Automatically scans items on startup to dynamically register percentages and infinity rules for custom modded items that don't fit into standard categories.
 - **Dynamic Config GUI**: Customize modded items directly from the in-game configuration screen.
  
 ### 💬 Tooltip Display
@@ -55,7 +59,7 @@ Hover over any item to see its durability status directly in its tooltip:
   </tr>
 </table>
  
-- **`⟨Nx Category/Item Durability⟩`** — showing the active multiplier, dynamically rendering localized modded item names (e.g., `⟨4x Blood Katana Durability⟩`).
+- **`⟨2x Tools Durability⟩`** or **`⟨50% Swords Durability⟩`** — showing active durability modifier with selectable display formats (`ADAPTIVE`, `PERCENTAGE`, `MULTIPLIER`).
 - **`✦ UNBREAKABLE`** — gold bold text when God Mode is active.
 - Fully togglable via GameRule.
  
@@ -74,31 +78,31 @@ Configure everything in-game using the **Edit Game Rules** screen, via standard 
 </p>
  
 ```sql
-/gamerule ig:dm_multiplier_global 4      → 4x durability for everything
-/gamerule ig:dm_infinity_swords true     → Swords never break
-/gamerule ig:dm_multiplier_armor 10      → 10x armor durability
-/gamerule ig:dm_infinity_global true     → Everything is unbreakable
+/gamerule ig:dm_percent_global 200       → 200% (2x) double durability for everything
+/gamerule ig:dm_percent_global 50        → 50% (0.5x) half durability (2x wear)
+/gamerule ig:dm_percent_swords 150       → 150% (1.5x) durability for swords
+/gamerule ig:dm_infinity_swords true     → Swords never break (God Mode)
 /gamerule ig:dm_show_tooltip false       → Hide tooltip indicator
-/gamerule ig:multiplier_mymod_cool_item 5 → 5x durability for a specific modded item
+/gamerule ig:percent_mymod_cool_item 300 → 300% (3x) durability for a specific modded item
 ```
- 
+
 ---
- 
+
 ## ☕ Support
- 
+
 If you enjoy the **Instant Gratification** collection, consider fueling the next update!
- 
+
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20Me-FF5E5B?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/dasikigaijin/tip)
 [![SocioBuzz](https://img.shields.io/badge/SocioBuzz-Local_Support-7BB32E?style=for-the-badge)](https://sociabuzz.com/dasikigaijin/tribe)
 [![Saweria](https://img.shields.io/badge/Saweria-Local_Support-FFA500?style=for-the-badge)](https://saweria.co/DasikIgaijinn)
- 
+
 > [!NOTE]
 > **Indonesian Users:** SocioBuzz and Saweria support local payment methods (Gopay, OVO, Dana, etc.) if you want to support me without using PayPal/Ko-fi!
- 
+
 ---
- 
+
 ## 📜 Credits
- 
+
 | Role | Author |
 | :--- | :--- |
 | **Creator** | **Rifaditya** (Dasik) |
@@ -111,7 +115,6 @@ If you enjoy the **Instant Gratification** collection, consider fueling the next
 > **📦 Modpack Permissions & Distribution:** You are free to include this mod in any modpack on any platform. However, the mod itself must be downloaded from its official distribution pages on **Modrinth** or **CurseForge**. Re-uploading or redistributing the mod jar file to third-party sites is strictly prohibited unless explicitly permitted by the creator.
 > 
 > **License & Forks:** Since the source code is licensed under **GNU GPLv3**, you are fully permitted to fork the repository, make modifications, build your own versions, and distribute them under the terms of the GPLv3. The prohibition on third-party redistribution applies exclusively to the official compiled releases/jars published by the original creator (Dasik/Rifaditya). Forks must be published as distinct projects, not direct re-uploads of official builds.
-
 
 ---
 

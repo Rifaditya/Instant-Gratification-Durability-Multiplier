@@ -1,5 +1,5 @@
 plugins {
-    id 'net.fabricmc.fabric-loom' version '1.14.7'
+    id 'net.fabricmc.fabric-loom' version '1.15.2'
     id 'maven-publish'
 }
 
@@ -11,9 +11,11 @@ base {
 }
 
 repositories {
-    maven { url = "https://maven.fabricmc.net/" }
-    mavenCentral()
     mavenLocal()
+    maven { url = "https://maven.fabricmc.net/" }
+    maven { url = "https://maven.terraformersmc.com/releases/" }
+    maven { url = "https://maven.shedaniel.me/" }
+    mavenCentral()
 }
 
 dependencies {
@@ -23,9 +25,21 @@ dependencies {
     implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     implementation "net.dasik.social:dasik-library:${project.dasik_library_version}"
+
+    compileOnly "me.shedaniel.cloth:cloth-config-fabric:26.1.154"
+    runtimeOnly "me.shedaniel.cloth:cloth-config-fabric:26.1.154"
+    compileOnly "com.terraformersmc:modmenu:18.0.0-beta.1"
+    runtimeOnly "com.terraformersmc:modmenu:18.0.0-beta.1"
+    testImplementation "org.junit.jupiter:junit-jupiter:5.11.4"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+}
+
+test {
+    useJUnitPlatform()
 }
 
 processResources {
+    filteringCharset = "UTF-8"
     inputs.property "version", project.version
     inputs.property "loader_version", project.fabric_loader_version
     inputs.property "minecraft_version", project.minecraft_version
@@ -42,8 +56,16 @@ loom {
     }
 }
 
+java {
+    withSourcesJar()
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
 tasks.withType(JavaCompile).configureEach {
     it.options.release = 25
+    it.options.encoding = "UTF-8"
 }
 
 jar {
