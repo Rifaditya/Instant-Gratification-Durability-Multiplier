@@ -112,10 +112,62 @@ public class DurabilityConfig {
     public boolean showTooltip = true;
     public TooltipFormat tooltipFormat = TooltipFormat.ADAPTIVE;
 
-    // Dynamic Modded Items
+    // Forced & Dynamic Modded Items
+    public java.util.List<String> forcedItems = new java.util.ArrayList<>();
+    public java.util.Map<String, Integer> forcedPercentages = new java.util.HashMap<>();
+    public java.util.Map<String, Boolean> forcedInfinities = new java.util.HashMap<>();
+    public java.util.Map<String, Boolean> forcedSingleUses = new java.util.HashMap<>();
+
+    // Dynamic Modded Items (backward compatibility aliases)
     public java.util.Map<String, Integer> dynamicPercentages = new java.util.HashMap<>();
     public java.util.Map<String, Boolean> dynamicInfinities = new java.util.HashMap<>();
     public java.util.Map<String, Boolean> dynamicSingleUses = new java.util.HashMap<>();
+
+    public java.util.Set<String> getAllForcedItemIds() {
+        java.util.Set<String> ids = new java.util.LinkedHashSet<>();
+        if (forcedItems != null) ids.addAll(forcedItems);
+        if (forcedPercentages != null) ids.addAll(forcedPercentages.keySet());
+        if (forcedInfinities != null) ids.addAll(forcedInfinities.keySet());
+        if (forcedSingleUses != null) ids.addAll(forcedSingleUses.keySet());
+        if (dynamicPercentages != null) ids.addAll(dynamicPercentages.keySet());
+        if (dynamicInfinities != null) ids.addAll(dynamicInfinities.keySet());
+        if (dynamicSingleUses != null) ids.addAll(dynamicSingleUses.keySet());
+        return ids;
+    }
+
+    public int getForcedPercent(String itemId) {
+        if (forcedPercentages != null && forcedPercentages.containsKey(itemId)) {
+            return forcedPercentages.get(itemId);
+        }
+        if (dynamicPercentages != null && dynamicPercentages.containsKey(itemId)) {
+            return dynamicPercentages.get(itemId);
+        }
+        return 0;
+    }
+
+    public boolean getForcedInfinity(String itemId) {
+        if (forcedInfinities != null && forcedInfinities.containsKey(itemId)) {
+            return Boolean.TRUE.equals(forcedInfinities.get(itemId));
+        }
+        if (dynamicInfinities != null && dynamicInfinities.containsKey(itemId)) {
+            return Boolean.TRUE.equals(dynamicInfinities.get(itemId));
+        }
+        return false;
+    }
+
+    public boolean getForcedSingleUse(String itemId) {
+        if (forcedSingleUses != null && forcedSingleUses.containsKey(itemId)) {
+            return Boolean.TRUE.equals(forcedSingleUses.get(itemId));
+        }
+        if (dynamicSingleUses != null && dynamicSingleUses.containsKey(itemId)) {
+            return Boolean.TRUE.equals(dynamicSingleUses.get(itemId));
+        }
+        return false;
+    }
+
+    public boolean isForced(String itemId) {
+        return getAllForcedItemIds().contains(itemId);
+    }
 
     public static synchronized void load(Path configDir) {
         CONFIG_PATH = configDir.resolve("durability-multiplier.json");

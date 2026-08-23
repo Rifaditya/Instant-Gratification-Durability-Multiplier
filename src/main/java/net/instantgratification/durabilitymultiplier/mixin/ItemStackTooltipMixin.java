@@ -34,7 +34,7 @@ public abstract class ItemStackTooltipMixin {
             return;
 
         ItemStack self = (ItemStack) (Object) this;
-        if (!self.isDamageableItem())
+        if (!net.instantgratification.durabilitymultiplier.registry.DurabilityRules.isDamageableOrForced(self))
             return;
 
         String label;

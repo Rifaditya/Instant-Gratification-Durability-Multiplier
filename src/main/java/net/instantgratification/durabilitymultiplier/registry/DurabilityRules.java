@@ -105,6 +105,7 @@ public class DurabilityRules {
 
     // List of dynamic modded items registered during registry freeze
     public static final java.util.List<Identifier> DYNAMIC_ITEMS = new java.util.ArrayList<>();
+    public static final java.util.Set<Identifier> FORCED_ITEMS = java.util.concurrent.ConcurrentHashMap.newKeySet();
 
     // ==================== Accessors ====================
 
@@ -201,7 +202,19 @@ public class DurabilityRules {
 
         DM_SHOW_TOOLTIP = DynamicGameRuleManager.booleanRule("ig:dm_show_tooltip", DURABILITY_MULTIPLIER, config.showTooltip).register();
 
-        // Universal 3-tier discovery scanner (Startup sweep + Live entry callback + Server start safety sweep)
+        // 1. Immediately register all explicitly forced items from config at startup
+        for (String idStr : config.getAllForcedItemIds()) {
+            Identifier id = Identifier.tryParse(idStr);
+            if (id != null) {
+                registerDynamicRules(id);
+                if (!DYNAMIC_ITEMS.contains(id)) {
+                    DYNAMIC_ITEMS.add(id);
+                }
+                FORCED_ITEMS.add(id);
+            }
+        }
+
+        // 2. Universal 3-tier discovery scanner (Startup sweep + Live entry callback + Server start safety sweep)
         net.dasik.social.api.registry.DynamicRegistryScanner.subscribe(
             BuiltInRegistries.ITEM,
             DurabilityRules::isItemDamageable,
@@ -216,13 +229,35 @@ public class DurabilityRules {
         );
     }
 
-    private static boolean isItemDamageable(Item item) {
+    public static boolean isItemDamageable(Item item) {
+        if (item == null) return false;
         try {
+            Identifier id = BuiltInRegistries.ITEM.getKey(item);
+            if (id != null && (FORCED_ITEMS.contains(id) || DurabilityConfig.get().isForced(id.toString()))) {
+                return true;
+            }
             Integer maxDamage = item.components().get(DataComponents.MAX_DAMAGE);
-            return maxDamage != null && maxDamage > 0;
+            if (maxDamage != null && maxDamage > 0) {
+                return true;
+            }
+            // Fallback check: check category
+            ItemStack dummyStack = new ItemStack(item);
+            return DurabilityHelper.classifyItem(dummyStack) != DurabilityHelper.ItemCategory.OTHER;
         } catch (Throwable t) {
             return false;
         }
+    }
+
+    public static boolean isForcedItem(ItemStack stack) {
+        if (stack == null || stack.isEmpty()) return false;
+        Identifier id = BuiltInRegistries.ITEM.getKey(stack.getItem());
+        if (id == null) return false;
+        return FORCED_ITEMS.contains(id) || DurabilityConfig.get().isForced(id.toString());
+    }
+
+    public static boolean isDamageableOrForced(ItemStack stack) {
+        if (stack == null || stack.isEmpty()) return false;
+        return stack.isDamageableItem() || isForcedItem(stack);
     }
 
     public static void registerDynamicRules(Identifier id) {
@@ -232,9 +267,9 @@ public class DurabilityRules {
         String singleUseRuleName = "ig:single_use_" + id.getNamespace() + "_" + id.getPath();
         String percentRuleName = "ig:percent_" + id.getNamespace() + "_" + id.getPath();
 
-        boolean defaultInfinity = config.dynamicInfinities.getOrDefault(id.toString(), false);
-        boolean defaultSingleUse = config.dynamicSingleUses.getOrDefault(id.toString(), false);
-        int defaultPercent = config.dynamicPercentages.getOrDefault(id.toString(), 0);
+        boolean defaultInfinity = config.getForcedInfinity(id.toString());
+        boolean defaultSingleUse = config.getForcedSingleUse(id.toString());
+        int defaultPercent = config.getForcedPercent(id.toString());
 
         DynamicGameRuleManager.booleanRule(infinityRuleName, DURABILITY_MULTIPLIER, defaultInfinity)
             .name(DynamicGameRuleManager.generateReadableName(id.getPath()) + " Infinity")

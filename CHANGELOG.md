@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.19+26.1.2] - 2026-08-23
+
+### Added
+- **Forced Modded Item Config Fields**: Added explicit `forcedItems` list, `forcedPercentages` map, `forcedInfinities` map, and `forcedSingleUses` map to `durability-multiplier.json`, allowing players and pack makers to manually declare any modded item IDs.
+- **Immediate Startup Discovery & Gamerule Registration**: All items listed in `forcedItems` or forced value maps are registered into `BuiltInRegistries.GAME_RULE` on early initialization (`onInitialize`), guaranteeing immediate `/gamerule` autocomplete on first world load.
+- **Resilient Scanner & Tooltip Hooks**: Expanded damageable item detection to accept any forced items or weapon/tool/armor classified items, ensuring tooltips and durability scaling render accurately even if external mod items lack vanilla component flags.
+
 ## [1.1.18+26.1.2] - 2026-08-23
 
 ### Fixed
