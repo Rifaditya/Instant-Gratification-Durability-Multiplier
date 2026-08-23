@@ -58,10 +58,36 @@ public final class DurabilityClientState {
     private static boolean infinityBoots;
     private static boolean infinityElytra;
     
+    private static boolean singleUseGlobal;
+    private static boolean singleUseWeapons;
+    private static boolean singleUseSwords;
+    private static boolean singleUseSpears;
+    private static boolean singleUseTridents;
+    private static boolean singleUseMaces;
+    private static boolean singleUseBows;
+    private static boolean singleUseCrossbows;
+    private static boolean singleUseShields;
+    private static boolean singleUseTools;
+    private static boolean singleUsePickaxes;
+    private static boolean singleUseAxes;
+    private static boolean singleUseShovels;
+    private static boolean singleUseHoes;
+    private static boolean singleUseShears;
+    private static boolean singleUseFishingRods;
+    private static boolean singleUseBrushes;
+    private static boolean singleUseFlintAndSteel;
+    private static boolean singleUseArmor;
+    private static boolean singleUseHelmets;
+    private static boolean singleUseChestplates;
+    private static boolean singleUseLeggings;
+    private static boolean singleUseBoots;
+    private static boolean singleUseElytra;
+
     private static boolean showTooltip = true;
 
     private static java.util.Map<String, Integer> dynamicPercentages = java.util.Map.of();
     private static java.util.Map<String, Boolean> dynamicInfinities = java.util.Map.of();
+    private static java.util.Map<String, Boolean> dynamicSingleUses = java.util.Map.of();
 
     private DurabilityClientState() {
     }
@@ -117,11 +143,37 @@ public final class DurabilityClientState {
         infinityLeggings = payload.infinityLeggings();
         infinityBoots = payload.infinityBoots();
         infinityElytra = payload.infinityElytra();
+
+        singleUseGlobal = payload.singleUseGlobal();
+        singleUseWeapons = payload.singleUseWeapons();
+        singleUseSwords = payload.singleUseSwords();
+        singleUseSpears = payload.singleUseSpears();
+        singleUseTridents = payload.singleUseTridents();
+        singleUseMaces = payload.singleUseMaces();
+        singleUseBows = payload.singleUseBows();
+        singleUseCrossbows = payload.singleUseCrossbows();
+        singleUseShields = payload.singleUseShields();
+        singleUseTools = payload.singleUseTools();
+        singleUsePickaxes = payload.singleUsePickaxes();
+        singleUseAxes = payload.singleUseAxes();
+        singleUseShovels = payload.singleUseShovels();
+        singleUseHoes = payload.singleUseHoes();
+        singleUseShears = payload.singleUseShears();
+        singleUseFishingRods = payload.singleUseFishingRods();
+        singleUseBrushes = payload.singleUseBrushes();
+        singleUseFlintAndSteel = payload.singleUseFlintAndSteel();
+        singleUseArmor = payload.singleUseArmor();
+        singleUseHelmets = payload.singleUseHelmets();
+        singleUseChestplates = payload.singleUseChestplates();
+        singleUseLeggings = payload.singleUseLeggings();
+        singleUseBoots = payload.singleUseBoots();
+        singleUseElytra = payload.singleUseElytra();
         
         showTooltip = payload.showTooltip();
 
         dynamicPercentages = payload.dynamicPercentages() != null ? payload.dynamicPercentages() : java.util.Map.of();
         dynamicInfinities = payload.dynamicInfinities() != null ? payload.dynamicInfinities() : java.util.Map.of();
+        dynamicSingleUses = payload.dynamicSingleUses() != null ? payload.dynamicSingleUses() : java.util.Map.of();
     }
 
     // ==================== Accessors ====================
@@ -176,6 +228,31 @@ public final class DurabilityClientState {
     public static boolean infinityBoots() { return infinityBoots; }
     public static boolean infinityElytra() { return infinityElytra; }
 
+    public static boolean singleUseGlobal() { return singleUseGlobal; }
+    public static boolean singleUseWeapons() { return singleUseWeapons; }
+    public static boolean singleUseSwords() { return singleUseSwords; }
+    public static boolean singleUseSpears() { return singleUseSpears; }
+    public static boolean singleUseTridents() { return singleUseTridents; }
+    public static boolean singleUseMaces() { return singleUseMaces; }
+    public static boolean singleUseBows() { return singleUseBows; }
+    public static boolean singleUseCrossbows() { return singleUseCrossbows; }
+    public static boolean singleUseShields() { return singleUseShields; }
+    public static boolean singleUseTools() { return singleUseTools; }
+    public static boolean singleUsePickaxes() { return singleUsePickaxes; }
+    public static boolean singleUseAxes() { return singleUseAxes; }
+    public static boolean singleUseShovels() { return singleUseShovels; }
+    public static boolean singleUseHoes() { return singleUseHoes; }
+    public static boolean singleUseShears() { return singleUseShears; }
+    public static boolean singleUseFishingRods() { return singleUseFishingRods; }
+    public static boolean singleUseBrushes() { return singleUseBrushes; }
+    public static boolean singleUseFlintAndSteel() { return singleUseFlintAndSteel; }
+    public static boolean singleUseArmor() { return singleUseArmor; }
+    public static boolean singleUseHelmets() { return singleUseHelmets; }
+    public static boolean singleUseChestplates() { return singleUseChestplates; }
+    public static boolean singleUseLeggings() { return singleUseLeggings; }
+    public static boolean singleUseBoots() { return singleUseBoots; }
+    public static boolean singleUseElytra() { return singleUseElytra; }
+
     public static boolean showTooltip() { return showTooltip; }
 
     public static int getDynamicPercent(String itemKey) {
@@ -184,5 +261,9 @@ public final class DurabilityClientState {
 
     public static boolean getDynamicInfinity(String itemKey) {
         return dynamicInfinities.getOrDefault(itemKey, false);
+    }
+
+    public static boolean getDynamicSingleUse(String itemKey) {
+        return dynamicSingleUses.getOrDefault(itemKey, false);
     }
 }

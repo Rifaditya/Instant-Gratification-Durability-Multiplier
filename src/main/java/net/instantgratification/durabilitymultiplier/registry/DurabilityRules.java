@@ -74,6 +74,32 @@ public class DurabilityRules {
     public static GameRule<Boolean> DM_INFINITY_ELYTRA;
     public static GameRule<Boolean> DM_INFINITY_SHIELDS;
 
+    // ==================== Single-Use (Glass Mode) ====================
+    public static GameRule<Boolean> DM_SINGLE_USE_GLOBAL;
+    public static GameRule<Boolean> DM_SINGLE_USE_WEAPONS;
+    public static GameRule<Boolean> DM_SINGLE_USE_SWORDS;
+    public static GameRule<Boolean> DM_SINGLE_USE_SPEARS;
+    public static GameRule<Boolean> DM_SINGLE_USE_TRIDENTS;
+    public static GameRule<Boolean> DM_SINGLE_USE_MACES;
+    public static GameRule<Boolean> DM_SINGLE_USE_BOWS;
+    public static GameRule<Boolean> DM_SINGLE_USE_CROSSBOWS;
+    public static GameRule<Boolean> DM_SINGLE_USE_TOOLS;
+    public static GameRule<Boolean> DM_SINGLE_USE_PICKAXES;
+    public static GameRule<Boolean> DM_SINGLE_USE_AXES;
+    public static GameRule<Boolean> DM_SINGLE_USE_SHOVELS;
+    public static GameRule<Boolean> DM_SINGLE_USE_HOES;
+    public static GameRule<Boolean> DM_SINGLE_USE_SHEARS;
+    public static GameRule<Boolean> DM_SINGLE_USE_FISHING_RODS;
+    public static GameRule<Boolean> DM_SINGLE_USE_BRUSHES;
+    public static GameRule<Boolean> DM_SINGLE_USE_FLINT_AND_STEEL;
+    public static GameRule<Boolean> DM_SINGLE_USE_ARMOR;
+    public static GameRule<Boolean> DM_SINGLE_USE_HELMETS;
+    public static GameRule<Boolean> DM_SINGLE_USE_CHESTPLATES;
+    public static GameRule<Boolean> DM_SINGLE_USE_LEGGINGS;
+    public static GameRule<Boolean> DM_SINGLE_USE_BOOTS;
+    public static GameRule<Boolean> DM_SINGLE_USE_ELYTRA;
+    public static GameRule<Boolean> DM_SINGLE_USE_SHIELDS;
+
     // ==================== Misc ====================
     public static GameRule<Boolean> DM_SHOW_TOOLTIP;
 
@@ -148,6 +174,31 @@ public class DurabilityRules {
         DM_INFINITY_ELYTRA = DynamicGameRuleManager.booleanRule("ig:dm_infinity_elytra", DURABILITY_MULTIPLIER, config.infinityElytra).register();
         DM_INFINITY_SHIELDS = DynamicGameRuleManager.booleanRule("ig:dm_infinity_shields", DURABILITY_MULTIPLIER, config.infinityShields).register();
 
+        DM_SINGLE_USE_GLOBAL = DynamicGameRuleManager.booleanRule("ig:dm_single_use_global", DURABILITY_MULTIPLIER, config.singleUseGlobal).register();
+        DM_SINGLE_USE_WEAPONS = DynamicGameRuleManager.booleanRule("ig:dm_single_use_weapons", DURABILITY_MULTIPLIER, config.singleUseWeapons).register();
+        DM_SINGLE_USE_SWORDS = DynamicGameRuleManager.booleanRule("ig:dm_single_use_swords", DURABILITY_MULTIPLIER, config.singleUseSwords).register();
+        DM_SINGLE_USE_SPEARS = DynamicGameRuleManager.booleanRule("ig:dm_single_use_spears", DURABILITY_MULTIPLIER, config.singleUseSpears).register();
+        DM_SINGLE_USE_TRIDENTS = DynamicGameRuleManager.booleanRule("ig:dm_single_use_tridents", DURABILITY_MULTIPLIER, config.singleUseTridents).register();
+        DM_SINGLE_USE_MACES = DynamicGameRuleManager.booleanRule("ig:dm_single_use_maces", DURABILITY_MULTIPLIER, config.singleUseMaces).register();
+        DM_SINGLE_USE_BOWS = DynamicGameRuleManager.booleanRule("ig:dm_single_use_bows", DURABILITY_MULTIPLIER, config.singleUseBows).register();
+        DM_SINGLE_USE_CROSSBOWS = DynamicGameRuleManager.booleanRule("ig:dm_single_use_crossbows", DURABILITY_MULTIPLIER, config.singleUseCrossbows).register();
+        DM_SINGLE_USE_TOOLS = DynamicGameRuleManager.booleanRule("ig:dm_single_use_tools", DURABILITY_MULTIPLIER, config.singleUseTools).register();
+        DM_SINGLE_USE_PICKAXES = DynamicGameRuleManager.booleanRule("ig:dm_single_use_pickaxes", DURABILITY_MULTIPLIER, config.singleUsePickaxes).register();
+        DM_SINGLE_USE_AXES = DynamicGameRuleManager.booleanRule("ig:dm_single_use_axes", DURABILITY_MULTIPLIER, config.singleUseAxes).register();
+        DM_SINGLE_USE_SHOVELS = DynamicGameRuleManager.booleanRule("ig:dm_single_use_shovels", DURABILITY_MULTIPLIER, config.singleUseShovels).register();
+        DM_SINGLE_USE_HOES = DynamicGameRuleManager.booleanRule("ig:dm_single_use_hoes", DURABILITY_MULTIPLIER, config.singleUseHoes).register();
+        DM_SINGLE_USE_SHEARS = DynamicGameRuleManager.booleanRule("ig:dm_single_use_shears", DURABILITY_MULTIPLIER, config.singleUseShears).register();
+        DM_SINGLE_USE_FISHING_RODS = DynamicGameRuleManager.booleanRule("ig:dm_single_use_fishing_rods", DURABILITY_MULTIPLIER, config.singleUseFishingRods).register();
+        DM_SINGLE_USE_BRUSHES = DynamicGameRuleManager.booleanRule("ig:dm_single_use_brushes", DURABILITY_MULTIPLIER, config.singleUseBrushes).register();
+        DM_SINGLE_USE_FLINT_AND_STEEL = DynamicGameRuleManager.booleanRule("ig:dm_single_use_flint_and_steel", DURABILITY_MULTIPLIER, config.singleUseFlintAndSteel).register();
+        DM_SINGLE_USE_ARMOR = DynamicGameRuleManager.booleanRule("ig:dm_single_use_armor", DURABILITY_MULTIPLIER, config.singleUseArmor).register();
+        DM_SINGLE_USE_HELMETS = DynamicGameRuleManager.booleanRule("ig:dm_single_use_helmets", DURABILITY_MULTIPLIER, config.singleUseHelmets).register();
+        DM_SINGLE_USE_CHESTPLATES = DynamicGameRuleManager.booleanRule("ig:dm_single_use_chestplates", DURABILITY_MULTIPLIER, config.singleUseChestplates).register();
+        DM_SINGLE_USE_LEGGINGS = DynamicGameRuleManager.booleanRule("ig:dm_single_use_leggings", DURABILITY_MULTIPLIER, config.singleUseLeggings).register();
+        DM_SINGLE_USE_BOOTS = DynamicGameRuleManager.booleanRule("ig:dm_single_use_boots", DURABILITY_MULTIPLIER, config.singleUseBoots).register();
+        DM_SINGLE_USE_ELYTRA = DynamicGameRuleManager.booleanRule("ig:dm_single_use_elytra", DURABILITY_MULTIPLIER, config.singleUseElytra).register();
+        DM_SINGLE_USE_SHIELDS = DynamicGameRuleManager.booleanRule("ig:dm_single_use_shields", DURABILITY_MULTIPLIER, config.singleUseShields).register();
+
         DM_SHOW_TOOLTIP = DynamicGameRuleManager.booleanRule("ig:dm_show_tooltip", DURABILITY_MULTIPLIER, config.showTooltip).register();
     }
 
@@ -186,14 +237,21 @@ public class DurabilityRules {
         DurabilityConfig config = DurabilityConfig.get();
 
         String infinityRuleName = "ig:infinity_" + id.getNamespace() + "_" + id.getPath();
+        String singleUseRuleName = "ig:single_use_" + id.getNamespace() + "_" + id.getPath();
         String percentRuleName = "ig:percent_" + id.getNamespace() + "_" + id.getPath();
 
         boolean defaultInfinity = config.dynamicInfinities.getOrDefault(id.toString(), false);
+        boolean defaultSingleUse = config.dynamicSingleUses.getOrDefault(id.toString(), false);
         int defaultPercent = config.dynamicPercentages.getOrDefault(id.toString(), 0);
 
         DynamicGameRuleManager.booleanRule(infinityRuleName, DURABILITY_MULTIPLIER, defaultInfinity)
             .name(DynamicGameRuleManager.generateReadableName(id.getPath()) + " Infinity")
             .description("Enable god mode for " + id)
+            .register();
+
+        DynamicGameRuleManager.booleanRule(singleUseRuleName, DURABILITY_MULTIPLIER, defaultSingleUse)
+            .name(DynamicGameRuleManager.generateReadableName(id.getPath()) + " Single-Use")
+            .description("Enable 1-hit break mode for " + id)
             .register();
 
         DynamicGameRuleManager.integerRule(percentRuleName, DURABILITY_MULTIPLIER, defaultPercent)
@@ -225,6 +283,22 @@ public class DurabilityRules {
         for (Identifier id : DYNAMIC_ITEMS) {
             String infinityRuleName = "ig:infinity_" + id.getNamespace() + "_" + id.getPath();
             GameRule<Boolean> rule = (GameRule<Boolean>) DynamicGameRuleManager.getDynamicRules().get(infinityRuleName);
+            if (rule != null) {
+                boolean val = DynamicGameRuleManager.getBoolean(level, rule);
+                if (val) {
+                    active.put(id.toString(), true);
+                }
+            }
+        }
+        return active;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static java.util.Map<String, Boolean> getActiveDynamicSingleUses(ServerLevel level) {
+        java.util.Map<String, Boolean> active = new java.util.HashMap<>();
+        for (Identifier id : DYNAMIC_ITEMS) {
+            String singleUseRuleName = "ig:single_use_" + id.getNamespace() + "_" + id.getPath();
+            GameRule<Boolean> rule = (GameRule<Boolean>) DynamicGameRuleManager.getDynamicRules().get(singleUseRuleName);
             if (rule != null) {
                 boolean val = DynamicGameRuleManager.getBoolean(level, rule);
                 if (val) {

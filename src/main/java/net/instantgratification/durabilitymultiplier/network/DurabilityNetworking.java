@@ -78,10 +78,36 @@ public final class DurabilityNetworking {
                 DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_BOOTS),
                 DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_ELYTRA),
 
+                DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL),
+                DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_WEAPONS),
+                DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_SWORDS),
+                DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_SPEARS),
+                DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_TRIDENTS),
+                DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_MACES),
+                DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_BOWS),
+                DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_CROSSBOWS),
+                DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_SHIELDS),
+                DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_TOOLS),
+                DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_PICKAXES),
+                DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_AXES),
+                DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_SHOVELS),
+                DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_HOES),
+                DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_SHEARS),
+                DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_FISHING_RODS),
+                DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_BRUSHES),
+                DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_FLINT_AND_STEEL),
+                DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_ARMOR),
+                DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_HELMETS),
+                DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_CHESTPLATES),
+                DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_LEGGINGS),
+                DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_BOOTS),
+                DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_ELYTRA),
+
                 DurabilityRules.getBoolean(level, DurabilityRules.DM_SHOW_TOOLTIP),
 
                 DurabilityRules.getActiveDynamicPercentages(level),
-                DurabilityRules.getActiveDynamicInfinities(level));
+                DurabilityRules.getActiveDynamicInfinities(level),
+                DurabilityRules.getActiveDynamicSingleUses(level));
         ServerPlayNetworking.send(player, payload);
     }
 

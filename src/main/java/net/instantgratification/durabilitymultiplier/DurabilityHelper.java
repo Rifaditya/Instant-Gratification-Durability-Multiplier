@@ -152,6 +152,99 @@ public final class DurabilityHelper {
     }
 
     /**
+     * Check if single-use (glass mode) is active for the given item stack.
+     */
+    public static boolean isSingleUse(ServerLevel level, ItemStack stack) {
+        return isSingleUse(level, stack, classifyItem(stack));
+    }
+
+    /**
+     * Check if single-use (glass mode) is active with pre-resolved category.
+     */
+    public static boolean isSingleUse(ServerLevel level, ItemStack stack, ItemCategory cat) {
+        Identifier id = BuiltInRegistries.ITEM.getKey(stack.getItem());
+        if (id != null && !id.getNamespace().equals("minecraft") && !id.getNamespace().equals("c")) {
+            String ruleName = "ig:single_use_" + id.getNamespace() + "_" + id.getPath();
+            @SuppressWarnings("unchecked")
+            GameRule<Boolean> dynamicRule = (GameRule<Boolean>) DynamicGameRuleManager.getDynamicRules().get(ruleName);
+            if (dynamicRule != null && DynamicGameRuleManager.getBoolean(level, dynamicRule)) {
+                return true;
+            }
+        }
+
+        return switch (cat) {
+            case SWORD -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_SWORDS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_WEAPONS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case SPEAR -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_SPEARS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_WEAPONS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case TRIDENT -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_TRIDENTS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_WEAPONS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case MACE -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_MACES)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_WEAPONS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case BOW -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_BOWS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_WEAPONS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case CROSSBOW -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_CROSSBOWS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_WEAPONS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case SHIELD -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_SHIELDS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case WEAPON_GLOBAL -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_WEAPONS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+
+            case PICKAXE -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_PICKAXES)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_TOOLS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case AXE -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_AXES)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_TOOLS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case SHOVEL -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_SHOVELS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_TOOLS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case HOE -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_HOES)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_TOOLS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case SHEARS -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_SHEARS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_TOOLS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case FISHING_ROD -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_FISHING_RODS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_TOOLS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case BRUSH -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_BRUSHES)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_TOOLS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case FLINT_AND_STEEL -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_FLINT_AND_STEEL)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_TOOLS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case TOOL_GLOBAL -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_TOOLS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+
+            case HELMET -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_HELMETS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_ARMOR)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case CHESTPLATE -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_CHESTPLATES)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_ARMOR)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case LEGGINGS -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_LEGGINGS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_ARMOR)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case BOOTS -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_BOOTS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_ARMOR)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case ARMOR_GLOBAL -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_ARMOR)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+
+            case ELYTRA -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_ELYTRA)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case OTHER -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+        };
+    }
+
+    /**
      * Resolve the effective durability percentage.
      * Priority: individual per-item override (if > 0) → tag-specific (if > 0) → parent category fallback → weapons fallback (if weapon) → global fallback → 100%.
      *
@@ -274,6 +367,8 @@ public final class DurabilityHelper {
         ItemCategory cat = classifyItem(stack);
         if (isInfinite(level, stack, cat))
             return 0;
+        if (isSingleUse(level, stack, cat))
+            return Math.max(1, stack.getMaxDamage() - stack.getDamageValue());
 
         int percent = getEffectivePercent(level, stack, cat);
         return calculateScaledDamage(originalAmount, percent, level.getRandom());
@@ -287,12 +382,14 @@ public final class DurabilityHelper {
     }
 
     /**
-     * Get the label for the tooltip based on active percentage/infinity.
+     * Get the label for the tooltip based on active percentage/infinity/single-use.
      */
     public static String getTooltipLabel(ServerLevel level, ItemStack stack) {
         ItemCategory cat = classifyItem(stack);
         if (isInfinite(level, stack, cat))
             return "UNBREAKABLE";
+        if (isSingleUse(level, stack, cat))
+            return "SINGLE-USE";
 
         int percent = getEffectivePercent(level, stack, cat);
         return formatTooltip(percent, cat, stack.getHoverName().getString(), DurabilityConfig.get().tooltipFormat);
@@ -336,6 +433,45 @@ public final class DurabilityHelper {
 
             case ELYTRA -> DurabilityClientState.infinityElytra() || DurabilityClientState.infinityGlobal();
             case OTHER -> DurabilityClientState.infinityGlobal();
+        };
+    }
+
+    /** Client-side single-use check using synced GameRule values. */
+    public static boolean isSingleUseClient(ItemStack stack) {
+        Identifier id = BuiltInRegistries.ITEM.getKey(stack.getItem());
+        if (id != null && DurabilityClientState.getDynamicSingleUse(id.toString())) {
+            return true;
+        }
+
+        ItemCategory cat = classifyItem(stack);
+        return switch (cat) {
+            case SWORD -> DurabilityClientState.singleUseSwords() || DurabilityClientState.singleUseWeapons() || DurabilityClientState.singleUseGlobal();
+            case SPEAR -> DurabilityClientState.singleUseSpears() || DurabilityClientState.singleUseWeapons() || DurabilityClientState.singleUseGlobal();
+            case TRIDENT -> DurabilityClientState.singleUseTridents() || DurabilityClientState.singleUseWeapons() || DurabilityClientState.singleUseGlobal();
+            case MACE -> DurabilityClientState.singleUseMaces() || DurabilityClientState.singleUseWeapons() || DurabilityClientState.singleUseGlobal();
+            case BOW -> DurabilityClientState.singleUseBows() || DurabilityClientState.singleUseWeapons() || DurabilityClientState.singleUseGlobal();
+            case CROSSBOW -> DurabilityClientState.singleUseCrossbows() || DurabilityClientState.singleUseWeapons() || DurabilityClientState.singleUseGlobal();
+            case SHIELD -> DurabilityClientState.singleUseShields() || DurabilityClientState.singleUseGlobal();
+            case WEAPON_GLOBAL -> DurabilityClientState.singleUseWeapons() || DurabilityClientState.singleUseGlobal();
+
+            case PICKAXE -> DurabilityClientState.singleUsePickaxes() || DurabilityClientState.singleUseTools() || DurabilityClientState.singleUseGlobal();
+            case AXE -> DurabilityClientState.singleUseAxes() || DurabilityClientState.singleUseTools() || DurabilityClientState.singleUseGlobal();
+            case SHOVEL -> DurabilityClientState.singleUseShovels() || DurabilityClientState.singleUseTools() || DurabilityClientState.singleUseGlobal();
+            case HOE -> DurabilityClientState.singleUseHoes() || DurabilityClientState.singleUseTools() || DurabilityClientState.singleUseGlobal();
+            case SHEARS -> DurabilityClientState.singleUseShears() || DurabilityClientState.singleUseTools() || DurabilityClientState.singleUseGlobal();
+            case FISHING_ROD -> DurabilityClientState.singleUseFishingRods() || DurabilityClientState.singleUseTools() || DurabilityClientState.singleUseGlobal();
+            case BRUSH -> DurabilityClientState.singleUseBrushes() || DurabilityClientState.singleUseTools() || DurabilityClientState.singleUseGlobal();
+            case FLINT_AND_STEEL -> DurabilityClientState.singleUseFlintAndSteel() || DurabilityClientState.singleUseTools() || DurabilityClientState.singleUseGlobal();
+            case TOOL_GLOBAL -> DurabilityClientState.singleUseTools() || DurabilityClientState.singleUseGlobal();
+
+            case HELMET -> DurabilityClientState.singleUseHelmets() || DurabilityClientState.singleUseArmor() || DurabilityClientState.singleUseGlobal();
+            case CHESTPLATE -> DurabilityClientState.singleUseChestplates() || DurabilityClientState.singleUseArmor() || DurabilityClientState.singleUseGlobal();
+            case LEGGINGS -> DurabilityClientState.singleUseLeggings() || DurabilityClientState.singleUseArmor() || DurabilityClientState.singleUseGlobal();
+            case BOOTS -> DurabilityClientState.singleUseBoots() || DurabilityClientState.singleUseArmor() || DurabilityClientState.singleUseGlobal();
+            case ARMOR_GLOBAL -> DurabilityClientState.singleUseArmor() || DurabilityClientState.singleUseGlobal();
+
+            case ELYTRA -> DurabilityClientState.singleUseElytra() || DurabilityClientState.singleUseGlobal();
+            case OTHER -> DurabilityClientState.singleUseGlobal();
         };
     }
 
@@ -426,6 +562,8 @@ public final class DurabilityHelper {
     public static String getTooltipLabelClient(ItemStack stack) {
         if (isInfiniteClient(stack))
             return "UNBREAKABLE";
+        if (isSingleUseClient(stack))
+            return "SINGLE-USE";
         ItemCategory cat = classifyItem(stack);
         int percent = getEffectivePercentClient(stack);
         return formatTooltip(percent, cat, stack.getHoverName().getString(), DurabilityConfig.get().tooltipFormat);

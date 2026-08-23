@@ -1,5 +1,12 @@
 # Changelog History
 
+## [1.2.7+26.2] - 2026-08-23
+
+### Single-Use (Glass Mode) Durability Mechanics
+* **What**: Implemented complete Single-Use (Glass Mode) durability system across global, category, subcategory, and individual modded item rules (`ig:dm_single_use_*`), dealing full remaining item durability on hit with vanilla break particles and sounds, strict God Mode precedence, and client tooltip indication.
+* **Why**: To provide high-challenge "glass weapon / glass armor" gameplay modes requested by players and modpack creators.
+* **How**: Added single-use boolean fields to `DurabilityConfig`, registered dynamic GameRules, updated `DurabilityPayload` network codec, implemented additive single-use resolution in `DurabilityHelper`, inflicted remaining damage `Math.max(1, stack.getMaxDamage() - stack.getDamageValue())` during item wear, added dedicated Cloth Config tab and item toggles, and added `§cSINGLE-USE§r` client tooltip rendering.
+
 ## [1.2.6+26.2] - 2026-08-23
 
 ### Universal Modded Item Dynamic Discovery & Individual Overrides

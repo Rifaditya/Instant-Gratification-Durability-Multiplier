@@ -82,6 +82,32 @@ public class DurabilityConfig {
     public boolean infinityElytra = false;
     public boolean infinityShields = false;
 
+    // Single-Use (Glass Mode)
+    public boolean singleUseGlobal = false;
+    public boolean singleUseWeapons = false;
+    public boolean singleUseSwords = false;
+    public boolean singleUseSpears = false;
+    public boolean singleUseTridents = false;
+    public boolean singleUseMaces = false;
+    public boolean singleUseBows = false;
+    public boolean singleUseCrossbows = false;
+    public boolean singleUseTools = false;
+    public boolean singleUsePickaxes = false;
+    public boolean singleUseAxes = false;
+    public boolean singleUseShovels = false;
+    public boolean singleUseHoes = false;
+    public boolean singleUseShears = false;
+    public boolean singleUseFishingRods = false;
+    public boolean singleUseBrushes = false;
+    public boolean singleUseFlintAndSteel = false;
+    public boolean singleUseArmor = false;
+    public boolean singleUseHelmets = false;
+    public boolean singleUseChestplates = false;
+    public boolean singleUseLeggings = false;
+    public boolean singleUseBoots = false;
+    public boolean singleUseElytra = false;
+    public boolean singleUseShields = false;
+
     // Tooltip
     public boolean showTooltip = true;
     public TooltipFormat tooltipFormat = TooltipFormat.ADAPTIVE;
@@ -89,6 +115,7 @@ public class DurabilityConfig {
     // Dynamic Modded Items
     public java.util.Map<String, Integer> dynamicPercentages = new java.util.HashMap<>();
     public java.util.Map<String, Boolean> dynamicInfinities = new java.util.HashMap<>();
+    public java.util.Map<String, Boolean> dynamicSingleUses = new java.util.HashMap<>();
 
     public static synchronized void load(Path configDir) {
         CONFIG_PATH = configDir.resolve("durability-multiplier.json");

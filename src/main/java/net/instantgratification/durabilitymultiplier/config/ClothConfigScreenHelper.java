@@ -348,6 +348,153 @@ public class ClothConfigScreenHelper {
             .setSaveConsumer(val -> config.infinityShields = val)
             .build());
 
+        // --- SINGLE-USE (GLASS MODE) CATEGORY ---
+        ConfigCategory singleUse = builder.getOrCreateCategory(Component.translatable("config.durability-multiplier.category.singleuse"));
+        singleUse.addEntry(entryBuilder.startTextDescription(Component.translatable("config.durability-multiplier.warning")).build());
+
+        singleUse.addEntry(entryBuilder.startBooleanToggle(Component.translatable("gamerule.ig.dm_single_use_global"), config.singleUseGlobal)
+            .setDefaultValue(false)
+            .setTooltip(Component.translatable("gamerule.ig.dm_single_use_global.description"))
+            .setSaveConsumer(val -> config.singleUseGlobal = val)
+            .build());
+
+        singleUse.addEntry(entryBuilder.startBooleanToggle(Component.translatable("gamerule.ig.dm_single_use_weapons"), config.singleUseWeapons)
+            .setDefaultValue(false)
+            .setTooltip(Component.translatable("gamerule.ig.dm_single_use_weapons.description"))
+            .setSaveConsumer(val -> config.singleUseWeapons = val)
+            .build());
+
+        singleUse.addEntry(entryBuilder.startBooleanToggle(Component.translatable("gamerule.ig.dm_single_use_swords"), config.singleUseSwords)
+            .setDefaultValue(false)
+            .setTooltip(Component.translatable("gamerule.ig.dm_single_use_swords.description"))
+            .setSaveConsumer(val -> config.singleUseSwords = val)
+            .build());
+
+        singleUse.addEntry(entryBuilder.startBooleanToggle(Component.translatable("gamerule.ig.dm_single_use_spears"), config.singleUseSpears)
+            .setDefaultValue(false)
+            .setTooltip(Component.translatable("gamerule.ig.dm_single_use_spears.description"))
+            .setSaveConsumer(val -> config.singleUseSpears = val)
+            .build());
+
+        singleUse.addEntry(entryBuilder.startBooleanToggle(Component.translatable("gamerule.ig.dm_single_use_tridents"), config.singleUseTridents)
+            .setDefaultValue(false)
+            .setTooltip(Component.translatable("gamerule.ig.dm_single_use_tridents.description"))
+            .setSaveConsumer(val -> config.singleUseTridents = val)
+            .build());
+
+        singleUse.addEntry(entryBuilder.startBooleanToggle(Component.translatable("gamerule.ig.dm_single_use_maces"), config.singleUseMaces)
+            .setDefaultValue(false)
+            .setTooltip(Component.translatable("gamerule.ig.dm_single_use_maces.description"))
+            .setSaveConsumer(val -> config.singleUseMaces = val)
+            .build());
+
+        singleUse.addEntry(entryBuilder.startBooleanToggle(Component.translatable("gamerule.ig.dm_single_use_bows"), config.singleUseBows)
+            .setDefaultValue(false)
+            .setTooltip(Component.translatable("gamerule.ig.dm_single_use_bows.description"))
+            .setSaveConsumer(val -> config.singleUseBows = val)
+            .build());
+
+        singleUse.addEntry(entryBuilder.startBooleanToggle(Component.translatable("gamerule.ig.dm_single_use_crossbows"), config.singleUseCrossbows)
+            .setDefaultValue(false)
+            .setTooltip(Component.translatable("gamerule.ig.dm_single_use_crossbows.description"))
+            .setSaveConsumer(val -> config.singleUseCrossbows = val)
+            .build());
+
+        singleUse.addEntry(entryBuilder.startBooleanToggle(Component.translatable("gamerule.ig.dm_single_use_tools"), config.singleUseTools)
+            .setDefaultValue(false)
+            .setTooltip(Component.translatable("gamerule.ig.dm_single_use_tools.description"))
+            .setSaveConsumer(val -> config.singleUseTools = val)
+            .build());
+
+        singleUse.addEntry(entryBuilder.startBooleanToggle(Component.translatable("gamerule.ig.dm_single_use_pickaxes"), config.singleUsePickaxes)
+            .setDefaultValue(false)
+            .setTooltip(Component.translatable("gamerule.ig.dm_single_use_pickaxes.description"))
+            .setSaveConsumer(val -> config.singleUsePickaxes = val)
+            .build());
+
+        singleUse.addEntry(entryBuilder.startBooleanToggle(Component.translatable("gamerule.ig.dm_single_use_axes"), config.singleUseAxes)
+            .setDefaultValue(false)
+            .setTooltip(Component.translatable("gamerule.ig.dm_single_use_axes.description"))
+            .setSaveConsumer(val -> config.singleUseAxes = val)
+            .build());
+
+        singleUse.addEntry(entryBuilder.startBooleanToggle(Component.translatable("gamerule.ig.dm_single_use_shovels"), config.singleUseShovels)
+            .setDefaultValue(false)
+            .setTooltip(Component.translatable("gamerule.ig.dm_single_use_shovels.description"))
+            .setSaveConsumer(val -> config.singleUseShovels = val)
+            .build());
+
+        singleUse.addEntry(entryBuilder.startBooleanToggle(Component.translatable("gamerule.ig.dm_single_use_hoes"), config.singleUseHoes)
+            .setDefaultValue(false)
+            .setTooltip(Component.translatable("gamerule.ig.dm_single_use_hoes.description"))
+            .setSaveConsumer(val -> config.singleUseHoes = val)
+            .build());
+
+        singleUse.addEntry(entryBuilder.startBooleanToggle(Component.translatable("gamerule.ig.dm_single_use_shears"), config.singleUseShears)
+            .setDefaultValue(false)
+            .setTooltip(Component.translatable("gamerule.ig.dm_single_use_shears.description"))
+            .setSaveConsumer(val -> config.singleUseShears = val)
+            .build());
+
+        singleUse.addEntry(entryBuilder.startBooleanToggle(Component.translatable("gamerule.ig.dm_single_use_fishing_rods"), config.singleUseFishingRods)
+            .setDefaultValue(false)
+            .setTooltip(Component.translatable("gamerule.ig.dm_single_use_fishing_rods.description"))
+            .setSaveConsumer(val -> config.singleUseFishingRods = val)
+            .build());
+
+        singleUse.addEntry(entryBuilder.startBooleanToggle(Component.translatable("gamerule.ig.dm_single_use_brushes"), config.singleUseBrushes)
+            .setDefaultValue(false)
+            .setTooltip(Component.translatable("gamerule.ig.dm_single_use_brushes.description"))
+            .setSaveConsumer(val -> config.singleUseBrushes = val)
+            .build());
+
+        singleUse.addEntry(entryBuilder.startBooleanToggle(Component.translatable("gamerule.ig.dm_single_use_flint_and_steel"), config.singleUseFlintAndSteel)
+            .setDefaultValue(false)
+            .setTooltip(Component.translatable("gamerule.ig.dm_single_use_flint_and_steel.description"))
+            .setSaveConsumer(val -> config.singleUseFlintAndSteel = val)
+            .build());
+
+        singleUse.addEntry(entryBuilder.startBooleanToggle(Component.translatable("gamerule.ig.dm_single_use_armor"), config.singleUseArmor)
+            .setDefaultValue(false)
+            .setTooltip(Component.translatable("gamerule.ig.dm_single_use_armor.description"))
+            .setSaveConsumer(val -> config.singleUseArmor = val)
+            .build());
+
+        singleUse.addEntry(entryBuilder.startBooleanToggle(Component.translatable("gamerule.ig.dm_single_use_helmets"), config.singleUseHelmets)
+            .setDefaultValue(false)
+            .setTooltip(Component.translatable("gamerule.ig.dm_single_use_helmets.description"))
+            .setSaveConsumer(val -> config.singleUseHelmets = val)
+            .build());
+
+        singleUse.addEntry(entryBuilder.startBooleanToggle(Component.translatable("gamerule.ig.dm_single_use_chestplates"), config.singleUseChestplates)
+            .setDefaultValue(false)
+            .setTooltip(Component.translatable("gamerule.ig.dm_single_use_chestplates.description"))
+            .setSaveConsumer(val -> config.singleUseChestplates = val)
+            .build());
+
+        singleUse.addEntry(entryBuilder.startBooleanToggle(Component.translatable("gamerule.ig.dm_single_use_leggings"), config.singleUseLeggings)
+            .setDefaultValue(false)
+            .setTooltip(Component.translatable("gamerule.ig.dm_single_use_leggings.description"))
+            .setSaveConsumer(val -> config.singleUseLeggings = val)
+            .build());
+
+        singleUse.addEntry(entryBuilder.startBooleanToggle(Component.translatable("gamerule.ig.dm_single_use_boots"), config.singleUseBoots)
+            .setDefaultValue(false)
+            .setTooltip(Component.translatable("gamerule.ig.dm_single_use_boots.description"))
+            .setSaveConsumer(val -> config.singleUseBoots = val)
+            .build());
+
+        singleUse.addEntry(entryBuilder.startBooleanToggle(Component.translatable("gamerule.ig.dm_single_use_elytra"), config.singleUseElytra)
+            .setDefaultValue(false)
+            .setTooltip(Component.translatable("gamerule.ig.dm_single_use_elytra.description"))
+            .setSaveConsumer(val -> config.singleUseElytra = val)
+            .build());
+
+        singleUse.addEntry(entryBuilder.startBooleanToggle(Component.translatable("gamerule.ig.dm_single_use_shields"), config.singleUseShields)
+            .setDefaultValue(false)
+            .setTooltip(Component.translatable("gamerule.ig.dm_single_use_shields.description"))
+            .setSaveConsumer(val -> config.singleUseShields = val)
+            .build());
 
         // --- GENERAL CATEGORY ---
         ConfigCategory general = builder.getOrCreateCategory(Component.translatable("config.durability-multiplier.category.general"));
@@ -403,6 +550,15 @@ public class ClothConfigScreenHelper {
                             .setDefaultValue(false)
                             .setTooltip(Component.literal("Enable unbreakable god mode for " + itemKey + ". Default: false."))
                             .setSaveConsumer(val -> config.dynamicInfinities.put(itemKey, val))
+                            .build());
+
+                    // Add Single-Use toggle
+                    modCategory.add(entryBuilder.startBooleanToggle(
+                        Component.translatable(item.getDescriptionId()).append(" Single-Use"),
+                        config.dynamicSingleUses.getOrDefault(itemKey, false))
+                            .setDefaultValue(false)
+                            .setTooltip(Component.literal("Enable 1-hit break mode for " + itemKey + ". Default: false."))
+                            .setSaveConsumer(val -> config.dynamicSingleUses.put(itemKey, val))
                             .build());
                 }
 

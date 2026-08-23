@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.7+26.2] - 2026-08-23
+
+### Added
+- **Single-Use (Glass Mode) Durability Engine**: Implemented 1-hit break mode across all categories and individual modded items (`ig:dm_single_use_*` GameRules, config fields, network sync, and Cloth Config category).
+- **Remaining Durability Shatter Mechanic**: When Single-Use mode is active, any durability damage inflicts full remaining item durability (`stack.getMaxDamage() - stack.getDamageValue()`), triggering standard vanilla tool-shatter sounds, break particles, and statistics in a single strike.
+- **Strict God Mode Precedence**: Preserved absolute invulnerability hierarchy—if both God Mode (Infinity) and Single-Use mode are simultaneously active on an item, God Mode strictly overrides Single-Use mode, keeping the item unbreakable.
+- **Red "SINGLE-USE" Tooltip Indicator**: Added clean `§cSINGLE-USE§r` tooltip label on client side for any item affected by Single-Use mode when tooltips are enabled.
+
 ## [1.2.6+26.2] - 2026-08-23
 
 ### Added
