@@ -62,10 +62,36 @@ public record DurabilityPayload(
         boolean infinityBoots,
         boolean infinityElytra,
         
+        boolean singleUseGlobal,
+        boolean singleUseWeapons,
+        boolean singleUseSwords,
+        boolean singleUseSpears,
+        boolean singleUseTridents,
+        boolean singleUseMaces,
+        boolean singleUseBows,
+        boolean singleUseCrossbows,
+        boolean singleUseShields,
+        boolean singleUseTools,
+        boolean singleUsePickaxes,
+        boolean singleUseAxes,
+        boolean singleUseShovels,
+        boolean singleUseHoes,
+        boolean singleUseShears,
+        boolean singleUseFishingRods,
+        boolean singleUseBrushes,
+        boolean singleUseFlintAndSteel,
+        boolean singleUseArmor,
+        boolean singleUseHelmets,
+        boolean singleUseChestplates,
+        boolean singleUseLeggings,
+        boolean singleUseBoots,
+        boolean singleUseElytra,
+
         boolean showTooltip,
         
         java.util.Map<String, Integer> dynamicPercentages,
-        java.util.Map<String, Boolean> dynamicInfinities
+        java.util.Map<String, Boolean> dynamicInfinities,
+        java.util.Map<String, Boolean> dynamicSingleUses
 ) implements CustomPacketPayload {
 
     public static final Type<DurabilityPayload> TYPE = new Type<>(
@@ -124,11 +150,37 @@ public record DurabilityPayload(
         buf.writeBoolean(infinityLeggings);
         buf.writeBoolean(infinityBoots);
         buf.writeBoolean(infinityElytra);
+
+        buf.writeBoolean(singleUseGlobal);
+        buf.writeBoolean(singleUseWeapons);
+        buf.writeBoolean(singleUseSwords);
+        buf.writeBoolean(singleUseSpears);
+        buf.writeBoolean(singleUseTridents);
+        buf.writeBoolean(singleUseMaces);
+        buf.writeBoolean(singleUseBows);
+        buf.writeBoolean(singleUseCrossbows);
+        buf.writeBoolean(singleUseShields);
+        buf.writeBoolean(singleUseTools);
+        buf.writeBoolean(singleUsePickaxes);
+        buf.writeBoolean(singleUseAxes);
+        buf.writeBoolean(singleUseShovels);
+        buf.writeBoolean(singleUseHoes);
+        buf.writeBoolean(singleUseShears);
+        buf.writeBoolean(singleUseFishingRods);
+        buf.writeBoolean(singleUseBrushes);
+        buf.writeBoolean(singleUseFlintAndSteel);
+        buf.writeBoolean(singleUseArmor);
+        buf.writeBoolean(singleUseHelmets);
+        buf.writeBoolean(singleUseChestplates);
+        buf.writeBoolean(singleUseLeggings);
+        buf.writeBoolean(singleUseBoots);
+        buf.writeBoolean(singleUseElytra);
         
         buf.writeBoolean(showTooltip);
         
         buf.writeMap(dynamicPercentages != null ? dynamicPercentages : java.util.Map.of(), FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeVarInt);
         buf.writeMap(dynamicInfinities != null ? dynamicInfinities : java.util.Map.of(), FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeBoolean);
+        buf.writeMap(dynamicSingleUses != null ? dynamicSingleUses : java.util.Map.of(), FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeBoolean);
     }
 
     private static DurabilityPayload read(FriendlyByteBuf buf) {
@@ -182,10 +234,36 @@ public record DurabilityPayload(
                 buf.readBoolean(),
                 buf.readBoolean(),
                 buf.readBoolean(),
+
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
                 
                 buf.readBoolean(),
                 
                 buf.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readVarInt),
+                buf.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readBoolean),
                 buf.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readBoolean));
     }
 

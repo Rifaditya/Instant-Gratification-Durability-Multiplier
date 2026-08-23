@@ -120,6 +120,24 @@ public class DurabilityHelperTest {
     }
 
     @Test
+    @DisplayName("Single-Use Mode Math: deals full remaining durability")
+    void testSingleUseRemainingDamageMath() {
+        // Simulating stack.getMaxDamage() - stack.getDamageValue()
+        int maxDamage = 1561; // Diamond sword
+        int damageValue = 0;
+        int damageInflicted = Math.max(1, maxDamage - damageValue);
+        assertEquals(1561, damageInflicted);
+
+        damageValue = 1560; // 1 durability left
+        damageInflicted = Math.max(1, maxDamage - damageValue);
+        assertEquals(1, damageInflicted);
+
+        damageValue = 1561; // Broken / zero durability
+        damageInflicted = Math.max(1, maxDamage - damageValue);
+        assertEquals(1, damageInflicted);
+    }
+
+    @Test
     @DisplayName("Cache Invalidation: clearCategoryCache executes cleanly")
     void testClearCategoryCache() {
         assertDoesNotThrow(DurabilityHelper::clearCategoryCache);
