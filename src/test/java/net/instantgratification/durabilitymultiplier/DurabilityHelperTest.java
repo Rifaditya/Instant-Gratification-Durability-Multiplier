@@ -257,4 +257,51 @@ public class DurabilityHelperTest {
 
         assertTrue(DurabilityConfig.isDirty());
     }
+
+    @Test
+    @DisplayName("Client State: Crossbow inherits singleUseWeapons and singleUseGlobal fallbacks")
+    void testClientStateCrossbowWeaponFallback() {
+        net.instantgratification.durabilitymultiplier.network.DurabilityPayload payloadWeapons = new net.instantgratification.durabilitymultiplier.network.DurabilityPayload(
+                100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+                false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+                true, java.util.Map.of(), java.util.Map.of(), java.util.Map.of()
+        );
+        net.instantgratification.durabilitymultiplier.network.DurabilityClientState.apply(payloadWeapons);
+        assertTrue(net.instantgratification.durabilitymultiplier.network.DurabilityClientState.singleUseWeapons());
+        assertFalse(net.instantgratification.durabilitymultiplier.network.DurabilityClientState.singleUseCrossbows());
+    }
+
+    @Test
+    @DisplayName("DurabilityConfig: saveIfDirty resets dirty flag")
+    void testSaveIfDirtyResetsDirty() {
+        DurabilityConfig.markDirty();
+        assertTrue(DurabilityConfig.isDirty());
+        DurabilityConfig.saveIfDirty();
+        assertFalse(DurabilityConfig.isDirty());
+    }
+
+    @Test
+    @DisplayName("DurabilityConfig: null-field resilience on getters")
+    void testNullFieldResilienceOnGetters() {
+        DurabilityConfig config = new DurabilityConfig();
+        config.forcedItems = null;
+        config.forcedPercentages = null;
+        config.forcedInfinities = null;
+        config.forcedSingleUses = null;
+        config.dynamicPercentages = null;
+        config.dynamicInfinities = null;
+        config.dynamicSingleUses = null;
+
+        assertNotNull(config.getAllForcedItemIds());
+        assertEquals(0, config.getForcedPercent("test:item"));
+        assertFalse(config.getForcedInfinity("test:item"));
+        assertFalse(config.getForcedSingleUse("test:item"));
+        assertFalse(config.isForced("test:item"));
+
+        // recordDiscoveredItem handles null collections gracefully
+        assertTrue(config.recordDiscoveredItem("test:new_item"));
+        assertTrue(config.forcedItems.contains("test:new_item"));
+        assertEquals(0, config.getForcedPercent("test:new_item"));
+    }
 }

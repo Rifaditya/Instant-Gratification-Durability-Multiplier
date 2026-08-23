@@ -204,7 +204,7 @@ public final class DurabilityHelper {
                     || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_WEAPONS)
                     || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
             case CROSSBOW -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_CROSSBOWS)
-                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_CROSSBOWS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_WEAPONS)
                     || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
             case SHIELD -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_SHIELDS)
                     || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
