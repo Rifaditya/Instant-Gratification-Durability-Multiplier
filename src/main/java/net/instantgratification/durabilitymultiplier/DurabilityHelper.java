@@ -161,6 +161,10 @@ public final class DurabilityHelper {
      * Check if single-use (glass mode) is active with pre-resolved category.
      */
     public static boolean isSingleUse(ServerLevel level, ItemStack stack, ItemCategory cat) {
+        if (getEffectivePercent(level, stack, cat) <= -1) {
+            return true;
+        }
+
         Identifier id = BuiltInRegistries.ITEM.getKey(stack.getItem());
         if (id != null && !id.getNamespace().equals("minecraft") && !id.getNamespace().equals("c")) {
             String ruleName = "ig:single_use_" + id.getNamespace() + "_" + id.getPath();
@@ -245,9 +249,10 @@ public final class DurabilityHelper {
 
     /**
      * Resolve the effective durability percentage.
-     * Priority: individual per-item override (if > 0) → tag-specific (if > 0) → parent category fallback → weapons fallback (if weapon) → global fallback → 100%.
+     * Priority: individual per-item override (if != 0) → tag-specific (if != 0) → parent category fallback → weapons fallback (if weapon) → global fallback → 100%.
+     * Values <= -1 represent Single-Use (Glass Mode).
      *
-     * @return durability percentage (e.g. 100 = 100% vanilla, 200 = 200% double durability, 50 = 50% half).
+     * @return durability percentage (e.g. 100 = 100% vanilla, 200 = 200% double durability, 50 = 50% half, -1 = single-use).
      */
     public static int getEffectivePercent(ServerLevel level, ItemStack stack) {
         return getEffectivePercent(level, stack, classifyItem(stack));
@@ -264,12 +269,12 @@ public final class DurabilityHelper {
             GameRule<Integer> dynamicRule = (GameRule<Integer>) DynamicGameRuleManager.getDynamicRules().get(ruleName);
             if (dynamicRule == null) {
                 dynamicRule = DynamicGameRuleManager.integerRule(ruleName,
-                        DurabilityRules.DURABILITY_MULTIPLIER, 0).min(0).register();
+                        DurabilityRules.DURABILITY_MULTIPLIER, 0).min(-1).register();
             }
             if (dynamicRule != null) {
                 int dynamicVal = DynamicGameRuleManager.getInt(level, dynamicRule);
-                if (dynamicVal > 0) {
-                    return dynamicVal;
+                if (dynamicVal != 0) {
+                    return dynamicVal < 0 ? -1 : dynamicVal;
                 }
             }
         }
@@ -303,24 +308,24 @@ public final class DurabilityHelper {
             case ELYTRA -> DurabilityRules.getInt(level, DurabilityRules.DM_PERCENT_ELYTRA);
             case OTHER -> 0;
         };
-        if (specific > 0)
-            return specific;
+        if (specific != 0)
+            return specific < 0 ? -1 : specific;
 
         // Tool parent fallback
         if (cat == ItemCategory.PICKAXE || cat == ItemCategory.AXE || cat == ItemCategory.SHOVEL ||
                 cat == ItemCategory.HOE || cat == ItemCategory.SHEARS || cat == ItemCategory.FISHING_ROD ||
                 cat == ItemCategory.BRUSH || cat == ItemCategory.FLINT_AND_STEEL || cat == ItemCategory.TOOL_GLOBAL) {
             int toolGlobal = DurabilityRules.getInt(level, DurabilityRules.DM_PERCENT_TOOLS);
-            if (toolGlobal > 0)
-                return toolGlobal;
+            if (toolGlobal != 0)
+                return toolGlobal < 0 ? -1 : toolGlobal;
         }
 
         // Armor parent fallback
         if (cat == ItemCategory.HELMET || cat == ItemCategory.CHESTPLATE ||
                 cat == ItemCategory.LEGGINGS || cat == ItemCategory.BOOTS || cat == ItemCategory.ARMOR_GLOBAL) {
             int armorGlobal = DurabilityRules.getInt(level, DurabilityRules.DM_PERCENT_ARMOR);
-            if (armorGlobal > 0)
-                return armorGlobal;
+            if (armorGlobal != 0)
+                return armorGlobal < 0 ? -1 : armorGlobal;
         }
 
         // Weapons parent fallback
@@ -328,12 +333,12 @@ public final class DurabilityHelper {
                 cat == ItemCategory.MACE || cat == ItemCategory.BOW || cat == ItemCategory.CROSSBOW ||
                 cat == ItemCategory.WEAPON_GLOBAL) {
             int weaponGlobal = DurabilityRules.getInt(level, DurabilityRules.DM_PERCENT_WEAPONS);
-            if (weaponGlobal > 0)
-                return weaponGlobal;
+            if (weaponGlobal != 0)
+                return weaponGlobal < 0 ? -1 : weaponGlobal;
         }
 
         int global = DurabilityRules.getInt(level, DurabilityRules.DM_PERCENT_GLOBAL);
-        return global > 0 ? global : 100;
+        return global != 0 ? (global < 0 ? -1 : global) : 100;
     }
 
     /**
@@ -437,6 +442,10 @@ public final class DurabilityHelper {
 
     /** Client-side single-use check using synced GameRule values. */
     public static boolean isSingleUseClient(ItemStack stack) {
+        if (getEffectivePercentClient(stack) <= -1) {
+            return true;
+        }
+
         Identifier id = BuiltInRegistries.ITEM.getKey(stack.getItem());
         if (id != null && DurabilityClientState.getDynamicSingleUse(id.toString())) {
             return true;
@@ -479,8 +488,8 @@ public final class DurabilityHelper {
         Identifier id = BuiltInRegistries.ITEM.getKey(stack.getItem());
         if (id != null) {
             int dynamicVal = DurabilityClientState.getDynamicPercent(id.toString());
-            if (dynamicVal > 0) {
-                return dynamicVal;
+            if (dynamicVal != 0) {
+                return dynamicVal < 0 ? -1 : dynamicVal;
             }
         }
 
@@ -514,24 +523,24 @@ public final class DurabilityHelper {
             case ELYTRA -> DurabilityClientState.percentElytra();
             default -> 0;
         };
-        if (specific > 0)
-            return specific;
+        if (specific != 0)
+            return specific < 0 ? -1 : specific;
 
         // Tool parent fallback
         if (cat == ItemCategory.PICKAXE || cat == ItemCategory.AXE || cat == ItemCategory.SHOVEL ||
                 cat == ItemCategory.HOE || cat == ItemCategory.SHEARS || cat == ItemCategory.FISHING_ROD ||
                 cat == ItemCategory.BRUSH || cat == ItemCategory.FLINT_AND_STEEL || cat == ItemCategory.TOOL_GLOBAL) {
             int toolGlobal = DurabilityClientState.percentTools();
-            if (toolGlobal > 0)
-                return toolGlobal;
+            if (toolGlobal != 0)
+                return toolGlobal < 0 ? -1 : toolGlobal;
         }
 
         // Armor parent fallback
         if (cat == ItemCategory.HELMET || cat == ItemCategory.CHESTPLATE ||
                 cat == ItemCategory.LEGGINGS || cat == ItemCategory.BOOTS || cat == ItemCategory.ARMOR_GLOBAL) {
             int armorGlobal = DurabilityClientState.percentArmor();
-            if (armorGlobal > 0)
-                return armorGlobal;
+            if (armorGlobal != 0)
+                return armorGlobal < 0 ? -1 : armorGlobal;
         }
 
         // Weapons parent fallback
@@ -539,12 +548,12 @@ public final class DurabilityHelper {
                 cat == ItemCategory.MACE || cat == ItemCategory.BOW || cat == ItemCategory.CROSSBOW ||
                 cat == ItemCategory.WEAPON_GLOBAL) {
             int weaponGlobal = DurabilityClientState.percentWeapons();
-            if (weaponGlobal > 0)
-                return weaponGlobal;
+            if (weaponGlobal != 0)
+                return weaponGlobal < 0 ? -1 : weaponGlobal;
         }
 
         int global = DurabilityClientState.percentGlobal();
-        return global > 0 ? global : 100;
+        return global != 0 ? (global < 0 ? -1 : global) : 100;
     }
 
     /** Client-side multiplier using synced GameRule values (legacy helper). */

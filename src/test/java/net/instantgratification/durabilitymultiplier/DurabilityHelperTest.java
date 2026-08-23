@@ -138,6 +138,13 @@ public class DurabilityHelperTest {
     }
 
     @Test
+    @DisplayName("Single-Use Sentinel: -1 formatTooltip returns null for dedicated SINGLE-USE label handling")
+    void testNegativeOneSentinelTooltip() {
+        assertNull(DurabilityHelper.formatTooltip(-1, DurabilityHelper.ItemCategory.SWORD, "Sword", DurabilityConfig.TooltipFormat.ADAPTIVE));
+        assertNull(DurabilityHelper.formatTooltip(-5, DurabilityHelper.ItemCategory.SWORD, "Sword", DurabilityConfig.TooltipFormat.ADAPTIVE));
+    }
+
+    @Test
     @DisplayName("Cache Invalidation: clearCategoryCache executes cleanly")
     void testClearCategoryCache() {
         assertDoesNotThrow(DurabilityHelper::clearCategoryCache);

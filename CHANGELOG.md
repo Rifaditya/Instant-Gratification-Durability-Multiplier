@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.15+26.1.2] - 2026-08-23
+
+### Added
+- **Power-User `-1` Single-Use Sentinel for Percentage Rules & Configs**: Enabled setting `-1` (or any negative integer) directly in any percentage GameRule (`ig:dm_percent_*` and dynamic modded item percentage rules) or Cloth Config field to immediately activate Single-Use (Glass Mode) for that category or item without toggling a separate boolean rule.
+- **Hierarchical `-1` Cascade Overrides**: Standard cascade priority ensures specific sub-categories or per-item percentages $> 0$ cleanly override parent/global `-1` sentinels (e.g. setting Swords to `200%` retains double durability even if Global/Weapons is set to `-1`), while setting a specific item or category to `-1` forces Single-Use even if parent is $> 0$.
+- **Unified Single-Use Resolution**: Server and client Single-Use checks evaluate additively—Single-Use triggers if either the boolean single-use rule is `true` OR the resolved effective percentage is $\le -1$. Unbreakable God Mode strictly retains ultimate priority over both.
+- **Cloth Config Negative Integer Range**: Updated all percentage input fields in Cloth Config to allow minimum values down to `-1` with updated descriptive tooltips (`-1 = Single-Use (Glass Mode), 0 = Inherit, >0 = Percentage`).
+
 ## [1.1.14+26.1.2] - 2026-08-23
 
 ### Added
