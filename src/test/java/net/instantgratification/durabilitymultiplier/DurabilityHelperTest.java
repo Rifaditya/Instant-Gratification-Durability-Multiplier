@@ -2,6 +2,7 @@
 package net.instantgratification.durabilitymultiplier;
 
 import net.instantgratification.durabilitymultiplier.config.DurabilityConfig;
+import net.instantgratification.durabilitymultiplier.registry.DurabilityRules;
 import net.minecraft.util.RandomSource;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -303,5 +304,14 @@ public class DurabilityHelperTest {
         assertTrue(config.recordDiscoveredItem("test:new_item"));
         assertTrue(config.forcedItems.contains("test:new_item"));
         assertEquals(0, config.getForcedPercent("test:new_item"));
+    }
+
+    @Test
+    @DisplayName("Non-Damageable Items: null or non-durability items are strictly rejected unless forced")
+    void testNonDamageableItemRejection() {
+        assertFalse(DurabilityRules.isItemDamageable(null));
+        
+        DurabilityConfig.get().forcedItems.add("custom:forced_non_damageable");
+        assertTrue(DurabilityConfig.get().isForced("custom:forced_non_damageable"));
     }
 }
