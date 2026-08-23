@@ -220,6 +220,8 @@ public class DurabilityRules {
             DurabilityRules::isItemDamageable,
             (id, item) -> {
                 if (!id.getNamespace().equals("minecraft") && !id.getNamespace().equals("c")) {
+                    config.recordDiscoveredItem(id.toString());
+                    FORCED_ITEMS.add(id);
                     registerDynamicRules(id);
                     if (!DYNAMIC_ITEMS.contains(id)) {
                         DYNAMIC_ITEMS.add(id);

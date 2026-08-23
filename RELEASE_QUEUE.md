@@ -41,6 +41,7 @@ Open this file in your editor and change `[ ]` to `[x]` when you publish a versi
 - [ ] **`1.2.10+26.2`** (2026-08-23) - - **Dynamic Item Discovery Engine Overhaul**: Moved discovery to startup scanning and persistent `RegistryEntryAddedCallback.event(BuiltInRegistries.ITEM)` listener, ensuring all modded items are registered into GameRules and Cloth Config regardless of mod initialization order.
 - [ ] **`1.2.11+26.2`** (2026-08-23) - - **Dynamic GameRule World Save Persistence & Instant /gamerule Recognition**: Upgraded to `DasikLibrary` `1.8.28` (`GameRuleMapMixin` & `CommandRegistrationCallback.EVENT`). Dynamic item GameRules are recognized by Brigadier on world load without requiring `/reload`, and modified values natively persist across game restarts.
 - [ ] **`1.2.12+26.2`** (2026-08-23) - - **Forced Modded Item Config & Resilient Scanner**: Added explicit `forcedItems` list, `forcedPercentages`, `forcedInfinities`, and `forcedSingleUses` maps to `durability-multiplier.json` for manual declaration, immediate startup registration into `BuiltInRegistries.GAME_RULE`, and expanded scanner hooks for modded items.
+- [ ] **`1.2.13+26.2`** (2026-08-23) - - **Modded Item Config Auto-Population & Live Command Recognition**: `DynamicRegistryScanner` automatically populates discovered damageable modded items into `forcedItems` and `forcedPercentages` (default `0`) with `putIfAbsent` customization retention, batch-saved lifecycle, and live Brigadier command recognition.
 
 
 

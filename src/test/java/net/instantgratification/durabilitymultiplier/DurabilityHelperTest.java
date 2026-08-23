@@ -160,4 +160,58 @@ public class DurabilityHelperTest {
         assertTrue(config.getForcedInfinity("watersgems:ruby_axe"));
         assertTrue(config.getForcedSingleUse("watersgems:glass_dagger"));
     }
+
+    @Test
+    @DisplayName("Auto-Populate: recordDiscoveredItem populates forcedItems and forcedPercentages with default 0")
+    void testRecordDiscoveredItemAutoPopulatesWithZero() {
+        DurabilityConfig config = DurabilityConfig.get();
+        String testItem = "testmod:auto_discovered_sword";
+        config.forcedItems.remove(testItem);
+        config.forcedPercentages.remove(testItem);
+
+        boolean recorded = config.recordDiscoveredItem(testItem);
+        assertTrue(recorded, "Expected recordDiscoveredItem to return true for newly discovered item");
+        assertTrue(config.forcedItems.contains(testItem), "forcedItems must contain the discovered item");
+        assertTrue(config.forcedPercentages.containsKey(testItem), "forcedPercentages must contain the discovered item");
+        assertEquals(0, config.forcedPercentages.get(testItem), "Default percentage for newly discovered item must be 0");
+        assertTrue(config.isForced(testItem), "isForced must recognize auto-populated item");
+        assertEquals(0, config.getForcedPercent(testItem));
+        assertTrue(DurabilityConfig.isDirty(), "Dirty state must be true after recording newly discovered item");
+    }
+
+    @Test
+    @DisplayName("Auto-Populate: recordDiscoveredItem strictly preserves pre-existing non-zero customized values")
+    void testRecordDiscoveredItemPreservesPreExistingNonZeroValues() {
+        DurabilityConfig config = DurabilityConfig.get();
+        String customizedItem = "custommod:legendary_hammer";
+        config.forcedItems.add(customizedItem);
+        config.forcedPercentages.put(customizedItem, 400);
+
+        int initialItemCount = config.forcedItems.size();
+        boolean recordedAgain = config.recordDiscoveredItem(customizedItem);
+        assertFalse(recordedAgain, "Expected recordDiscoveredItem to return false when item is already present");
+        assertEquals(initialItemCount, config.forcedItems.size(), "forcedItems should not accumulate duplicate entries");
+        assertEquals(400, config.getForcedPercent(customizedItem), "Pre-existing customized percentage (400) must be strictly preserved");
+    }
+
+    @Test
+    @DisplayName("Auto-Populate: recordDiscoveredItem strictly preserves pre-existing negative sentinel values (-1)")
+    void testRecordDiscoveredItemPreservesNegativeSentinel() {
+        DurabilityConfig config = DurabilityConfig.get();
+        String singleUseItem = "custommod:fragile_dagger";
+        config.forcedItems.add(singleUseItem);
+        config.forcedPercentages.put(singleUseItem, -1);
+
+        boolean recordedAgain = config.recordDiscoveredItem(singleUseItem);
+        assertFalse(recordedAgain, "Expected recordDiscoveredItem to return false when item is already present");
+        assertEquals(-1, config.getForcedPercent(singleUseItem), "Pre-existing -1 Single-Use sentinel must be preserved");
+    }
+
+    @Test
+    @DisplayName("Auto-Populate: recordDiscoveredItem handles null and empty inputs safely")
+    void testRecordDiscoveredItemNullAndEmptyRejection() {
+        DurabilityConfig config = DurabilityConfig.get();
+        assertFalse(config.recordDiscoveredItem(null));
+        assertFalse(config.recordDiscoveredItem(""));
+    }
 }

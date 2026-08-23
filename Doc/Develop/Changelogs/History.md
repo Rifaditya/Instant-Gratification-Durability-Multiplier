@@ -1,5 +1,13 @@
 # Full Changelog History
 
+## [1.2.13+26.2] - 2026-08-23
+
+### Added
+- **Automatic Modded Item Config Auto-Population**: `DynamicRegistryScanner` automatically populates discovered damageable modded items into `forcedItems` and `forcedPercentages` (default `0`) in `durability-multiplier.json` on startup and registry updates.
+- **Customization Preservation**: Implemented `putIfAbsent` configuration retention ensuring pre-existing user configurations, custom percentages, and single-use sentinels are never overwritten.
+- **Batch-Saved Config Lifecycle**: Configuration changes are batch-saved cleanly during startup and server lifecycle without disk thrashing.
+- **Live Command Recognition**: Ensured dynamic item GameRules (`ig:percent_<mod>_<item>`, `ig:infinity_<mod>_<item>`, `ig:single_use_<mod>_<item>`) are seamlessly recognized by Minecraft's command system and Brigadier on world load without command parsing errors.
+
 ## [1.2.12+26.2] - 2026-08-23
 
 ### Added

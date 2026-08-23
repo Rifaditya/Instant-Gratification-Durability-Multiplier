@@ -1,3 +1,4 @@
+// Copyright (C) 2026 Dasik (Rifaditya) | GNU GPLv3
 package net.instantgratification.durabilitymultiplier;
 
 import net.fabricmc.loader.api.FabricLoader;
@@ -15,6 +16,7 @@ public class DurabilityMultiplier {
         LOGGER.info("Durability Multiplier initializing...");
         DurabilityConfig.load(FabricLoader.getInstance().getConfigDir());
         DurabilityRules.register();
+        DurabilityConfig.saveIfDirty();
         LOGGER.info("Durability Multiplier initialized. {} GameRules registered.", 25);
     }
 }

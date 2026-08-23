@@ -169,6 +169,41 @@ public class DurabilityConfig {
         return getAllForcedItemIds().contains(itemId);
     }
 
+    private static volatile boolean dirty = false;
+
+    public static void markDirty() {
+        dirty = true;
+    }
+
+    public static boolean isDirty() {
+        return dirty;
+    }
+
+    public synchronized boolean recordDiscoveredItem(String itemId) {
+        if (itemId == null || itemId.isEmpty()) return false;
+        boolean modified = false;
+        if (forcedItems == null) {
+            forcedItems = new java.util.ArrayList<>();
+            modified = true;
+        }
+        if (!forcedItems.contains(itemId)) {
+            forcedItems.add(itemId);
+            modified = true;
+        }
+        if (forcedPercentages == null) {
+            forcedPercentages = new java.util.HashMap<>();
+            modified = true;
+        }
+        if (!forcedPercentages.containsKey(itemId)) {
+            forcedPercentages.put(itemId, 0);
+            modified = true;
+        }
+        if (modified) {
+            dirty = true;
+        }
+        return modified;
+    }
+
     public static synchronized void load(Path configDir) {
         CONFIG_PATH = configDir.resolve("durability-multiplier.json");
         INSTANCE = net.dasik.social.api.config.ConfigHelper.load(
@@ -199,6 +234,13 @@ public class DurabilityConfig {
     public static synchronized void save() {
         if (CONFIG_PATH == null) return;
         net.dasik.social.api.config.ConfigHelper.save(CONFIG_PATH, INSTANCE, org.slf4j.LoggerFactory.getLogger("DurabilityMultiplier"));
+    }
+
+    public static synchronized void saveIfDirty() {
+        if (dirty) {
+            save();
+            dirty = false;
+        }
     }
 
     public static DurabilityConfig get() { return INSTANCE; }
