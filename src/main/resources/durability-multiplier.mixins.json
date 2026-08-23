@@ -5,9 +5,7 @@
     "mixins": [
         "ItemStackDurabilityMixin",
         "ItemStackTooltipMixin",
-        "GameRulesMixin",
-        "MappedRegistryMixin",
-        "MappedRegistryAccessor"
+        "GameRulesMixin"
     ],
     "injectors": {
         "defaultRequire": 1

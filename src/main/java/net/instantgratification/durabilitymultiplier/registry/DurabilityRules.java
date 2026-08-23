@@ -201,43 +201,19 @@ public class DurabilityRules {
 
         DM_SHOW_TOOLTIP = DynamicGameRuleManager.booleanRule("ig:dm_show_tooltip", DURABILITY_MULTIPLIER, config.showTooltip).register();
 
-        // 1. Scan any items already registered in BuiltInRegistries.ITEM
-        scanAndRegisterDynamicItems();
-
-        // 2. Listen for any items registered dynamically by other mods after our initialization
-        net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback.event(BuiltInRegistries.ITEM).register((rawId, id, item) -> {
-            processItemRegistration(id, item);
-        });
-    }
-
-    public static void scanAndRegisterDynamicItems() {
-        for (Item item : BuiltInRegistries.ITEM) {
-            Identifier id = BuiltInRegistries.ITEM.getKey(item);
-            if (id != null) {
-                processItemRegistration(id, item);
+        // Universal 3-tier discovery scanner (Startup sweep + Live entry callback + Server start safety sweep)
+        net.dasik.social.api.registry.DynamicRegistryScanner.subscribe(
+            BuiltInRegistries.ITEM,
+            DurabilityRules::isItemDamageable,
+            (id, item) -> {
+                if (!id.getNamespace().equals("minecraft") && !id.getNamespace().equals("c")) {
+                    registerDynamicRules(id);
+                    if (!DYNAMIC_ITEMS.contains(id)) {
+                        DYNAMIC_ITEMS.add(id);
+                    }
+                }
             }
-        }
-        net.instantgratification.durabilitymultiplier.DurabilityMultiplier.LOGGER.info(
-            "Discovered {} dynamic modded damageable items. Registered {} dynamic item GameRules.",
-            DYNAMIC_ITEMS.size(), DYNAMIC_ITEMS.size() * 3
         );
-    }
-
-    public static void registerDynamicRulesOnRegistryFreeze() {
-        scanAndRegisterDynamicItems();
-    }
-
-    private static void processItemRegistration(Identifier id, Item item) {
-        if (id.getNamespace().equals("minecraft") || id.getNamespace().equals("c")) {
-            return;
-        }
-
-        if (isItemDamageable(item)) {
-            registerDynamicRules(id);
-            if (!DYNAMIC_ITEMS.contains(id)) {
-                DYNAMIC_ITEMS.add(id);
-            }
-        }
     }
 
     private static boolean isItemDamageable(Item item) {
@@ -250,26 +226,6 @@ public class DurabilityRules {
     }
 
     public static void registerDynamicRules(Identifier id) {
-        if (BuiltInRegistries.GAME_RULE instanceof net.minecraft.core.MappedRegistry<?> mappedGameRule) {
-            net.instantgratification.durabilitymultiplier.mixin.MappedRegistryAccessor accessor = 
-                (net.instantgratification.durabilitymultiplier.mixin.MappedRegistryAccessor) mappedGameRule;
-            boolean wasGameRuleFrozen = accessor.isFrozen();
-            if (wasGameRuleFrozen) {
-                accessor.setFrozen(false);
-            }
-            try {
-                doRegisterDynamicRules(id);
-            } finally {
-                if (wasGameRuleFrozen) {
-                    accessor.setFrozen(true);
-                }
-            }
-        } else {
-            doRegisterDynamicRules(id);
-        }
-    }
-
-    private static void doRegisterDynamicRules(Identifier id) {
         DurabilityConfig config = DurabilityConfig.get();
 
         String infinityRuleName = "ig:infinity_" + id.getNamespace() + "_" + id.getPath();
