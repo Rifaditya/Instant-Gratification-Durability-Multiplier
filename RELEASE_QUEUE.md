@@ -35,6 +35,7 @@ Open this file in your editor and change `[ ]` to `[x]` when you publish a versi
 - [ ] **`1.1.14+26.1.2`** (2026-08-23) - - **Single-Use (Glass Mode) Durability Engine**: Implemented 1-hit break mode across all categories and modded items (`ig:dm_single_use_*` GameRules, configs, and GUI tab), inflicting full remaining durability on hit with vanilla break effects, strict God Mode precedence, and red "SINGLE-USE" client tooltips.
 - [ ] **`1.1.15+26.1.2`** (2026-08-23) - - **Power-User `-1` Sentinel for Single-Use Durability**: Enabled entering `-1` (or negative integers) in any percentage GameRule or config field to activate Single-Use (Glass Mode), with hierarchical cascade overrides, additive Single-Use evaluation, and Cloth Config `-1` range support.
 - [ ] **`1.1.16+26.1.2`** (2026-08-23) - - **Dynamic GameRule Registry Freeze Lockout Fix**: Resolved registry freeze timing conflict by adding `MappedRegistryAccessor` to temporarily unfreeze `BuiltInRegistries.GAME_RULE` during startup scan, enabling all dynamic modded item GameRules in `/gamerule` and tab completion. Added startup discovery diagnostics.
+- [ ] **`1.1.17+26.1.2`** (2026-08-23) - - **Dynamic Item Discovery Engine Overhaul**: Moved discovery to startup scanning and persistent `RegistryEntryAddedCallback.event(BuiltInRegistries.ITEM)` listener, ensuring all modded items are registered into GameRules and Cloth Config regardless of mod initialization order.
 
 
 
