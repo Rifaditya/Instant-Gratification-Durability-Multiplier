@@ -1,5 +1,11 @@
 # Full Changelog History
 
+## [1.1.18+26.1.2] - 2026-08-23
+
+### Fixed
+- **Dynamic GameRule World Save Persistence & Instant /gamerule Recognition**: Upgraded to `DasikLibrary` `1.8.28` (`GameRuleMapMixin` & `CommandRegistrationCallback.EVENT`). All dynamic item GameRules (`ig:percent_<mod>_<item>`, `ig:infinity_<mod>_<item>`, `ig:single_use_<mod>_<item>`) are now recognized and autocompleted by Brigadier on world load without requiring `/reload`, and modified values are natively saved into world data (`level.dat` / `game_rules.dat`) across game restarts.
+- **Live Tooltip Network Synchronization**: Synchronized dynamic item GameRule updates directly with `DurabilityPayload` broadcasts, ensuring player tooltips immediately reflect changes in real time.
+
 ## [1.1.17+26.1.2] - 2026-08-23
 
 ### Fixed
