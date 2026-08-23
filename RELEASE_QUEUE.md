@@ -34,6 +34,8 @@ Open this file in your editor and change `[ ]` to `[x]` when you publish a versi
 - [ ] **`1.2.3+26.2`** (2026-08-21) - - **Fractional Durability & Percentage Scaling**: Upgraded durability math and GameRules from whole integer multipliers to granular percentages (`ig:dm_percent_*`), supporting reductions below 1x (e.g. 50 = 50% half durability) and boosts (200 = 200% double). Added tooltip display format setting and automated test suite.
 - [ ] **`1.2.4+26.2`** (2026-08-23) - - **Universal Item Classification & Conventional Tags**: Upgraded item categorization in `DurabilityHelper` with Fabric Conventional Tags (`#c:*`), fixed the modern sword-to-tool trapping bug (preventing modded swords with cobweb rules from becoming tools), added prioritized identifier path heuristics (`_sword`, `_pickaxe`, `_helmet`), and added classification cache invalidation.
 - [ ] **`1.2.5+26.2`** (2026-08-23) - - **Granular Tag GameRules & Subcategory Expansion**: Introduced dedicated GameRules for individual tool subcategories (`pickaxes`, `axes`, `shovels`, `hoes`, `shears`, `fishing_rods`, `brushes`, `flint_and_steel`) and armor subcategories (`helmets`, `chestplates`, `leggings`, `boots`) with multi-tier fallback cascade (`Sub-tag > Parent > Global`), additive God Mode infinity union, extended payload sync, and Cloth Config GUI integration.
+- [ ] **`1.2.6+26.2`** (2026-08-23) - - **Universal Modded Item Discovery & Individual Overrides**: Overhauled dynamic registry scanning to detect all damageable modded items without reflection, added highest-precedence per-item override cascade (`Per-Item > Sub-tag > Parent > Weapons > Global > 100%`), implemented delta map network streaming, and grouped modded items by mod namespace in Cloth Config GUI.
+
 
 
 

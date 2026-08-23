@@ -1,5 +1,12 @@
 # Changelog History
 
+## [1.2.6+26.2] - 2026-08-23
+
+### Universal Modded Item Dynamic Discovery & Individual Overrides
+* **What**: Rebuilt dynamic registry freeze scanning to scan all non-minecraft damageable items via direct component access (`DataComponents.MAX_DAMAGE > 0`), unlocked per-item override precedence (`ig:percent_<mod>_<item>` and `ig:infinity_<mod>_<item>`), enabled delta map network synchronization, and grouped modded items by mod namespace in Cloth Config GUI.
+* **Why**: To fix Issue #2 where external mod items without categories or with custom overrides could not be individually customized, and eliminate fragile reflection hacks on package-private Minecraft classes.
+* **How**: Replaced reflection on `DATA_COMPONENT_INITIALIZERS` with zero-reflection component evaluation, updated `DurabilityHelper` to evaluate per-item overrides before sub-tag/parent/global rules, added delta map streaming to `DurabilityPayload`, and organized Cloth Config "Modded Items" tab into collapsible mod namespace sections.
+
 ## [1.2.5+26.2] - 2026-08-23
 
 ### Granular Tag GameRules & Subcategory Expansion

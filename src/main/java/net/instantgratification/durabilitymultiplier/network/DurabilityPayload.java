@@ -62,7 +62,10 @@ public record DurabilityPayload(
         boolean infinityBoots,
         boolean infinityElytra,
         
-        boolean showTooltip
+        boolean showTooltip,
+        
+        java.util.Map<String, Integer> dynamicPercentages,
+        java.util.Map<String, Boolean> dynamicInfinities
 ) implements CustomPacketPayload {
 
     public static final Type<DurabilityPayload> TYPE = new Type<>(
@@ -123,6 +126,9 @@ public record DurabilityPayload(
         buf.writeBoolean(infinityElytra);
         
         buf.writeBoolean(showTooltip);
+        
+        buf.writeMap(dynamicPercentages != null ? dynamicPercentages : java.util.Map.of(), FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeVarInt);
+        buf.writeMap(dynamicInfinities != null ? dynamicInfinities : java.util.Map.of(), FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeBoolean);
     }
 
     private static DurabilityPayload read(FriendlyByteBuf buf) {
@@ -177,7 +183,10 @@ public record DurabilityPayload(
                 buf.readBoolean(),
                 buf.readBoolean(),
                 
-                buf.readBoolean());
+                buf.readBoolean(),
+                
+                buf.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readVarInt),
+                buf.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readBoolean));
     }
 
     @Override

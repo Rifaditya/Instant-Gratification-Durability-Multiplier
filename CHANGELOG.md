@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.6+26.2] - 2026-08-23
+
+### Added
+- **Universal Modded Item Dynamic Discovery**: Upgraded registry freeze item scanning to detect all damageable modded items (`DataComponents.MAX_DAMAGE > 0` with non-minecraft namespaces) directly without reflection, registering individual dynamic GameRules (`ig:percent_<mod>_<item>` and `ig:infinity_<mod>_<item>`).
+- **Individual Per-Item Override Cascade**: Unlocked dedicated per-item override hierarchy taking highest precedence (`Per-Item Override > Sub-tag > Parent Category > Weapons Global > Global > 100%`) when set $> 0$, allowing players to set specific multipliers on any modded item.
+- **Delta Map Network Synchronization**: Implemented efficient delta streaming in `DurabilityPayload` that synchronizes only active, non-zero per-item overrides and infinities to multiplayer clients with zero network overhead for default items.
+- **Cloth Config Mod Namespace Grouping**: Reorganized the "Modded Items" config tab into clean collapsible subcategories grouped by mod namespace with formatted titles.
+
 ## [1.2.5+26.2] - 2026-08-23
 
 ### Added

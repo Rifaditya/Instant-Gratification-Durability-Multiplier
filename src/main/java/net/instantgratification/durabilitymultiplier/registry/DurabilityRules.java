@@ -165,69 +165,21 @@ public class DurabilityRules {
             return;
         }
 
-        if (isItemDamageableAndUncategorized(id, item)) {
+        if (isItemDamageable(item)) {
             registerDynamicRules(id);
-            DYNAMIC_ITEMS.add(id);
+            if (!DYNAMIC_ITEMS.contains(id)) {
+                DYNAMIC_ITEMS.add(id);
+            }
         }
     }
 
-    private static boolean isItemDamageableAndUncategorized(Identifier id, Item item) {
-        if (item instanceof TridentItem ||
-            item instanceof MaceItem ||
-            item instanceof BowItem ||
-            item instanceof CrossbowItem ||
-            item instanceof ShieldItem ||
-            item instanceof AxeItem ||
-            item instanceof ShovelItem ||
-            item instanceof HoeItem ||
-            item instanceof ShearsItem ||
-            item instanceof FishingRodItem ||
-            item instanceof FlintAndSteelItem ||
-            item instanceof BrushItem ||
-            item instanceof FoodOnAStickItem) {
+    private static boolean isItemDamageable(Item item) {
+        try {
+            Integer maxDamage = item.components().get(DataComponents.MAX_DAMAGE);
+            return maxDamage != null && maxDamage > 0;
+        } catch (Throwable t) {
             return false;
         }
-
-        try {
-            java.lang.reflect.Field field = BuiltInRegistries.DATA_COMPONENT_INITIALIZERS.getClass().getDeclaredField("initializers");
-            field.setAccessible(true);
-            List<?> list = (List<?>) field.get(BuiltInRegistries.DATA_COMPONENT_INITIALIZERS);
-            for (Object entry : list) {
-                java.lang.reflect.Method keyMethod = entry.getClass().getMethod("key");
-                keyMethod.setAccessible(true);
-                ResourceKey<?> key = (ResourceKey<?>) keyMethod.invoke(entry);
-                if (key.identifier().equals(id)) {
-                    java.lang.reflect.Method initializerMethod = entry.getClass().getMethod("initializer");
-                    initializerMethod.setAccessible(true);
-                    Object initializer = initializerMethod.invoke(entry);
-                    
-                    DataComponentMap.Builder builder = DataComponentMap.builder();
-                    try {
-                        java.lang.reflect.Method runMethod = initializer.getClass().getMethod("run", DataComponentMap.Builder.class, net.minecraft.core.HolderLookup.Provider.class, ResourceKey.class);
-                        runMethod.setAccessible(true);
-                        runMethod.invoke(initializer, builder, null, key);
-                    } catch (Throwable ignored) {
-                    }
-                    
-                    DataComponentMap map = builder.build();
-                    
-                    if (map.has(DataComponents.TOOL) || map.has(DataComponents.EQUIPPABLE)) {
-                        return false;
-                    }
-                    
-                    if (map.has(DataComponents.MAX_DAMAGE)) {
-                        Integer maxDamage = map.get(DataComponents.MAX_DAMAGE);
-                        if (maxDamage != null && maxDamage > 0) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        } catch (Throwable e) {
-            DurabilityMultiplier.LOGGER.warn("Failed to check durability for item " + id + " using reflection initializers scan", e);
-        }
-
-        return false;
     }
 
     public static void registerDynamicRules(Identifier id) {
@@ -249,5 +201,37 @@ public class DurabilityRules {
             .description("Durability percentage for " + id + " (100 = vanilla, 200 = 2x, 50 = 0.5x)")
             .min(0)
             .register();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static java.util.Map<String, Integer> getActiveDynamicPercentages(ServerLevel level) {
+        java.util.Map<String, Integer> active = new java.util.HashMap<>();
+        for (Identifier id : DYNAMIC_ITEMS) {
+            String percentRuleName = "ig:percent_" + id.getNamespace() + "_" + id.getPath();
+            GameRule<Integer> rule = (GameRule<Integer>) DynamicGameRuleManager.getDynamicRules().get(percentRuleName);
+            if (rule != null) {
+                int val = DynamicGameRuleManager.getInt(level, rule);
+                if (val > 0) {
+                    active.put(id.toString(), val);
+                }
+            }
+        }
+        return active;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static java.util.Map<String, Boolean> getActiveDynamicInfinities(ServerLevel level) {
+        java.util.Map<String, Boolean> active = new java.util.HashMap<>();
+        for (Identifier id : DYNAMIC_ITEMS) {
+            String infinityRuleName = "ig:infinity_" + id.getNamespace() + "_" + id.getPath();
+            GameRule<Boolean> rule = (GameRule<Boolean>) DynamicGameRuleManager.getDynamicRules().get(infinityRuleName);
+            if (rule != null) {
+                boolean val = DynamicGameRuleManager.getBoolean(level, rule);
+                if (val) {
+                    active.put(id.toString(), true);
+                }
+            }
+        }
+        return active;
     }
 }

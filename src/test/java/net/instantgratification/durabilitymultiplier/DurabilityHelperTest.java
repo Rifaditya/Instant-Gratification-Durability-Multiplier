@@ -113,6 +113,13 @@ public class DurabilityHelperTest {
     }
 
     @Test
+    @DisplayName("Tooltip Formatting: OTHER category with custom item name")
+    void testOtherCategoryTooltipFormat() {
+        assertEquals("3x Amethyst Dagger Durability", DurabilityHelper.formatTooltip(300, DurabilityHelper.ItemCategory.OTHER, "Amethyst Dagger", DurabilityConfig.TooltipFormat.ADAPTIVE));
+        assertEquals("50% Ruby Greatsword Durability", DurabilityHelper.formatTooltip(50, DurabilityHelper.ItemCategory.OTHER, "Ruby Greatsword", DurabilityConfig.TooltipFormat.ADAPTIVE));
+    }
+
+    @Test
     @DisplayName("Cache Invalidation: clearCategoryCache executes cleanly")
     void testClearCategoryCache() {
         assertDoesNotThrow(DurabilityHelper::clearCategoryCache);

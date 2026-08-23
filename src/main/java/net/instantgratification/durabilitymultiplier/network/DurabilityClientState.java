@@ -60,6 +60,9 @@ public final class DurabilityClientState {
     
     private static boolean showTooltip = true;
 
+    private static java.util.Map<String, Integer> dynamicPercentages = java.util.Map.of();
+    private static java.util.Map<String, Boolean> dynamicInfinities = java.util.Map.of();
+
     private DurabilityClientState() {
     }
 
@@ -116,6 +119,9 @@ public final class DurabilityClientState {
         infinityElytra = payload.infinityElytra();
         
         showTooltip = payload.showTooltip();
+
+        dynamicPercentages = payload.dynamicPercentages() != null ? payload.dynamicPercentages() : java.util.Map.of();
+        dynamicInfinities = payload.dynamicInfinities() != null ? payload.dynamicInfinities() : java.util.Map.of();
     }
 
     // ==================== Accessors ====================
@@ -171,4 +177,12 @@ public final class DurabilityClientState {
     public static boolean infinityElytra() { return infinityElytra; }
 
     public static boolean showTooltip() { return showTooltip; }
+
+    public static int getDynamicPercent(String itemKey) {
+        return dynamicPercentages.getOrDefault(itemKey, 0);
+    }
+
+    public static boolean getDynamicInfinity(String itemKey) {
+        return dynamicInfinities.getOrDefault(itemKey, false);
+    }
 }
