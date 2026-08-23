@@ -1,8 +1,10 @@
+// Copyright (C) 2026 Dasik (Rifaditya) | GNU GPLv3
 package net.instantgratification.durabilitymultiplier.mixin;
 
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.instantgratification.durabilitymultiplier.registry.DurabilityRules;
 import org.spongepowered.asm.mixin.Mixin;
@@ -21,8 +23,23 @@ public abstract class MappedRegistryMixin<T> {
     private void onFreeze(CallbackInfoReturnable<Registry<T>> cir) {
         if (this.key().equals(Registries.ITEM)) {
             // All modded items have been registered and their components have been bound.
-            // GameRules registry is still unfrozen, so we can safely register dynamic GameRules!
-            DurabilityRules.registerDynamicRulesOnRegistryFreeze();
+            // Temporarily unfreeze BuiltInRegistries.GAME_RULE if it was already frozen, register dynamic rules, then refreeze.
+            if (BuiltInRegistries.GAME_RULE instanceof MappedRegistry<?> mappedGameRule) {
+                MappedRegistryAccessor accessor = (MappedRegistryAccessor) mappedGameRule;
+                boolean wasGameRuleFrozen = accessor.isFrozen();
+                if (wasGameRuleFrozen) {
+                    accessor.setFrozen(false);
+                }
+                try {
+                    DurabilityRules.registerDynamicRulesOnRegistryFreeze();
+                } finally {
+                    if (wasGameRuleFrozen) {
+                        accessor.setFrozen(true);
+                    }
+                }
+            } else {
+                DurabilityRules.registerDynamicRulesOnRegistryFreeze();
+            }
         }
     }
 }

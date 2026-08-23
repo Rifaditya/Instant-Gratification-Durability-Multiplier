@@ -1,5 +1,11 @@
 # Full Changelog History
 
+## [1.2.9+26.2] - 2026-08-23
+
+### Fixed
+- **Dynamic GameRule Registry Freeze Lockout**: Resolved a registry freeze timing conflict where modern Minecraft froze `BuiltInRegistries.GAME_RULE` before dynamic modded items finished registering during `BuiltInRegistries.ITEM` freeze. Introduced `MappedRegistryAccessor` to temporarily unfreeze `BuiltInRegistries.GAME_RULE` during dynamic rule registration, ensuring all dynamic item GameRules (`ig:percent_<mod>_<item>`, `ig:infinity_<mod>_<item>`, `ig:single_use_<mod>_<item>`) are properly registered and recognized by `/gamerule` commands with full in-game tab completion.
+- **Dynamic Mod Item Discovery Diagnostics**: Added startup log output detailing the exact count of discovered dynamic modded items and registered GameRules.
+
 ## [1.2.8+26.2] - 2026-08-23
 
 ### Added
