@@ -3,8 +3,8 @@
 ## [1.1.17+26.1.2] - 2026-08-23
 
 ### Fixed
-- **Dynamic Item Registration Timing & Event Listener**: Overhauled dynamic modded item discovery by calling `scanAndRegisterDynamicItems()` directly during initialization and registering a persistent `RegistryEntryAddedCallback.event(BuiltInRegistries.ITEM)` listener. Automatically registers all damageable modded items (e.g. Water's Gems) into vanilla's command system and Cloth Config whether other mods initialize before or after Durability Multiplier.
-- **Direct Registry Unfreeze During Rule Creation**: Wrapped dynamic rule registration (`registerDynamicRules`) directly with `MappedRegistryAccessor` to unlock `BuiltInRegistries.GAME_RULE` on demand whenever any mod registers a new item.
+- **Universal 3-Tier Dynamic Item Discovery Engine**: Upgraded to `DasikLibrary` `1.8.27` (`DynamicRegistryScanner`), implementing a 3-tier discovery pipeline (startup scan, real-time `RegistryEntryAddedCallback` listener, and `ServerLifecycleEvents.SERVER_STARTING` safety sweep) guaranteeing 100% modded damageable item discovery (such as Water's Gems) regardless of mod loading order.
+- **Centralized GameRule Registry Unfreeze**: Integrated `DynamicGameRuleManager`'s native on-demand registry unlocking, removing redundant local mixins and accessors while enabling full in-game `/gamerule` execution and autocomplete for all modded items.
 
 ## [1.1.16+26.1.2] - 2026-08-23
 
