@@ -40,5 +40,10 @@
         "java": ">=25",
         "fabric-api": "*",
         "dasik-library": ">=1.8.0"
+    },
+    "suggests": {
+        "cloth-config": "*",
+        "cloth_config": "*",
+        "modmenu": "*"
     }
 }

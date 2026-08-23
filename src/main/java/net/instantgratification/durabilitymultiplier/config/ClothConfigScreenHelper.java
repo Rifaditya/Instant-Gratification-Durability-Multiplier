@@ -536,29 +536,29 @@ public class ClothConfigScreenHelper {
                     // Add Percentage field
                     modCategory.add(entryBuilder.startIntField(
                         Component.translatable(item.getDescriptionId()).append(" Percent"),
-                        config.dynamicPercentages.getOrDefault(itemKey, 0))
+                        config.getForcedPercent(itemKey))
                             .setDefaultValue(0)
                             .setMin(-1)
                             .setTooltip(Component.literal("Specific percentage for " + itemKey + " (-1 = Single-Use, 0 = Inherit, >0 = Percentage). Default: 0."))
-                            .setSaveConsumer(val -> config.dynamicPercentages.put(itemKey, val))
+                            .setSaveConsumer(val -> config.setForcedPercent(itemKey, val))
                             .build());
 
                     // Add Infinity toggle
                     modCategory.add(entryBuilder.startBooleanToggle(
                         Component.translatable(item.getDescriptionId()).append(" God Mode"),
-                        config.dynamicInfinities.getOrDefault(itemKey, false))
+                        config.getForcedInfinity(itemKey))
                             .setDefaultValue(false)
                             .setTooltip(Component.literal("Enable unbreakable god mode for " + itemKey + ". Default: false."))
-                            .setSaveConsumer(val -> config.dynamicInfinities.put(itemKey, val))
+                            .setSaveConsumer(val -> config.setForcedInfinity(itemKey, val))
                             .build());
 
                     // Add Single-Use toggle
                     modCategory.add(entryBuilder.startBooleanToggle(
                         Component.translatable(item.getDescriptionId()).append(" Single-Use"),
-                        config.dynamicSingleUses.getOrDefault(itemKey, false))
+                        config.getForcedSingleUse(itemKey))
                             .setDefaultValue(false)
                             .setTooltip(Component.literal("Enable 1-hit break mode for " + itemKey + ". Default: false."))
-                            .setSaveConsumer(val -> config.dynamicSingleUses.put(itemKey, val))
+                            .setSaveConsumer(val -> config.setForcedSingleUse(itemKey, val))
                             .build());
                 }
 

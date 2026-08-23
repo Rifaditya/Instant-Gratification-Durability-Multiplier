@@ -214,4 +214,47 @@ public class DurabilityHelperTest {
         assertFalse(config.recordDiscoveredItem(null));
         assertFalse(config.recordDiscoveredItem(""));
     }
+
+    @Test
+    @DisplayName("Migration: migrateFromV1 migrates dynamic map fields to canonical forced maps")
+    void testMigrateFromV1DynamicMaps() {
+        DurabilityConfig config = new DurabilityConfig();
+        config.dynamicPercentages.put("legacy:sword", 250);
+        config.dynamicInfinities.put("legacy:shield", true);
+        config.dynamicSingleUses.put("legacy:glass_bow", true);
+
+        config.migrateFromV1();
+
+        assertTrue(config.forcedItems.contains("legacy:sword"));
+        assertTrue(config.forcedItems.contains("legacy:shield"));
+        assertTrue(config.forcedItems.contains("legacy:glass_bow"));
+        assertEquals(250, config.forcedPercentages.get("legacy:sword"));
+        assertTrue(config.forcedInfinities.get("legacy:shield"));
+        assertTrue(config.forcedSingleUses.get("legacy:glass_bow"));
+    }
+
+    @Test
+    @DisplayName("Setters: setForced setters update both forced and dynamic maps and mark dirty")
+    void testSetForcedSetters() {
+        DurabilityConfig config = DurabilityConfig.get();
+        String item = "custom:laser_cutter";
+
+        config.setForcedPercent(item, 350);
+        assertEquals(350, config.getForcedPercent(item));
+        assertTrue(config.forcedItems.contains(item));
+        assertEquals(350, config.forcedPercentages.get(item));
+        assertEquals(350, config.dynamicPercentages.get(item));
+
+        config.setForcedInfinity(item, true);
+        assertTrue(config.getForcedInfinity(item));
+        assertTrue(config.forcedInfinities.get(item));
+        assertTrue(config.dynamicInfinities.get(item));
+
+        config.setForcedSingleUse(item, true);
+        assertTrue(config.getForcedSingleUse(item));
+        assertTrue(config.forcedSingleUses.get(item));
+        assertTrue(config.dynamicSingleUses.get(item));
+
+        assertTrue(DurabilityConfig.isDirty());
+    }
 }
