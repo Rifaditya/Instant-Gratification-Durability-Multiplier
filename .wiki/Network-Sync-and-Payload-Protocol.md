@@ -13,7 +13,7 @@
 
 ## ⚡ Protocol Architecture
 
-Because tooltips are rendered on the physical client but GameRules exist on the logical server, Durability Multiplier uses Fabric Networking API to push live snapshots of all 25 GameRules to clients.
+Because tooltips are rendered on the physical client but GameRules exist on the logical server, Durability Multiplier uses Fabric Networking API to push live snapshots of all 73 static GameRules plus dynamic modded item rules to clients.
 
 ```mermaid
 sequenceDiagram
@@ -26,7 +26,7 @@ sequenceDiagram
 
     Note over Server,Client: Event 1: Player Joins World
     Server->>Net: ServerPlayConnectionEvents.JOIN
-    Net->>Net: Snapshot 25 GameRules
+    Net->>Net: Snapshot 73 GameRules + Dynamic Maps
     Net->>Client: Send DurabilityPayload (sync_rules)
     Client->>State: DurabilityClientState.apply(payload)
 
@@ -39,24 +39,36 @@ sequenceDiagram
 
 ---
 
-## 📦 Payload Structure (25 Fields)
+## 📦 Payload Structure (76 Fields & Dynamic Maps)
 
-`DurabilityPayload` serializes 25 fields efficiently using `FriendlyByteBuf` VarInts and Booleans:
+`DurabilityPayload` serializes all GameRules and dynamic maps efficiently using `FriendlyByteBuf` VarInts, Booleans, and Map codecs:
 
 ```java
 public record DurabilityPayload(
-    int multiplierGlobal,
-    int multiplierWeapons,
-    int multiplierSwords,
-    int multiplierSpears,
-    int multiplierTridents,
-    int multiplierMaces,
-    int multiplierBows,
-    int multiplierCrossbows,
-    int multiplierShields,
-    int multiplierTools,
-    int multiplierArmor,
-    int multiplierElytra,
+    int percentGlobal,
+    int percentWeapons,
+    int percentSwords,
+    int percentSpears,
+    int percentTridents,
+    int percentMaces,
+    int percentBows,
+    int percentCrossbows,
+    int percentShields,
+    int percentTools,
+    int percentPickaxes,
+    int percentAxes,
+    int percentShovels,
+    int percentHoes,
+    int percentShears,
+    int percentFishingRods,
+    int percentBrushes,
+    int percentFlintAndSteel,
+    int percentArmor,
+    int percentHelmets,
+    int percentChestplates,
+    int percentLeggings,
+    int percentBoots,
+    int percentElytra,
     
     boolean infinityGlobal,
     boolean infinityWeapons,
@@ -68,9 +80,50 @@ public record DurabilityPayload(
     boolean infinityCrossbows,
     boolean infinityShields,
     boolean infinityTools,
+    boolean infinityPickaxes,
+    boolean infinityAxes,
+    boolean infinityShovels,
+    boolean infinityHoes,
+    boolean infinityShears,
+    boolean infinityFishingRods,
+    boolean infinityBrushes,
+    boolean infinityFlintAndSteel,
     boolean infinityArmor,
+    boolean infinityHelmets,
+    boolean infinityChestplates,
+    boolean infinityLeggings,
+    boolean infinityBoots,
     boolean infinityElytra,
     
-    boolean showTooltip
+    boolean singleUseGlobal,
+    boolean singleUseWeapons,
+    boolean singleUseSwords,
+    boolean singleUseSpears,
+    boolean singleUseTridents,
+    boolean singleUseMaces,
+    boolean singleUseBows,
+    boolean singleUseCrossbows,
+    boolean singleUseShields,
+    boolean singleUseTools,
+    boolean singleUsePickaxes,
+    boolean singleUseAxes,
+    boolean singleUseShovels,
+    boolean singleUseHoes,
+    boolean singleUseShears,
+    boolean singleUseFishingRods,
+    boolean singleUseBrushes,
+    boolean singleUseFlintAndSteel,
+    boolean singleUseArmor,
+    boolean singleUseHelmets,
+    boolean singleUseChestplates,
+    boolean singleUseLeggings,
+    boolean singleUseBoots,
+    boolean singleUseElytra,
+
+    boolean showTooltip,
+    
+    java.util.Map<String, Integer> dynamicPercentages,
+    java.util.Map<String, Boolean> dynamicInfinities,
+    java.util.Map<String, Boolean> dynamicSingleUses
 ) implements CustomPacketPayload
 ```
