@@ -18,13 +18,24 @@ Durability Multiplier provides immediate, unambiguous feedback directly on item 
 ### Tooltip Visual Styles
 
 | Status | Rendered Text | Visual Appearance | Color Code |
-| :--- | :--- | :--- | :---: |
-| **God Mode Active** | `✦ UNBREAKABLE` | **✦ UNBREAKABLE** | Gold, Bold (`§6§l`) |
-| **2x Multiplier on Sword** | `⟨2x Swords Durability⟩` | ⟨2x Swords Durability⟩ | Gray (`§7`) |
-| **4x Multiplier on Pickaxe** | `⟨4x Tools Durability⟩` | ⟨4x Tools Durability⟩ | Gray (`§7`) |
-| **5x Multiplier on Elytra** | `⟨5x Elytra Durability⟩` | ⟨5x Elytra Durability⟩ | Gray (`§7`) |
-| **3x Multiplier on Mod Item** | `⟨3x Ruby Scythe Durability⟩` | ⟨3x Ruby Scythe Durability⟩ | Gray (`§7`) |
-| **Vanilla Multiplier (1x)** | *(None)* | *(No extra tooltip line rendered)* | — |
+| :--- | :--- | :--- | :--- |
+| **God Mode Active** | `✦ UNBREAKABLE` | **✦ UNBREAKABLE** | Gold, Bold (`ChatFormatting.GOLD`, `BOLD`) |
+| **Single-Use (Glass Mode)** | `⟨SINGLE-USE⟩` | ⟨SINGLE-USE⟩ | Gray (`ChatFormatting.GRAY`) |
+| **200% / 2x Multiplier** | `⟨2x Swords Durability⟩` | ⟨2x Swords Durability⟩ | Gray (`ChatFormatting.GRAY`) |
+| **150% Durability** | `⟨150% Chestplates Durability⟩` | ⟨150% Chestplates Durability⟩ | Gray (`ChatFormatting.GRAY`) |
+| **50% (Half Durability)** | `⟨50% Swords Durability⟩` | ⟨50% Swords Durability⟩ | Gray (`ChatFormatting.GRAY`) |
+| **500% / 5x Multiplier** | `⟨5x Pickaxes Durability⟩` | ⟨5x Pickaxes Durability⟩ | Gray (`ChatFormatting.GRAY`) |
+| **Modded Item Override** | `⟨300% Plasma Cutter Durability⟩` | ⟨300% Plasma Cutter Durability⟩ | Gray (`ChatFormatting.GRAY`) |
+| **Vanilla Baseline (100%)** | *(None)* | *(No extra tooltip line rendered)* | — |
+
+---
+
+## 🎨 Tooltip Formatting Modes (`tooltipFormat`)
+
+The mod supports 3 configurable display formats via `config/durability-multiplier.json` and ModMenu GUI:
+1. **`ADAPTIVE` (Default)**: Automatically displays clean integer multipliers (`2x`, `5x`) for even hundreds, and percentages (`50%`, `150%`) otherwise.
+2. **`PERCENTAGE`**: Always displays explicit percentages (e.g. `200% Swords Durability`, `50% Pickaxes Durability`).
+3. **`MULTIPLIER`**: Always displays decimal multipliers (e.g. `2x Swords Durability`, `0.5x Swords Durability`, `1.5x Chestplates Durability`).
 
 ---
 

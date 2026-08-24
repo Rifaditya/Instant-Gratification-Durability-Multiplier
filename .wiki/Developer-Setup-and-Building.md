@@ -6,7 +6,7 @@
 | **Gradle Wrapper** | **Gradle 8.x / 9.x** |
 | **Fabric Loom** | `1.15.2` (`net.fabricmc.fabric-loom`) |
 | **Target Minecraft** | `26.1.2` |
-| **DasikLibrary Dependency** | `1.8.2` |
+| **DasikLibrary Dependency** | `1.8.28` |
 
 ---
 

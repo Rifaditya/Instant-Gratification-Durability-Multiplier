@@ -25,14 +25,13 @@ net.instantgratification.durabilitymultiplier/
 ├── mixin/
 │   ├── GameRulesMixin.java             # Intercepts GameRules.set() for network sync
 │   ├── ItemStackDurabilityMixin.java   # Intercepts hurtAndBreak() for damage reduction
-│   ├── ItemStackTooltipMixin.java      # Intercepts addDetailsToTooltip() for status lines
-│   └── MappedRegistryMixin.java        # Intercepts freeze() for dynamic modded item scan
+│   └── ItemStackTooltipMixin.java      # Intercepts addDetailsToTooltip() for status lines
 ├── network/
-│   ├── DurabilityClientState.java      # Client-side cache of 25 GameRules
+│   ├── DurabilityClientState.java      # Client-side cache of 73 GameRules & dynamic mod rules
 │   ├── DurabilityNetworking.java       # S2C packet registration & player sync logic
 │   └── DurabilityPayload.java          # CustomPacketPayload record definition
 └── registry/
-    └── DurabilityRules.java            # GameRuleCategory & 25 GameRules definitions
+    └── DurabilityRules.java            # GameRuleCategory & 73 GameRules definitions
 ```
 
 ---
@@ -51,7 +50,7 @@ net.instantgratification.durabilitymultiplier/
 * **Target Method**: `addDetailsToTooltip(Item.TooltipContext, TooltipDisplay, Player, TooltipFlag, Consumer<Component>)V`
 * **Injection Point**: `@At("TAIL")`
 * **Handler Method**: `dm$addDurabilityTooltip(...)`
-* **Design Rationale**: Appends gold bold `✦ UNBREAKABLE` or gray `⟨Nx Category Durability⟩` to item hover tooltips.
+* **Design Rationale**: Appends gold bold `✦ UNBREAKABLE`, gray `⟨SINGLE-USE⟩`, or gray `⟨Nx Category Durability⟩` / `⟨P% Category Durability⟩` to item hover tooltips.
 
 ### 3. `GameRulesMixin`
 * **Target Class**: `net.minecraft.world.level.gamerules.GameRules`
@@ -60,9 +59,11 @@ net.instantgratification.durabilitymultiplier/
 * **Handler Method**: `onSet(GameRule<T> key, T value, @Nullable MinecraftServer server, CallbackInfo ci)`
 * **Design Rationale**: When a rule in `DURABILITY_MULTIPLIER` category changes, triggers `DurabilityNetworking.syncToAll(server)` to push updated values to all clients in real time.
 
-### 4. `MappedRegistryMixin`
-* **Target Class**: `net.minecraft.core.MappedRegistry`
-* **Target Method**: `freeze()Lnet/minecraft/core/Registry;`
-* **Injection Point**: `@At("TAIL")`
-* **Handler Method**: `onFreeze(CallbackInfoReturnable<Registry<T>> cir)`
-* **Design Rationale**: When `Registries.ITEM` freezes, scans for uncategorized damageable modded items and registers dynamic GameRules.
+---
+
+## 🔄 Dynamic Modded Item Registry Scanning
+
+Dynamic item registration is powered by **`DasikLibrary`**'s `DynamicRegistryScanner`:
+* **Hook Method**: `DynamicRegistryScanner.subscribe(BuiltInRegistries.ITEM, DurabilityRules::isItemDamageable, (id, item) -> { ... })`
+* **Lifecycle**: Universal 3-tier discovery scanner (Startup sweep, live entry callbacks during external mod loading, and server-start safety sweep).
+* **Zero Custom Registry Mixins**: Replaces manual registry mixins with standard zero-crash classloader-safe event callbacks.
