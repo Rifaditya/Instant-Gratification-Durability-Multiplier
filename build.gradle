@@ -13,8 +13,8 @@ base {
 repositories {
     mavenLocal()
     maven { url = "https://maven.fabricmc.net/" }
+    maven { url = "https://maven.isxander.dev/releases" }
     maven { url = "https://maven.terraformersmc.com/releases/" }
-    maven { url = "https://maven.shedaniel.me/" }
     mavenCentral()
 }
 
@@ -28,8 +28,8 @@ dependencies {
         exclude group: "net.fabricmc.fabric-api"
     }
 
-    compileOnly "me.shedaniel.cloth:cloth-config-fabric:26.1.154"
-    runtimeOnly "me.shedaniel.cloth:cloth-config-fabric:26.1.154"
+    compileOnly "dev.isxander:yet-another-config-lib:3.9.5+26.2-fabric"
+    runtimeOnly "dev.isxander:yet-another-config-lib:3.9.5+26.2-fabric"
     compileOnly "com.terraformersmc:modmenu:18.0.0-beta.1"
     runtimeOnly "com.terraformersmc:modmenu:18.0.0-beta.1"
     testImplementation "org.junit.jupiter:junit-jupiter:5.11.4"
@@ -96,6 +96,22 @@ afterEvaluate {
                             into localArchiveDir
                         }
                         println "[AUTO-ARCHIVE] Successfully copied ${jarFile.name} to local Archive: ${localArchiveDir.canonicalPath}"
+                    }
+
+                    // Modrinth Profile Sync
+                    def profileDir = file("C:/Users/fmrif/AppData/Roaming/ModrinthApp/profiles/Fabric 26.2 (1)/mods")
+                    if (profileDir.exists()) {
+                        profileDir.listFiles().each { file ->
+                            if (file.name.startsWith(project.archives_base_name) && file.name.endsWith(".jar") && !file.name.equals(jarFile.name)) {
+                                file.delete()
+                                println "[MODRINTH-SYNC] Purged old version from launcher profile: ${file.name}"
+                            }
+                        }
+                        copy {
+                            from jarFile
+                            into profileDir
+                        }
+                        println "[MODRINTH-SYNC] Deployed ${jarFile.name} to ${profileDir.absolutePath}"
                     }
 
                     // 2. Central Release Hub Archives Sync
