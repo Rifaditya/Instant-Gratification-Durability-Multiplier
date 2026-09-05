@@ -32,11 +32,17 @@
     "custom": {
         "modrinth": {
             "slug": "instant-gratification-durability-multiplier"
+        },
+        "modmenu": {
+            "links": {
+                "modmenu.donate": "https://ko-fi.com/dasikigaijin",
+                "modmenu.kofi": "https://ko-fi.com/dasikigaijin"
+            }
         }
     },
     "depends": {
         "fabricloader": ">=0.16.9",
-        "minecraft": ">=26.2-",
+        "minecraft": ">=26.3-",
         "java": ">=25",
         "fabric-api": "*",
         "dasik-library": ">=1.8.0"

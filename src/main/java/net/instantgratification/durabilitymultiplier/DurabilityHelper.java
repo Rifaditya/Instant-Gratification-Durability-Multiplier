@@ -789,16 +789,16 @@ public final class DurabilityHelper {
                 || path.contains("pickaxe") || path.contains("mattock") || path.contains("drill")) {
             return ItemCategory.PICKAXE;
         }
-        if (stack.is(ItemTags.AXES) || stack.is(C_AXES) || stack.getItem() instanceof AxeItem
+        if (stack.is(ItemTags.AXES) || stack.is(C_AXES)
                 || (path.contains("axe") && !path.contains("pickaxe")) || path.contains("hatchet")
                 || ((path.endsWith("_saw") || path.contains("saw_") || path.contains("_saw_") || path.equals("saw") || path.contains("chainsaw") || path.contains("buzzsaw")) && !path.contains("jigsaw"))) {
             return ItemCategory.AXE;
         }
-        if (stack.is(ItemTags.SHOVELS) || stack.is(C_SHOVELS) || stack.getItem() instanceof ShovelItem
+        if (stack.is(ItemTags.SHOVELS) || stack.is(C_SHOVELS)
                 || path.contains("shovel") || path.contains("spade")) {
             return ItemCategory.SHOVEL;
         }
-        if (stack.is(ItemTags.HOES) || stack.is(C_HOES) || stack.getItem() instanceof HoeItem
+        if (stack.is(ItemTags.HOES) || stack.is(C_HOES)
                 || path.contains("hoe") || path.contains("sickle")) {
             return ItemCategory.HOE;
         }

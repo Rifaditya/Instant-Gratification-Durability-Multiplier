@@ -6,6 +6,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
+import java.util.Map;
 
 /**
  * Server-to-client payload carrying all GameRule values.
@@ -178,9 +179,53 @@ public record DurabilityPayload(
         
         buf.writeBoolean(showTooltip);
         
-        buf.writeMap(dynamicPercentages != null ? dynamicPercentages : java.util.Map.of(), FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeVarInt);
-        buf.writeMap(dynamicInfinities != null ? dynamicInfinities : java.util.Map.of(), FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeBoolean);
-        buf.writeMap(dynamicSingleUses != null ? dynamicSingleUses : java.util.Map.of(), FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeBoolean);
+        writeStringIntMap(buf, dynamicPercentages);
+        writeStringBoolMap(buf, dynamicInfinities);
+        writeStringBoolMap(buf, dynamicSingleUses);
+    }
+
+    private static void writeStringIntMap(FriendlyByteBuf buf, Map<String, Integer> map) {
+        if (map == null || map.isEmpty()) {
+            buf.writeVarInt(0);
+            return;
+        }
+        buf.writeVarInt(map.size());
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            buf.writeUtf(entry.getKey());
+            buf.writeVarInt(entry.getValue());
+        }
+    }
+
+    private static void writeStringBoolMap(FriendlyByteBuf buf, Map<String, Boolean> map) {
+        if (map == null || map.isEmpty()) {
+            buf.writeVarInt(0);
+            return;
+        }
+        buf.writeVarInt(map.size());
+        for (Map.Entry<String, Boolean> entry : map.entrySet()) {
+            buf.writeUtf(entry.getKey());
+            buf.writeBoolean(entry.getValue());
+        }
+    }
+
+    private static Map<String, Integer> readStringIntMap(FriendlyByteBuf buf) {
+        int size = buf.readVarInt();
+        if (size <= 0) return Map.of();
+        Map<String, Integer> map = new java.util.HashMap<>(size);
+        for (int i = 0; i < size; i++) {
+            map.put(buf.readUtf(), buf.readVarInt());
+        }
+        return map;
+    }
+
+    private static Map<String, Boolean> readStringBoolMap(FriendlyByteBuf buf) {
+        int size = buf.readVarInt();
+        if (size <= 0) return Map.of();
+        Map<String, Boolean> map = new java.util.HashMap<>(size);
+        for (int i = 0; i < size; i++) {
+            map.put(buf.readUtf(), buf.readBoolean());
+        }
+        return map;
     }
 
     private static DurabilityPayload read(FriendlyByteBuf buf) {
@@ -262,9 +307,9 @@ public record DurabilityPayload(
                 
                 buf.readBoolean(),
                 
-                buf.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readVarInt),
-                buf.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readBoolean),
-                buf.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readBoolean));
+                readStringIntMap(buf),
+                readStringBoolMap(buf),
+                readStringBoolMap(buf));
     }
 
     @Override
