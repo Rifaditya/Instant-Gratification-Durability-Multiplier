@@ -41,6 +41,4 @@ Open this file in your editor and change `[ ]` to `[x]` when you publish a versi
 - [ ] **`1.1.20+26.1.2`** (2026-08-23) - - **Modded Item Config Auto-Population & Live Command Recognition**: `DynamicRegistryScanner` automatically populates discovered damageable modded items into `forcedItems` and `forcedPercentages` (default `0`) with `putIfAbsent` customization retention, batch-saved lifecycle, and live Brigadier command recognition.
 - [ ] **`1.1.21+26.1.2`** (2026-08-24) - - **Strict Durability Filtering & Keyword Boundary Guard**: Enforced strict `DataComponents.MAX_DAMAGE > 0` validation in `DurabilityRules.isItemDamageable` to eliminate false-positive furniture/block discovery, and tightened keyword boundaries in `classifyItemRaw` (including explicit `wardrobe` exclusion).
 - [ ] **`1.1.22+26.1.2`** (2026-09-05) - - **Cloth Config to YACL v3 Migration & Ko-fi Support Button**: Migrated in-game configuration GUI from Cloth Config to YetAnotherConfigLib v3 (YACL) with 4 structured categories, integrated top-pinned `☕ Support Solo Dev on Ko-fi` creator button, and bumped DasikLibrary to `1.8.38`.
-
-
-
+- [ ] **`1.1.23+26.1.2`** (2026-09-05) - - **Multi-Category Ko-fi Support & Config UI Polish**: Added Ko-fi creator support button across all 5 configuration category tabs (Percentages, God Mode, Single-Use, General, and Modded Items) and reframed config notice descriptions.
