@@ -155,7 +155,7 @@
     "config.durability-multiplier.tooltip_format": "Tooltip Display Format",
     "config.durability-multiplier.tooltip_format.description": "Format used when rendering durability modifiers on item tooltips: Adaptive ('2x' for round double/triple, '%' for reductions/fractions), Percentage (always '%'), or Multiplier (always 'x').",
     "config.durability-multiplier.no_modded_items": "No custom or uncategorized modded items found. Note: Standard modded weapons, tools, and armor are already automatically handled under the main Percentages, God Mode, and Single-Use categories.",
-    "config.durability-multiplier.warning": "WARNING: Changes made here only affect the baseline defaults for NEW worlds. To configure your active/existing world, use the in-game /gamerule screen or command instead.",
+    "config.durability-multiplier.warning": "Configure global default settings. Active worlds can be adjusted in-game via Game Rules.",
     "dasiklibrary.support.kofi.button": "☕ Support Solo Dev on Ko-fi",
     "dasiklibrary.support.kofi.tooltip": "Opens Ko-fi to support the creator directly (opens browser link)"
 }
