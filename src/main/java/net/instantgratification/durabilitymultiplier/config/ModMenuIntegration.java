@@ -1,7 +1,4 @@
-/*
- * Standard Core v2.1
- * Verified against: ModMenuApi.java (ModMenu 18+)
- */
+// Copyright (C) 2026 Dasik (Rifaditya) | GNU GPLv3
 package net.instantgratification.durabilitymultiplier.config;
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
@@ -11,10 +8,10 @@ import net.dasik.social.api.config.GuiHelper;
 public class ModMenuIntegration implements ModMenuApi {
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
-        return GuiHelper.getOptionalFactory(
+        return GuiHelper.getOptionalYaclFactory(
             "durability-multiplier",
-            "net.instantgratification.durabilitymultiplier.config.ClothConfigScreenHelper",
-            "createFactory"
+            "net.instantgratification.durabilitymultiplier.config.YaclScreenHelper",
+            "createScreen"
         );
     }
 }
