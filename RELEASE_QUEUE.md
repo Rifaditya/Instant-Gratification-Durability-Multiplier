@@ -6,7 +6,7 @@ Open this file in your editor and change `[ ]` to `[x]` when you publish a versi
 ## 🚀 Published & Backlog Queue
 
 - [x] **`1.0.0`** (2026-02-15) - - Initial release. - - Global and Tool specific durability scaling.
-- [x] **`1.0.1`** (2026-02-16) - - Tooltips not displaying: client-side rendering could not access server-side GameRules - - Added Fabric Networking sync: GameRule values are now sent to clients on join
+- [ ] **`1.0.1`** (2026-02-16) - - Tooltips not displaying: client-side rendering could not access server-side GameRules - - Added Fabric Networking sync: GameRule values are now sent to clients on join
 - [x] **`1.0.2`** (2026-02-16) - - Updated tooltip format to be more explicit: "4x Tools" -> "4x Tools Durability".
 - [x] **`1.0.3`** (2026-02-15) - - Tooltip changes now apply immediately without requiring a world/game reload (synced on gamerule change).
 - [x] **`1.0.3+build.1`** (2026-02-19) - - **DasikLibrary Integration**: Switched to standalone dependency (JiJ removed). - - **Versioning**: Adopted strict Build Number policy.
