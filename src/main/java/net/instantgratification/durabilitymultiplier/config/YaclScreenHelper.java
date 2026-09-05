@@ -71,7 +71,14 @@ public class YaclScreenHelper {
 
         // 2. --- GOD MODE CATEGORY ---
         var godModeGroup = OptionGroup.createBuilder()
-            .name(Component.translatable("config.durability-multiplier.category.godmode"))
+            .name(Component.translatable("config.durability-multiplier.category.godmode"));
+
+        Option<?> godModeSupportButton = (Option<?>) DasikSupportHelper.createYaclButton();
+        if (godModeSupportButton != null) {
+            godModeGroup.option(godModeSupportButton);
+        }
+
+        godModeGroup
             .option(createBoolOption("gamerule.ig.dm_infinity_global", "gamerule.ig.dm_infinity_global.description", false, () -> config.infinityGlobal, val -> config.infinityGlobal = val))
             .option(createBoolOption("gamerule.ig.dm_infinity_weapons", "gamerule.ig.dm_infinity_weapons.description", false, () -> config.infinityWeapons, val -> config.infinityWeapons = val))
             .option(createBoolOption("gamerule.ig.dm_infinity_swords", "gamerule.ig.dm_infinity_swords.description", false, () -> config.infinitySwords, val -> config.infinitySwords = val))
@@ -104,7 +111,14 @@ public class YaclScreenHelper {
 
         // 3. --- SINGLE-USE CATEGORY ---
         var singleUseGroup = OptionGroup.createBuilder()
-            .name(Component.translatable("config.durability-multiplier.category.singleuse"))
+            .name(Component.translatable("config.durability-multiplier.category.singleuse"));
+
+        Option<?> singleUseSupportButton = (Option<?>) DasikSupportHelper.createYaclButton();
+        if (singleUseSupportButton != null) {
+            singleUseGroup.option(singleUseSupportButton);
+        }
+
+        singleUseGroup
             .option(createBoolOption("gamerule.ig.dm_single_use_global", "gamerule.ig.dm_single_use_global.description", false, () -> config.singleUseGlobal, val -> config.singleUseGlobal = val))
             .option(createBoolOption("gamerule.ig.dm_single_use_weapons", "gamerule.ig.dm_single_use_weapons.description", false, () -> config.singleUseWeapons, val -> config.singleUseWeapons = val))
             .option(createBoolOption("gamerule.ig.dm_single_use_swords", "gamerule.ig.dm_single_use_swords.description", false, () -> config.singleUseSwords, val -> config.singleUseSwords = val))
@@ -137,7 +151,14 @@ public class YaclScreenHelper {
 
         // 4. --- GENERAL CATEGORY ---
         var generalGroup = OptionGroup.createBuilder()
-            .name(Component.translatable("config.durability-multiplier.category.general"))
+            .name(Component.translatable("config.durability-multiplier.category.general"));
+
+        Option<?> generalSupportButton = (Option<?>) DasikSupportHelper.createYaclButton();
+        if (generalSupportButton != null) {
+            generalGroup.option(generalSupportButton);
+        }
+
+        generalGroup
             .option(Option.<Boolean>createBuilder()
                 .name(Component.translatable("gamerule.ig.dm_show_tooltip"))
                 .description(OptionDescription.of(Component.translatable("gamerule.ig.dm_show_tooltip.description")))
@@ -159,6 +180,15 @@ public class YaclScreenHelper {
         // 5. --- MODDED ITEMS CATEGORY ---
         var moddedCategoryBuilder = ConfigCategory.createBuilder()
             .name(Component.translatable("config.durability-multiplier.category.modded"));
+
+        var moddedItemsGroup = OptionGroup.createBuilder()
+            .name(Component.translatable("config.durability-multiplier.category.modded"));
+
+        Option<?> moddedSupportButton = (Option<?>) DasikSupportHelper.createYaclButton();
+        if (moddedSupportButton != null) {
+            moddedItemsGroup.option(moddedSupportButton);
+        }
+        moddedCategoryBuilder.group(moddedItemsGroup.build());
 
         boolean hasModdedItems = !DurabilityRules.DYNAMIC_ITEMS.isEmpty();
         if (hasModdedItems) {
