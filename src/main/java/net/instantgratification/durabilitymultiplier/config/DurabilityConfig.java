@@ -269,6 +269,49 @@ public class DurabilityConfig {
             },
             null, org.slf4j.LoggerFactory.getLogger("DurabilityMultiplier")
         );
+        INSTANCE.validate();
+    }
+
+    public void validate() {
+        percentGlobal = Math.max(percentGlobal, -1);
+        percentWeapons = Math.max(percentWeapons, -1);
+        percentSwords = Math.max(percentSwords, -1);
+        percentSpears = Math.max(percentSpears, -1);
+        percentTridents = Math.max(percentTridents, -1);
+        percentMaces = Math.max(percentMaces, -1);
+        percentBows = Math.max(percentBows, -1);
+        percentCrossbows = Math.max(percentCrossbows, -1);
+        percentTools = Math.max(percentTools, -1);
+        percentPickaxes = Math.max(percentPickaxes, -1);
+        percentAxes = Math.max(percentAxes, -1);
+        percentShovels = Math.max(percentShovels, -1);
+        percentHoes = Math.max(percentHoes, -1);
+        percentShears = Math.max(percentShears, -1);
+        percentFishingRods = Math.max(percentFishingRods, -1);
+        percentBrushes = Math.max(percentBrushes, -1);
+        percentFlintAndSteel = Math.max(percentFlintAndSteel, -1);
+        percentArmor = Math.max(percentArmor, -1);
+        percentHelmets = Math.max(percentHelmets, -1);
+        percentChestplates = Math.max(percentChestplates, -1);
+        percentLeggings = Math.max(percentLeggings, -1);
+        percentBoots = Math.max(percentBoots, -1);
+        percentElytra = Math.max(percentElytra, -1);
+        percentShields = Math.max(percentShields, -1);
+
+        if (forcedPercentages != null) {
+            for (java.util.Map.Entry<String, Integer> e : forcedPercentages.entrySet()) {
+                if (e.getValue() != null) {
+                    e.setValue(Math.max(e.getValue(), -1));
+                }
+            }
+        }
+        if (dynamicPercentages != null) {
+            for (java.util.Map.Entry<String, Integer> e : dynamicPercentages.entrySet()) {
+                if (e.getValue() != null) {
+                    e.setValue(Math.max(e.getValue(), -1));
+                }
+            }
+        }
     }
 
     public void migrateFromV1() {

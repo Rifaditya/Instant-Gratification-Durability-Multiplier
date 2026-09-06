@@ -374,13 +374,13 @@ public final class DurabilityHelper {
         if (percent <= 0 || percent == 100)
             return originalAmount;
 
-        int totalDamageUnits = originalAmount * 100;
-        int baseDamage = totalDamageUnits / percent;
-        int remainder = totalDamageUnits % percent;
+        long totalDamageUnits = (long) originalAmount * 100L;
+        long baseDamage = totalDamageUnits / percent;
+        long remainder = totalDamageUnits % percent;
         if (remainder > 0 && random.nextInt(percent) < remainder) {
             baseDamage++;
         }
-        return baseDamage;
+        return (int) Math.min(baseDamage, (long) Integer.MAX_VALUE);
     }
 
     public static int reduceDamage(int originalAmount, ServerLevel level, ItemStack stack) {
