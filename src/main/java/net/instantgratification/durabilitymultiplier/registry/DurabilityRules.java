@@ -125,30 +125,30 @@ public class DurabilityRules {
 
     public static void register() {
         DurabilityConfig config = DurabilityConfig.get();
-        DM_PERCENT_GLOBAL = DynamicGameRuleManager.integerRule("ig:dm_percent_global", DURABILITY_MULTIPLIER, config.percentGlobal).min(-1).register();
-        DM_PERCENT_WEAPONS = DynamicGameRuleManager.integerRule("ig:dm_percent_weapons", DURABILITY_MULTIPLIER, config.percentWeapons).min(-1).register();
-        DM_PERCENT_SWORDS = DynamicGameRuleManager.integerRule("ig:dm_percent_swords", DURABILITY_MULTIPLIER, config.percentSwords).min(-1).register();
-        DM_PERCENT_SPEARS = DynamicGameRuleManager.integerRule("ig:dm_percent_spears", DURABILITY_MULTIPLIER, config.percentSpears).min(-1).register();
-        DM_PERCENT_TRIDENTS = DynamicGameRuleManager.integerRule("ig:dm_percent_tridents", DURABILITY_MULTIPLIER, config.percentTridents).min(-1).register();
-        DM_PERCENT_MACES = DynamicGameRuleManager.integerRule("ig:dm_percent_maces", DURABILITY_MULTIPLIER, config.percentMaces).min(-1).register();
-        DM_PERCENT_BOWS = DynamicGameRuleManager.integerRule("ig:dm_percent_bows", DURABILITY_MULTIPLIER, config.percentBows).min(-1).register();
-        DM_PERCENT_CROSSBOWS = DynamicGameRuleManager.integerRule("ig:dm_percent_crossbows", DURABILITY_MULTIPLIER, config.percentCrossbows).min(-1).register();
-        DM_PERCENT_TOOLS = DynamicGameRuleManager.integerRule("ig:dm_percent_tools", DURABILITY_MULTIPLIER, config.percentTools).min(-1).register();
-        DM_PERCENT_PICKAXES = DynamicGameRuleManager.integerRule("ig:dm_percent_pickaxes", DURABILITY_MULTIPLIER, config.percentPickaxes).min(-1).register();
-        DM_PERCENT_AXES = DynamicGameRuleManager.integerRule("ig:dm_percent_axes", DURABILITY_MULTIPLIER, config.percentAxes).min(-1).register();
-        DM_PERCENT_SHOVELS = DynamicGameRuleManager.integerRule("ig:dm_percent_shovels", DURABILITY_MULTIPLIER, config.percentShovels).min(-1).register();
-        DM_PERCENT_HOES = DynamicGameRuleManager.integerRule("ig:dm_percent_hoes", DURABILITY_MULTIPLIER, config.percentHoes).min(-1).register();
-        DM_PERCENT_SHEARS = DynamicGameRuleManager.integerRule("ig:dm_percent_shears", DURABILITY_MULTIPLIER, config.percentShears).min(-1).register();
-        DM_PERCENT_FISHING_RODS = DynamicGameRuleManager.integerRule("ig:dm_percent_fishing_rods", DURABILITY_MULTIPLIER, config.percentFishingRods).min(-1).register();
-        DM_PERCENT_BRUSHES = DynamicGameRuleManager.integerRule("ig:dm_percent_brushes", DURABILITY_MULTIPLIER, config.percentBrushes).min(-1).register();
-        DM_PERCENT_FLINT_AND_STEEL = DynamicGameRuleManager.integerRule("ig:dm_percent_flint_and_steel", DURABILITY_MULTIPLIER, config.percentFlintAndSteel).min(-1).register();
-        DM_PERCENT_ARMOR = DynamicGameRuleManager.integerRule("ig:dm_percent_armor", DURABILITY_MULTIPLIER, config.percentArmor).min(-1).register();
-        DM_PERCENT_HELMETS = DynamicGameRuleManager.integerRule("ig:dm_percent_helmets", DURABILITY_MULTIPLIER, config.percentHelmets).min(-1).register();
-        DM_PERCENT_CHESTPLATES = DynamicGameRuleManager.integerRule("ig:dm_percent_chestplates", DURABILITY_MULTIPLIER, config.percentChestplates).min(-1).register();
-        DM_PERCENT_LEGGINGS = DynamicGameRuleManager.integerRule("ig:dm_percent_leggings", DURABILITY_MULTIPLIER, config.percentLeggings).min(-1).register();
-        DM_PERCENT_BOOTS = DynamicGameRuleManager.integerRule("ig:dm_percent_boots", DURABILITY_MULTIPLIER, config.percentBoots).min(-1).register();
-        DM_PERCENT_ELYTRA = DynamicGameRuleManager.integerRule("ig:dm_percent_elytra", DURABILITY_MULTIPLIER, config.percentElytra).min(-1).register();
-        DM_PERCENT_SHIELDS = DynamicGameRuleManager.integerRule("ig:dm_percent_shields", DURABILITY_MULTIPLIER, config.percentShields).min(-1).register();
+        DM_PERCENT_GLOBAL = DynamicGameRuleManager.integerRule("ig:dm_percent_global", DURABILITY_MULTIPLIER, config.percentGlobal).range(-1, Integer.MAX_VALUE).register();
+        DM_PERCENT_WEAPONS = DynamicGameRuleManager.integerRule("ig:dm_percent_weapons", DURABILITY_MULTIPLIER, config.percentWeapons).range(-1, Integer.MAX_VALUE).register();
+        DM_PERCENT_SWORDS = DynamicGameRuleManager.integerRule("ig:dm_percent_swords", DURABILITY_MULTIPLIER, config.percentSwords).range(-1, Integer.MAX_VALUE).register();
+        DM_PERCENT_SPEARS = DynamicGameRuleManager.integerRule("ig:dm_percent_spears", DURABILITY_MULTIPLIER, config.percentSpears).range(-1, Integer.MAX_VALUE).register();
+        DM_PERCENT_TRIDENTS = DynamicGameRuleManager.integerRule("ig:dm_percent_tridents", DURABILITY_MULTIPLIER, config.percentTridents).range(-1, Integer.MAX_VALUE).register();
+        DM_PERCENT_MACES = DynamicGameRuleManager.integerRule("ig:dm_percent_maces", DURABILITY_MULTIPLIER, config.percentMaces).range(-1, Integer.MAX_VALUE).register();
+        DM_PERCENT_BOWS = DynamicGameRuleManager.integerRule("ig:dm_percent_bows", DURABILITY_MULTIPLIER, config.percentBows).range(-1, Integer.MAX_VALUE).register();
+        DM_PERCENT_CROSSBOWS = DynamicGameRuleManager.integerRule("ig:dm_percent_crossbows", DURABILITY_MULTIPLIER, config.percentCrossbows).range(-1, Integer.MAX_VALUE).register();
+        DM_PERCENT_TOOLS = DynamicGameRuleManager.integerRule("ig:dm_percent_tools", DURABILITY_MULTIPLIER, config.percentTools).range(-1, Integer.MAX_VALUE).register();
+        DM_PERCENT_PICKAXES = DynamicGameRuleManager.integerRule("ig:dm_percent_pickaxes", DURABILITY_MULTIPLIER, config.percentPickaxes).range(-1, Integer.MAX_VALUE).register();
+        DM_PERCENT_AXES = DynamicGameRuleManager.integerRule("ig:dm_percent_axes", DURABILITY_MULTIPLIER, config.percentAxes).range(-1, Integer.MAX_VALUE).register();
+        DM_PERCENT_SHOVELS = DynamicGameRuleManager.integerRule("ig:dm_percent_shovels", DURABILITY_MULTIPLIER, config.percentShovels).range(-1, Integer.MAX_VALUE).register();
+        DM_PERCENT_HOES = DynamicGameRuleManager.integerRule("ig:dm_percent_hoes", DURABILITY_MULTIPLIER, config.percentHoes).range(-1, Integer.MAX_VALUE).register();
+        DM_PERCENT_SHEARS = DynamicGameRuleManager.integerRule("ig:dm_percent_shears", DURABILITY_MULTIPLIER, config.percentShears).range(-1, Integer.MAX_VALUE).register();
+        DM_PERCENT_FISHING_RODS = DynamicGameRuleManager.integerRule("ig:dm_percent_fishing_rods", DURABILITY_MULTIPLIER, config.percentFishingRods).range(-1, Integer.MAX_VALUE).register();
+        DM_PERCENT_BRUSHES = DynamicGameRuleManager.integerRule("ig:dm_percent_brushes", DURABILITY_MULTIPLIER, config.percentBrushes).range(-1, Integer.MAX_VALUE).register();
+        DM_PERCENT_FLINT_AND_STEEL = DynamicGameRuleManager.integerRule("ig:dm_percent_flint_and_steel", DURABILITY_MULTIPLIER, config.percentFlintAndSteel).range(-1, Integer.MAX_VALUE).register();
+        DM_PERCENT_ARMOR = DynamicGameRuleManager.integerRule("ig:dm_percent_armor", DURABILITY_MULTIPLIER, config.percentArmor).range(-1, Integer.MAX_VALUE).register();
+        DM_PERCENT_HELMETS = DynamicGameRuleManager.integerRule("ig:dm_percent_helmets", DURABILITY_MULTIPLIER, config.percentHelmets).range(-1, Integer.MAX_VALUE).register();
+        DM_PERCENT_CHESTPLATES = DynamicGameRuleManager.integerRule("ig:dm_percent_chestplates", DURABILITY_MULTIPLIER, config.percentChestplates).range(-1, Integer.MAX_VALUE).register();
+        DM_PERCENT_LEGGINGS = DynamicGameRuleManager.integerRule("ig:dm_percent_leggings", DURABILITY_MULTIPLIER, config.percentLeggings).range(-1, Integer.MAX_VALUE).register();
+        DM_PERCENT_BOOTS = DynamicGameRuleManager.integerRule("ig:dm_percent_boots", DURABILITY_MULTIPLIER, config.percentBoots).range(-1, Integer.MAX_VALUE).register();
+        DM_PERCENT_ELYTRA = DynamicGameRuleManager.integerRule("ig:dm_percent_elytra", DURABILITY_MULTIPLIER, config.percentElytra).range(-1, Integer.MAX_VALUE).register();
+        DM_PERCENT_SHIELDS = DynamicGameRuleManager.integerRule("ig:dm_percent_shields", DURABILITY_MULTIPLIER, config.percentShields).range(-1, Integer.MAX_VALUE).register();
 
         DM_INFINITY_GLOBAL = DynamicGameRuleManager.booleanRule("ig:dm_infinity_global", DURABILITY_MULTIPLIER, config.infinityGlobal).register();
         DM_INFINITY_WEAPONS = DynamicGameRuleManager.booleanRule("ig:dm_infinity_weapons", DURABILITY_MULTIPLIER, config.infinityWeapons).register();
@@ -281,7 +281,7 @@ public class DurabilityRules {
         DynamicGameRuleManager.integerRule(percentRuleName, DURABILITY_MULTIPLIER, defaultPercent)
             .name(DynamicGameRuleManager.generateReadableName(id.getPath()) + " Durability Percent")
             .description("Durability percentage for " + id + " (100 = vanilla, 200 = 2x, 50 = 0.5x, -1 = single-use)")
-            .min(-1)
+            .range(-1, Integer.MAX_VALUE)
             .register();
     }
 

@@ -1,5 +1,29 @@
 # Changelog
 
+## [1.2.20+26.3] - 2026-09-05
+
+### Changed
+- **DasikLibrary 1.8.39 Alignment**: Upgraded to DasikLibrary 1.8.39, adopting formal `@DasikApiStatus` / `@APIDasikStatus` API governance and client side-safety architecture.
+- **License Normalization**: Standardized single-line GPLv3 headers across all source files.
+
+## [1.2.19+26.3] - 2026-09-05
+
+### Fixed
+- **Client Side-Safety Annotations**: Annotated `YaclScreenHelper`, `ModMenuIntegration`, and `DurabilityMultiplierFabricClient` with `@Environment(EnvType.CLIENT)`, eliminating dedicated server classloading hazards and aligning with the Client Side-Safety Standard.
+
+## [1.2.18+26.3] - 2026-09-05
+
+### Changed
+- **Player Agency & True Sandbox Freedom Restoration**: Removed artificial 100,000% upper cap across all 24 static percentage GameRules and dynamic modded item rules, allowing players to scale durability up to `Integer.MAX_VALUE` (2.14 billion percent) in accordance with the Player Agency & Anti-Nanny Invariant. 64-bit `long` arithmetic safely prevents integer overflow on extreme damage calculations.
+- **Config Range Expansion**: Updated `DurabilityConfig.validate()` to allow arbitrarily large multiplier configurations without upper truncation.
+
+## [1.2.17+26.3] - 2026-09-05
+
+### Fixed
+- **32-Bit Integer Overflow Protection in Damage Scaling**: Enforced 64-bit `long` arithmetic in `DurabilityHelper.calculateScaledDamage(...)`, preventing integer wrap-around into negative numbers when processing extreme damage values (e.g. >21.4M damage).
+- **GameRule Bounds Clamping**: Added `.range(-1, 100000)` clamping across all 24 static percentage GameRules and all dynamically discovered item percentage rules in `DurabilityRules.java`.
+- **Config Domain Validation**: Added `validate()` method to `DurabilityConfig.java` to clamp all loaded percentage fields and custom mod maps into the safe domain `[-1, 100000]`.
+
 ## [1.2.14+26.2] - 2026-08-24
 
 ### Fixed

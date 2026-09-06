@@ -314,4 +314,27 @@ public class DurabilityHelperTest {
         DurabilityConfig.get().forcedItems.add("custom:forced_non_damageable");
         assertTrue(DurabilityConfig.get().isForced("custom:forced_non_damageable"));
     }
+
+    @Test
+    @DisplayName("Overflow Protection: massive damage values do not wrap or overflow 32-bit int")
+    void testMassiveDamageDoesNotOverflowInt() {
+        // 25,000,000 * 100 = 2,500,000,000 (> Integer.MAX_VALUE 2,147,483,647)
+        // With 64-bit long math at 50% durability (2x damage), 25,000,000 damage scales to 50,000,000
+        int scaled = DurabilityHelper.calculateScaledDamage(25_000_000, 50, random);
+        assertEquals(50_000_000, scaled);
+
+        // At 200% durability (0.5x damage), 25,000,000 scales to ~12,500,000
+        int scaledBoost = DurabilityHelper.calculateScaledDamage(25_000_000, 200, random);
+        assertEquals(12_500_000, scaledBoost);
+    }
+
+    @Test
+    @DisplayName("Extreme Multipliers: 100,000,000% processes incoming damage without integer overflow or errors")
+    void testExtremeMultipliersCalculateCleanly() {
+        int scaled = DurabilityHelper.calculateScaledDamage(1, 100_000_000, random);
+        assertTrue(scaled == 0 || scaled == 1, "Scaled damage should be 0 or 1, got: " + scaled);
+
+        int massiveScaled = DurabilityHelper.calculateScaledDamage(20_000_000, 100_000_000, random);
+        assertEquals(20, massiveScaled);
+    }
 }
