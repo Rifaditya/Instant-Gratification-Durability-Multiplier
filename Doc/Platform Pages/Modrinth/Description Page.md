@@ -1,4 +1,5 @@
 <p align="center">
+    <a href="https://discord.gg/EV99bgAFqb"><img src="https://img.shields.io/badge/Discord-Join_Community-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Join Discord"></a>
     <a href="https://modrinth.com/mod/fabric-api"><img src="https://img.shields.io/badge/Requires-Fabric_API-blue?style=for-the-badge&logo=fabric" alt="Requires Fabric API"></a>
     <a href="https://modrinth.com/mod/dasik-library"><img src="https://img.shields.io/badge/Requires-Dasik_Library-blue?style=for-the-badge&logo=modrinth" alt="Modrinth: Dasik Library"></a>
     <img src="https://img.shields.io/badge/Language-Java_25-orange?style=for-the-badge&logo=java" alt="Java 25">
@@ -167,9 +168,19 @@ Want to create high-stakes "Glass Cannon" weapons or one-time consumable tools t
 
 ---
 
+### 💬 Join the Community & Get Support
+Looking for help, want to test early beta builds, or vote on upcoming features? Join our official Discord community!
+<p align="center">
+  <a href="https://discord.gg/EV99bgAFqb">
+    <img src="https://img.shields.io/badge/💬_Discord-Join_Community-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Join Official Discord">
+  </a>
+</p>
+
+---
+
 ## ☕ Support
 
-If you enjoy the **Instant Gratification** collection, consider fueling future updates!
+If you enjoy the **Instant Gratification Collection**, consider fueling future updates!
 
 <p align="center">
   <a href="https://ko-fi.com/dasikigaijin/tip"><img src="https://img.shields.io/badge/Ko--fi-Support%20Me-FF5E5B?style=for-the-badge&logo=ko-fi&logoColor=white" alt="Ko-fi"></a>
@@ -182,13 +193,17 @@ If you enjoy the **Instant Gratification** collection, consider fueling future u
 
 ---
 
-## 📜 Credits
+## 📜 Credits & Modpack Permissions
 
-| Role | Author |
+| Role / Property | Author / Link |
 | :--- | :--- |
-| **Creator** | **Dasik** (Rifaditya) |
+| **Creator / Author** | **Dasik** (Rifaditya) |
+| **Community** | [Official Discord](https://discord.gg/EV99bgAFqb) |
 | **Collection** | Instant Gratification |
-| **License** | GPLv3 |
+| **License** | [GNU General Public License v3.0 (GPLv3)](https://www.gnu.org/licenses/gpl-3.0.html) |
+| **Source Code** | [GitHub - Rifaditya/Instant-Gratification-Durability-Multiplier](https://github.com/Rifaditya/Instant-Gratification-Durability-Multiplier) |
+| **Issue Tracker** | [GitHub Issues](https://github.com/Rifaditya/Instant-Gratification-Durability-Multiplier/issues) |
+| **Documentation / Wiki** | [GitHub Wiki](https://github.com/Rifaditya/Instant-Gratification-Durability-Multiplier/wiki) |
 
 > [!IMPORTANT]
 > **📦 Modpack Permissions & Distribution:**<br>
@@ -201,6 +216,9 @@ If you enjoy the **Instant Gratification** collection, consider fueling future u
 ---
 
 <div align="center">
-  <p><strong>Made with ❤️ for the Minecraft community</strong></p>
-  <p><em>Part of the Instant Gratification Collection</em></p>
+
+**Made with ❤️ for the Minecraft community**
+
+*Part of the Instant Gratification Collection*
+
 </div>
