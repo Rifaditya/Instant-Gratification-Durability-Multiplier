@@ -163,21 +163,20 @@ public class DurabilityHelperTest {
     }
 
     @Test
-    @DisplayName("Auto-Populate: recordDiscoveredItem populates forcedItems and forcedPercentages with default 0")
+    @DisplayName("Auto-Populate: recordDiscoveredItem registers item in-memory without polluting config with default 0")
     void testRecordDiscoveredItemAutoPopulatesWithZero() {
         DurabilityConfig config = DurabilityConfig.get();
         String testItem = "testmod:auto_discovered_sword";
         config.forcedItems.remove(testItem);
-        config.forcedPercentages.remove(testItem);
+        if (config.forcedPercentages != null) config.forcedPercentages.remove(testItem);
 
         boolean recorded = config.recordDiscoveredItem(testItem);
         assertTrue(recorded, "Expected recordDiscoveredItem to return true for newly discovered item");
-        assertTrue(config.forcedItems.contains(testItem), "forcedItems must contain the discovered item");
-        assertTrue(config.forcedPercentages.containsKey(testItem), "forcedPercentages must contain the discovered item");
-        assertEquals(0, config.forcedPercentages.get(testItem), "Default percentage for newly discovered item must be 0");
-        assertTrue(config.isForced(testItem), "isForced must recognize auto-populated item");
-        assertEquals(0, config.getForcedPercent(testItem));
-        assertTrue(DurabilityConfig.isDirty(), "Dirty state must be true after recording newly discovered item");
+        assertTrue(config.forcedItems.contains(testItem), "forcedItems must contain the discovered item in-memory");
+        assertEquals(0, config.getForcedPercent(testItem), "Default percentage for newly discovered item must resolve to 0");
+        assertTrue(config.isForced(testItem), "isForced must recognize in-memory discovered item");
+        // Sparse Delta invariant: in-memory discovery must not mark config dirty or populate default 0 in forcedPercentages
+        assertFalse(config.forcedPercentages != null && config.forcedPercentages.containsKey(testItem), "forcedPercentages must not store redundant default 0");
     }
 
     @Test
@@ -300,10 +299,21 @@ public class DurabilityHelperTest {
         assertFalse(config.getForcedSingleUse("test:item"));
         assertFalse(config.isForced("test:item"));
 
-        // recordDiscoveredItem handles null collections gracefully
+        // recordDiscoveredItem handles null collections gracefully and tracks discovered items in-memory
         assertTrue(config.recordDiscoveredItem("test:new_item"));
         assertTrue(config.forcedItems.contains("test:new_item"));
         assertEquals(0, config.getForcedPercent("test:new_item"));
+
+        // Test Sparse Delta Pruning: default entries (0, false) are pruned
+        config.setForcedPercent("test:modified_item", 250);
+        assertEquals(250, config.getForcedPercent("test:modified_item"));
+        assertTrue(config.forcedItems.contains("test:modified_item"));
+
+        config.pruneUnmodifiedDefaults();
+        // The untouched discovered item with default 0 is pruned from persistent forcedItems
+        assertFalse(config.forcedItems.contains("test:new_item"));
+        // The modified item is retained
+        assertTrue(config.forcedItems.contains("test:modified_item"));
     }
 
     @Test

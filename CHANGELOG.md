@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.2.21+26.2] - 2026-09-17
+
+### Added
+- **Conventional Datapack Tag Integration**: Added first-class support for `#c:durability_exempt`, `#c:durability_unbreakable`, and `#c:durability_single_use` Conventional Item Tags across server and client evaluation pipelines, empowering modpack creators and KubeJS developers to configure custom item tiers natively in datapacks without touching config files.
+
+### Changed
+- **Anti-Config Bombing Sparse Delta Persistence**: Overhauled `DurabilityConfig` persistence to only write modified overrides to `config/durability-multiplier.json`. Discovered modded items are registered in-memory for the native Game Rules UI without bloating disk configs with thousands of redundant default entries.
+- **Config Auto-Pruning**: Implemented `pruneUnmodifiedDefaults()` to eliminate unconfigured default values upon save, keeping global config files clean (<50 lines) and 100% Git/Packwiz-friendly.
+
 ## [1.2.20+26.2] - 2026-09-05
 
 ### Changed

@@ -66,6 +66,13 @@ public final class DurabilityHelper {
      * Resolve whether the item should take zero damage (God Mode) with pre-resolved category.
      */
     public static boolean isInfinite(ServerLevel level, ItemStack stack, ItemCategory cat) {
+        if (stack.is(C_DURABILITY_EXEMPT)) {
+            return false;
+        }
+        if (stack.is(C_DURABILITY_UNBREAKABLE)) {
+            return true;
+        }
+
         Identifier id = BuiltInRegistries.ITEM.getKey(stack.getItem());
         if (id != null && !id.getNamespace().equals("minecraft") && !id.getNamespace().equals("c")) {
             String infinityRuleName = "ig:infinity_" + id.getNamespace() + "_" + id.getPath();
@@ -166,6 +173,13 @@ public final class DurabilityHelper {
      * Check if single-use (glass mode) is active with pre-resolved category.
      */
     public static boolean isSingleUse(ServerLevel level, ItemStack stack, ItemCategory cat) {
+        if (stack.is(C_DURABILITY_EXEMPT)) {
+            return false;
+        }
+        if (stack.is(C_DURABILITY_SINGLE_USE)) {
+            return true;
+        }
+
         if (getEffectivePercent(level, stack, cat) <= -1) {
             return true;
         }
@@ -274,6 +288,10 @@ public final class DurabilityHelper {
      * Resolve the effective durability percentage with pre-resolved category.
      */
     public static int getEffectivePercent(ServerLevel level, ItemStack stack, ItemCategory cat) {
+        if (stack.is(C_DURABILITY_EXEMPT)) {
+            return 100;
+        }
+
         Identifier id = BuiltInRegistries.ITEM.getKey(stack.getItem());
         if (id != null && !id.getNamespace().equals("minecraft") && !id.getNamespace().equals("c")) {
             String ruleName = "ig:percent_" + id.getNamespace() + "_" + id.getPath();
@@ -419,6 +437,13 @@ public final class DurabilityHelper {
 
     /** Client-side infinity check using synced GameRule values. */
     public static boolean isInfiniteClient(ItemStack stack) {
+        if (stack.is(C_DURABILITY_EXEMPT)) {
+            return false;
+        }
+        if (stack.is(C_DURABILITY_UNBREAKABLE)) {
+            return true;
+        }
+
         Identifier id = BuiltInRegistries.ITEM.getKey(stack.getItem());
         if (id != null) {
             if (DurabilityClientState.getDynamicInfinity(id.toString()) || DurabilityConfig.get().getForcedInfinity(id.toString())) {
@@ -460,6 +485,13 @@ public final class DurabilityHelper {
 
     /** Client-side single-use check using synced GameRule values. */
     public static boolean isSingleUseClient(ItemStack stack) {
+        if (stack.is(C_DURABILITY_EXEMPT)) {
+            return false;
+        }
+        if (stack.is(C_DURABILITY_SINGLE_USE)) {
+            return true;
+        }
+
         if (getEffectivePercentClient(stack) <= -1) {
             return true;
         }
@@ -505,6 +537,10 @@ public final class DurabilityHelper {
 
     /** Client-side percentage using synced GameRule values. */
     public static int getEffectivePercentClient(ItemStack stack) {
+        if (stack.is(C_DURABILITY_EXEMPT)) {
+            return 100;
+        }
+
         Identifier id = BuiltInRegistries.ITEM.getKey(stack.getItem());
         if (id != null) {
             int dynamicVal = DurabilityClientState.getDynamicPercent(id.toString());
@@ -665,6 +701,10 @@ public final class DurabilityHelper {
     // ==================== Item Classification ====================
 
     // Conventional & Fabric Tags (#c:*)
+    public static final TagKey<Item> C_DURABILITY_EXEMPT = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", "durability_exempt"));
+    public static final TagKey<Item> C_DURABILITY_UNBREAKABLE = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", "durability_unbreakable"));
+    public static final TagKey<Item> C_DURABILITY_SINGLE_USE = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", "durability_single_use"));
+
     private static final TagKey<Item> C_SWORDS = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", "swords"));
     private static final TagKey<Item> C_MELEE_WEAPONS = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", "melee_weapons"));
     private static final TagKey<Item> C_WEAPONS = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", "weapons"));

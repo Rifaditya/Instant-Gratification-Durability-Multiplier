@@ -190,39 +190,7 @@ public class DurabilityConfig {
             forcedItems.add(itemId);
             modified = true;
         }
-        if (forcedPercentages == null) {
-            forcedPercentages = new java.util.HashMap<>();
-            modified = true;
-        }
-        if (!forcedPercentages.containsKey(itemId)) {
-            if (dynamicPercentages != null && dynamicPercentages.containsKey(itemId)) {
-                forcedPercentages.put(itemId, dynamicPercentages.get(itemId));
-            } else {
-                forcedPercentages.put(itemId, 0);
-            }
-            modified = true;
-        }
-        if (dynamicPercentages != null && dynamicPercentages.containsKey(itemId) && !forcedPercentages.containsKey(itemId)) {
-            forcedPercentages.put(itemId, dynamicPercentages.get(itemId));
-            modified = true;
-        }
-        if (dynamicInfinities != null && dynamicInfinities.containsKey(itemId)) {
-            if (forcedInfinities == null) forcedInfinities = new java.util.HashMap<>();
-            if (!forcedInfinities.containsKey(itemId)) {
-                forcedInfinities.put(itemId, dynamicInfinities.get(itemId));
-                modified = true;
-            }
-        }
-        if (dynamicSingleUses != null && dynamicSingleUses.containsKey(itemId)) {
-            if (forcedSingleUses == null) forcedSingleUses = new java.util.HashMap<>();
-            if (!forcedSingleUses.containsKey(itemId)) {
-                forcedSingleUses.put(itemId, dynamicSingleUses.get(itemId));
-                modified = true;
-            }
-        }
-        if (modified) {
-            dirty = true;
-        }
+        // In-memory registration: do not mark config dirty or serialize unconfigured defaults to disk
         return modified;
     }
 
@@ -231,9 +199,14 @@ public class DurabilityConfig {
         if (forcedPercentages == null) forcedPercentages = new java.util.HashMap<>();
         if (dynamicPercentages == null) dynamicPercentages = new java.util.HashMap<>();
         if (forcedItems == null) forcedItems = new java.util.ArrayList<>();
-        forcedPercentages.put(itemId, percent);
-        dynamicPercentages.put(itemId, percent);
-        if (!forcedItems.contains(itemId)) forcedItems.add(itemId);
+        if (percent == 0) {
+            forcedPercentages.remove(itemId);
+            dynamicPercentages.remove(itemId);
+        } else {
+            forcedPercentages.put(itemId, percent);
+            dynamicPercentages.put(itemId, percent);
+        }
+        cleanSparseItems(itemId);
         dirty = true;
     }
 
@@ -242,9 +215,14 @@ public class DurabilityConfig {
         if (forcedInfinities == null) forcedInfinities = new java.util.HashMap<>();
         if (dynamicInfinities == null) dynamicInfinities = new java.util.HashMap<>();
         if (forcedItems == null) forcedItems = new java.util.ArrayList<>();
-        forcedInfinities.put(itemId, infinity);
-        dynamicInfinities.put(itemId, infinity);
-        if (!forcedItems.contains(itemId)) forcedItems.add(itemId);
+        if (!infinity) {
+            forcedInfinities.remove(itemId);
+            dynamicInfinities.remove(itemId);
+        } else {
+            forcedInfinities.put(itemId, true);
+            dynamicInfinities.put(itemId, true);
+        }
+        cleanSparseItems(itemId);
         dirty = true;
     }
 
@@ -253,10 +231,26 @@ public class DurabilityConfig {
         if (forcedSingleUses == null) forcedSingleUses = new java.util.HashMap<>();
         if (dynamicSingleUses == null) dynamicSingleUses = new java.util.HashMap<>();
         if (forcedItems == null) forcedItems = new java.util.ArrayList<>();
-        forcedSingleUses.put(itemId, singleUse);
-        dynamicSingleUses.put(itemId, singleUse);
-        if (!forcedItems.contains(itemId)) forcedItems.add(itemId);
+        if (!singleUse) {
+            forcedSingleUses.remove(itemId);
+            dynamicSingleUses.remove(itemId);
+        } else {
+            forcedSingleUses.put(itemId, true);
+            dynamicSingleUses.put(itemId, true);
+        }
+        cleanSparseItems(itemId);
         dirty = true;
+    }
+
+    private void cleanSparseItems(String itemId) {
+        boolean hasOverride = (forcedPercentages != null && forcedPercentages.containsKey(itemId) && forcedPercentages.get(itemId) != 0)
+                || (forcedInfinities != null && Boolean.TRUE.equals(forcedInfinities.get(itemId)))
+                || (forcedSingleUses != null && Boolean.TRUE.equals(forcedSingleUses.get(itemId)));
+        if (hasOverride) {
+            if (!forcedItems.contains(itemId)) forcedItems.add(itemId);
+        } else {
+            if (forcedItems != null) forcedItems.remove(itemId);
+        }
     }
 
     public static synchronized void load(Path configDir) {
@@ -356,7 +350,40 @@ public class DurabilityConfig {
 
     public static synchronized void save() {
         if (CONFIG_PATH == null) return;
+        INSTANCE.pruneUnmodifiedDefaults();
         net.dasik.social.api.config.ConfigHelper.save(CONFIG_PATH, INSTANCE, org.slf4j.LoggerFactory.getLogger("DurabilityMultiplier"));
+    }
+
+    public void pruneUnmodifiedDefaults() {
+        if (forcedPercentages != null) {
+            forcedPercentages.entrySet().removeIf(e -> e.getValue() == null || e.getValue() == 0);
+        }
+        if (dynamicPercentages != null) {
+            dynamicPercentages.entrySet().removeIf(e -> e.getValue() == null || e.getValue() == 0);
+        }
+        if (forcedInfinities != null) {
+            forcedInfinities.entrySet().removeIf(e -> e.getValue() == null || !e.getValue());
+        }
+        if (dynamicInfinities != null) {
+            dynamicInfinities.entrySet().removeIf(e -> e.getValue() == null || !e.getValue());
+        }
+        if (forcedSingleUses != null) {
+            forcedSingleUses.entrySet().removeIf(e -> e.getValue() == null || !e.getValue());
+        }
+        if (dynamicSingleUses != null) {
+            dynamicSingleUses.entrySet().removeIf(e -> e.getValue() == null || !e.getValue());
+        }
+        if (forcedItems != null) {
+            forcedItems.removeIf(id -> {
+                boolean hasPercent = (forcedPercentages != null && forcedPercentages.containsKey(id))
+                        || (dynamicPercentages != null && dynamicPercentages.containsKey(id));
+                boolean hasInf = (forcedInfinities != null && Boolean.TRUE.equals(forcedInfinities.get(id)))
+                        || (dynamicInfinities != null && Boolean.TRUE.equals(dynamicInfinities.get(id)));
+                boolean hasSingle = (forcedSingleUses != null && Boolean.TRUE.equals(forcedSingleUses.get(id)))
+                        || (dynamicSingleUses != null && Boolean.TRUE.equals(dynamicSingleUses.get(id)));
+                return !hasPercent && !hasInf && !hasSingle;
+            });
+        }
     }
 
     public static synchronized void saveIfDirty() {

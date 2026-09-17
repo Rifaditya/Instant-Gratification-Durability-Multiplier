@@ -45,6 +45,7 @@ Open this file in your editor and change `[ ]` to `[x]` when you publish a versi
 - [x] **`1.2.14+26.2`** (2026-08-24) - - **Strict Durability Filtering & Keyword Boundary Guard**: Enforced strict `DataComponents.MAX_DAMAGE > 0` validation in `DurabilityRules.isItemDamageable` to eliminate false-positive furniture/block discovery, and tightened keyword boundaries in `classifyItemRaw` (including explicit `wardrobe` exclusion).
 - [x] **`1.2.15+26.2`** (2026-09-05) - Migrated configuration GUI from Cloth Config to YetAnotherConfigLib v3 (YACL). Injected top-pinned Ko-fi creator support button. Aligned toolchain to DasikLibrary v1.8.38.
 - [x] **`1.2.16+26.2`** (2026-09-05) - - **Multi-Category Ko-fi Support & Config UI Polish**: Added Ko-fi creator support button across all 5 configuration category tabs (Percentages, God Mode, Single-Use, General, and Modded Items) and reframed config notice descriptions.
+- [ ] **`1.2.21+26.2`** (2026-09-17) - - **Anti-Config Bombing Sparse Delta & Datapack Tag Standard**: Upgraded `DurabilityConfig` to Sparse Delta persistence, serializing only active custom overrides and auto-pruning default entries to keep config files under 50 lines. Added first-class support for `#c:durability_exempt`, `#c:durability_unbreakable`, and `#c:durability_single_use` Conventional Item Tags for seamless KubeJS and datapack integration.
 
 
 
