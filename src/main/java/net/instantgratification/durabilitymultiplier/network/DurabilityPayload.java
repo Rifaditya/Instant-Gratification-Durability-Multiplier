@@ -1,0 +1,316 @@
+// Copyright (C) 2026 Dasik (Rifaditya) | GNU GPLv3
+package net.instantgratification.durabilitymultiplier.network;
+
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Server-to-client payload carrying all GameRule values (Minecraft 1.20.1).
+ * Sent on player join and whenever durability GameRules change.
+ */
+public record DurabilityPayload(
+        int percentGlobal,
+        int percentWeapons,
+        int percentSwords,
+        int percentSpears,
+        int percentTridents,
+        int percentMaces,
+        int percentBows,
+        int percentCrossbows,
+        int percentShields,
+        int percentTools,
+        int percentPickaxes,
+        int percentAxes,
+        int percentShovels,
+        int percentHoes,
+        int percentShears,
+        int percentFishingRods,
+        int percentBrushes,
+        int percentFlintAndSteel,
+        int percentArmor,
+        int percentHelmets,
+        int percentChestplates,
+        int percentLeggings,
+        int percentBoots,
+        int percentElytra,
+
+        boolean infinityGlobal,
+        boolean infinityWeapons,
+        boolean infinitySwords,
+        boolean infinitySpears,
+        boolean infinityTridents,
+        boolean infinityMaces,
+        boolean infinityBows,
+        boolean infinityCrossbows,
+        boolean infinityShields,
+        boolean infinityTools,
+        boolean infinityPickaxes,
+        boolean infinityAxes,
+        boolean infinityShovels,
+        boolean infinityHoes,
+        boolean infinityShears,
+        boolean infinityFishingRods,
+        boolean infinityBrushes,
+        boolean infinityFlintAndSteel,
+        boolean infinityArmor,
+        boolean infinityHelmets,
+        boolean infinityChestplates,
+        boolean infinityLeggings,
+        boolean infinityBoots,
+        boolean infinityElytra,
+
+        boolean singleUseGlobal,
+        boolean singleUseWeapons,
+        boolean singleUseSwords,
+        boolean singleUseSpears,
+        boolean singleUseTridents,
+        boolean singleUseMaces,
+        boolean singleUseBows,
+        boolean singleUseCrossbows,
+        boolean singleUseShields,
+        boolean singleUseTools,
+        boolean singleUsePickaxes,
+        boolean singleUseAxes,
+        boolean singleUseShovels,
+        boolean singleUseHoes,
+        boolean singleUseShears,
+        boolean singleUseFishingRods,
+        boolean singleUseBrushes,
+        boolean singleUseFlintAndSteel,
+        boolean singleUseArmor,
+        boolean singleUseHelmets,
+        boolean singleUseChestplates,
+        boolean singleUseLeggings,
+        boolean singleUseBoots,
+        boolean singleUseElytra,
+
+        boolean showTooltip,
+
+        Map<String, Integer> dynamicPercentages,
+        Map<String, Boolean> dynamicInfinities,
+        Map<String, Boolean> dynamicSingleUses
+) {
+
+    public static final ResourceLocation CHANNEL_ID = new ResourceLocation("durability-multiplier", "sync");
+
+    public DurabilityPayload {
+        dynamicPercentages = dynamicPercentages != null ? dynamicPercentages : Map.of();
+        dynamicInfinities = dynamicInfinities != null ? dynamicInfinities : Map.of();
+        dynamicSingleUses = dynamicSingleUses != null ? dynamicSingleUses : Map.of();
+    }
+
+    public void write(FriendlyByteBuf buf) {
+        buf.writeVarInt(percentGlobal);
+        buf.writeVarInt(percentWeapons);
+        buf.writeVarInt(percentSwords);
+        buf.writeVarInt(percentSpears);
+        buf.writeVarInt(percentTridents);
+        buf.writeVarInt(percentMaces);
+        buf.writeVarInt(percentBows);
+        buf.writeVarInt(percentCrossbows);
+        buf.writeVarInt(percentShields);
+        buf.writeVarInt(percentTools);
+        buf.writeVarInt(percentPickaxes);
+        buf.writeVarInt(percentAxes);
+        buf.writeVarInt(percentShovels);
+        buf.writeVarInt(percentHoes);
+        buf.writeVarInt(percentShears);
+        buf.writeVarInt(percentFishingRods);
+        buf.writeVarInt(percentBrushes);
+        buf.writeVarInt(percentFlintAndSteel);
+        buf.writeVarInt(percentArmor);
+        buf.writeVarInt(percentHelmets);
+        buf.writeVarInt(percentChestplates);
+        buf.writeVarInt(percentLeggings);
+        buf.writeVarInt(percentBoots);
+        buf.writeVarInt(percentElytra);
+
+        buf.writeBoolean(infinityGlobal);
+        buf.writeBoolean(infinityWeapons);
+        buf.writeBoolean(infinitySwords);
+        buf.writeBoolean(infinitySpears);
+        buf.writeBoolean(infinityTridents);
+        buf.writeBoolean(infinityMaces);
+        buf.writeBoolean(infinityBows);
+        buf.writeBoolean(infinityCrossbows);
+        buf.writeBoolean(infinityShields);
+        buf.writeBoolean(infinityTools);
+        buf.writeBoolean(infinityPickaxes);
+        buf.writeBoolean(infinityAxes);
+        buf.writeBoolean(infinityShovels);
+        buf.writeBoolean(infinityHoes);
+        buf.writeBoolean(infinityShears);
+        buf.writeBoolean(infinityFishingRods);
+        buf.writeBoolean(infinityBrushes);
+        buf.writeBoolean(infinityFlintAndSteel);
+        buf.writeBoolean(infinityArmor);
+        buf.writeBoolean(infinityHelmets);
+        buf.writeBoolean(infinityChestplates);
+        buf.writeBoolean(infinityLeggings);
+        buf.writeBoolean(infinityBoots);
+        buf.writeBoolean(infinityElytra);
+
+        buf.writeBoolean(singleUseGlobal);
+        buf.writeBoolean(singleUseWeapons);
+        buf.writeBoolean(singleUseSwords);
+        buf.writeBoolean(singleUseSpears);
+        buf.writeBoolean(singleUseTridents);
+        buf.writeBoolean(singleUseMaces);
+        buf.writeBoolean(singleUseBows);
+        buf.writeBoolean(singleUseCrossbows);
+        buf.writeBoolean(singleUseShields);
+        buf.writeBoolean(singleUseTools);
+        buf.writeBoolean(singleUsePickaxes);
+        buf.writeBoolean(singleUseAxes);
+        buf.writeBoolean(singleUseShovels);
+        buf.writeBoolean(singleUseHoes);
+        buf.writeBoolean(singleUseShears);
+        buf.writeBoolean(singleUseFishingRods);
+        buf.writeBoolean(singleUseBrushes);
+        buf.writeBoolean(singleUseFlintAndSteel);
+        buf.writeBoolean(singleUseArmor);
+        buf.writeBoolean(singleUseHelmets);
+        buf.writeBoolean(singleUseChestplates);
+        buf.writeBoolean(singleUseLeggings);
+        buf.writeBoolean(singleUseBoots);
+        buf.writeBoolean(singleUseElytra);
+
+        buf.writeBoolean(showTooltip);
+
+        writeStringIntMap(buf, dynamicPercentages);
+        writeStringBoolMap(buf, dynamicInfinities);
+        writeStringBoolMap(buf, dynamicSingleUses);
+    }
+
+    private static void writeStringIntMap(FriendlyByteBuf buf, Map<String, Integer> map) {
+        if (map == null || map.isEmpty()) {
+            buf.writeVarInt(0);
+            return;
+        }
+        buf.writeVarInt(map.size());
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            buf.writeUtf(entry.getKey());
+            buf.writeVarInt(entry.getValue());
+        }
+    }
+
+    private static void writeStringBoolMap(FriendlyByteBuf buf, Map<String, Boolean> map) {
+        if (map == null || map.isEmpty()) {
+            buf.writeVarInt(0);
+            return;
+        }
+        buf.writeVarInt(map.size());
+        for (Map.Entry<String, Boolean> entry : map.entrySet()) {
+            buf.writeUtf(entry.getKey());
+            buf.writeBoolean(entry.getValue());
+        }
+    }
+
+    private static Map<String, Integer> readStringIntMap(FriendlyByteBuf buf) {
+        int size = buf.readVarInt();
+        if (size <= 0) return Map.of();
+        Map<String, Integer> map = new HashMap<>(size);
+        for (int i = 0; i < size; i++) {
+            map.put(buf.readUtf(), buf.readVarInt());
+        }
+        return map;
+    }
+
+    private static Map<String, Boolean> readStringBoolMap(FriendlyByteBuf buf) {
+        int size = buf.readVarInt();
+        if (size <= 0) return Map.of();
+        Map<String, Boolean> map = new HashMap<>(size);
+        for (int i = 0; i < size; i++) {
+            map.put(buf.readUtf(), buf.readBoolean());
+        }
+        return map;
+    }
+
+    public static DurabilityPayload read(FriendlyByteBuf buf) {
+        return new DurabilityPayload(
+                buf.readVarInt(),
+                buf.readVarInt(),
+                buf.readVarInt(),
+                buf.readVarInt(),
+                buf.readVarInt(),
+                buf.readVarInt(),
+                buf.readVarInt(),
+                buf.readVarInt(),
+                buf.readVarInt(),
+                buf.readVarInt(),
+                buf.readVarInt(),
+                buf.readVarInt(),
+                buf.readVarInt(),
+                buf.readVarInt(),
+                buf.readVarInt(),
+                buf.readVarInt(),
+                buf.readVarInt(),
+                buf.readVarInt(),
+                buf.readVarInt(),
+                buf.readVarInt(),
+                buf.readVarInt(),
+                buf.readVarInt(),
+                buf.readVarInt(),
+                buf.readVarInt(),
+
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+                buf.readBoolean(),
+
+                buf.readBoolean(),
+
+                readStringIntMap(buf),
+                readStringBoolMap(buf),
+                readStringBoolMap(buf)
+        );
+    }
+}

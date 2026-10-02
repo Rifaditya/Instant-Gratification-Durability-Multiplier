@@ -1,0 +1,717 @@
+// Copyright (C) 2026 Dasik (Rifaditya) | GNU GPLv3
+package net.instantgratification.durabilitymultiplier;
+
+import net.dasik.social.api.gamerule.DynamicGameRuleManager;
+import net.instantgratification.durabilitymultiplier.config.DurabilityConfig;
+import net.instantgratification.durabilitymultiplier.network.DurabilityClientState;
+import net.instantgratification.durabilitymultiplier.registry.DurabilityRules;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.*;
+
+import java.math.BigDecimal;
+import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+/**
+ * Core durability logic supporting unified percentage scaling (Minecraft 1.20.1).
+ *
+ * <h3>Hierarchy</h3>
+ * <ol>
+ * <li>Tag-specific infinity -> Global infinity</li>
+ * <li>Tag-specific percentage (if &gt; 0) -> Weapons fallback -> Global percentage</li>
+ * </ol>
+ *
+ * <p>
+ * Scale: 100 = 100% (vanilla 1x), 200 = 200% (2x double durability), 50 = 50% (0.5x half durability).
+ * Saturated 64-bit arithmetic: protects against integer overflow and saturates at Integer.MAX_VALUE.
+ * </p>
+ */
+public final class DurabilityHelper {
+
+    private DurabilityHelper() {
+    }
+
+    /** Item classification for tag-based rule lookup. */
+    public enum ItemCategory {
+        // Weapons
+        SWORD, BOW, CROSSBOW, TRIDENT, SPEAR, MACE, SHIELD, WEAPON_GLOBAL,
+        // Tools & Utility
+        PICKAXE, AXE, SHOVEL, HOE, SHEARS, FISHING_ROD, BRUSH, FLINT_AND_STEEL, TOOL_GLOBAL,
+        // Armor
+        HELMET, CHESTPLATE, LEGGINGS, BOOTS, ARMOR_GLOBAL,
+        // Other
+        ELYTRA, OTHER
+    }
+
+    // ==================== Public Server API ====================
+
+    /**
+     * Resolve whether the item should take zero damage (God Mode).
+     * Infinity priority: tag-specific (if true) -> global fallback.
+     */
+    public static boolean isInfinite(ServerLevel level, ItemStack stack) {
+        return isInfinite(level, stack, classifyItem(stack));
+    }
+
+    /**
+     * Resolve whether the item should take zero damage (God Mode) with pre-resolved category.
+     */
+    public static boolean isInfinite(ServerLevel level, ItemStack stack, ItemCategory cat) {
+        ResourceLocation id = BuiltInRegistries.ITEM.getKey(stack.getItem());
+        if (id != null && !id.getNamespace().equals("minecraft") && !id.getNamespace().equals("c")) {
+            String infinityRuleName = "ig:infinity_" + id.getNamespace() + "_" + id.getPath();
+            if (DynamicGameRuleManager.getBoolean(level, infinityRuleName)) {
+                return true;
+            }
+            if (DurabilityConfig.get().getForcedInfinity(id.toString())) {
+                return true;
+            }
+        }
+
+        return switch (cat) {
+            case SWORD -> DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_SWORDS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_WEAPONS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_GLOBAL);
+            case SPEAR -> DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_SPEARS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_WEAPONS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_GLOBAL);
+            case TRIDENT -> DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_TRIDENTS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_WEAPONS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_GLOBAL);
+            case MACE -> DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_MACES)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_WEAPONS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_GLOBAL);
+            case BOW -> DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_BOWS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_WEAPONS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_GLOBAL);
+            case CROSSBOW -> DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_CROSSBOWS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_WEAPONS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_GLOBAL);
+            case SHIELD -> DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_SHIELDS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_GLOBAL);
+            case WEAPON_GLOBAL -> DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_WEAPONS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_GLOBAL);
+
+            case PICKAXE -> DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_PICKAXES)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_TOOLS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_GLOBAL);
+            case AXE -> DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_AXES)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_TOOLS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_GLOBAL);
+            case SHOVEL -> DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_SHOVELS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_TOOLS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_GLOBAL);
+            case HOE -> DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_HOES)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_TOOLS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_GLOBAL);
+            case SHEARS -> DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_SHEARS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_TOOLS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_GLOBAL);
+            case FISHING_ROD -> DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_FISHING_RODS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_TOOLS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_GLOBAL);
+            case BRUSH -> DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_BRUSHES)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_TOOLS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_GLOBAL);
+            case FLINT_AND_STEEL -> DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_FLINT_AND_STEEL)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_TOOLS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_GLOBAL);
+            case TOOL_GLOBAL -> DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_TOOLS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_GLOBAL);
+
+            case HELMET -> DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_HELMETS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_ARMOR)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_GLOBAL);
+            case CHESTPLATE -> DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_CHESTPLATES)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_ARMOR)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_GLOBAL);
+            case LEGGINGS -> DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_LEGGINGS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_ARMOR)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_GLOBAL);
+            case BOOTS -> DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_BOOTS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_ARMOR)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_GLOBAL);
+            case ARMOR_GLOBAL -> DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_ARMOR)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_GLOBAL);
+
+            case ELYTRA -> DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_ELYTRA)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_GLOBAL);
+            case OTHER -> DurabilityRules.getBoolean(level, DurabilityRules.DM_INFINITY_GLOBAL);
+        };
+    }
+
+    /**
+     * Check if single-use (glass mode) is active for the given item stack.
+     */
+    public static boolean isSingleUse(ServerLevel level, ItemStack stack) {
+        return isSingleUse(level, stack, classifyItem(stack));
+    }
+
+    /**
+     * Check if single-use (glass mode) is active with pre-resolved category.
+     */
+    public static boolean isSingleUse(ServerLevel level, ItemStack stack, ItemCategory cat) {
+        if (getEffectivePercent(level, stack, cat) <= -1) {
+            return true;
+        }
+
+        ResourceLocation id = BuiltInRegistries.ITEM.getKey(stack.getItem());
+        if (id != null && !id.getNamespace().equals("minecraft") && !id.getNamespace().equals("c")) {
+            String ruleName = "ig:single_use_" + id.getNamespace() + "_" + id.getPath();
+            if (DynamicGameRuleManager.getBoolean(level, ruleName)) {
+                return true;
+            }
+            if (DurabilityConfig.get().getForcedSingleUse(id.toString())) {
+                return true;
+            }
+        }
+
+        return switch (cat) {
+            case SWORD -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_SWORDS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_WEAPONS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case SPEAR -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_SPEARS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_WEAPONS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case TRIDENT -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_TRIDENTS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_WEAPONS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case MACE -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_MACES)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_WEAPONS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case BOW -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_BOWS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_WEAPONS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case CROSSBOW -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_CROSSBOWS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_WEAPONS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case SHIELD -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_SHIELDS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case WEAPON_GLOBAL -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_WEAPONS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+
+            case PICKAXE -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_PICKAXES)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_TOOLS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case AXE -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_AXES)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_TOOLS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case SHOVEL -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_SHOVELS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_TOOLS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case HOE -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_HOES)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_TOOLS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case SHEARS -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_SHEARS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_TOOLS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case FISHING_ROD -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_FISHING_RODS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_TOOLS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case BRUSH -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_BRUSHES)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_TOOLS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case FLINT_AND_STEEL -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_FLINT_AND_STEEL)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_TOOLS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case TOOL_GLOBAL -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_TOOLS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+
+            case HELMET -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_HELMETS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_ARMOR)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case CHESTPLATE -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_CHESTPLATES)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_ARMOR)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case LEGGINGS -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_LEGGINGS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_ARMOR)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case BOOTS -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_BOOTS)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_ARMOR)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case ARMOR_GLOBAL -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_ARMOR)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+
+            case ELYTRA -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_ELYTRA)
+                    || DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+            case OTHER -> DurabilityRules.getBoolean(level, DurabilityRules.DM_SINGLE_USE_GLOBAL);
+        };
+    }
+
+    /**
+     * Resolve the effective durability percentage.
+     * Priority: individual per-item override (if != 0) -> tag-specific (if != 0) -> parent category fallback -> weapons fallback (if weapon) -> global fallback -> 100%.
+     * Values <= -1 represent Single-Use (Glass Mode).
+     *
+     * @return durability percentage (e.g. 100 = 100% vanilla, 200 = 200% double durability, 50 = 50% half, -1 = single-use).
+     */
+    public static int getEffectivePercent(ServerLevel level, ItemStack stack) {
+        return getEffectivePercent(level, stack, classifyItem(stack));
+    }
+
+    /**
+     * Resolve the effective durability percentage with pre-resolved category.
+     */
+    public static int getEffectivePercent(ServerLevel level, ItemStack stack, ItemCategory cat) {
+        ResourceLocation id = BuiltInRegistries.ITEM.getKey(stack.getItem());
+        if (id != null && !id.getNamespace().equals("minecraft") && !id.getNamespace().equals("c")) {
+            String ruleName = "ig:percent_" + id.getNamespace() + "_" + id.getPath();
+            int dynamicVal = DynamicGameRuleManager.getInt(level, ruleName);
+            if (dynamicVal != 0) {
+                return dynamicVal < 0 ? -1 : dynamicVal;
+            }
+            int forcedVal = DurabilityConfig.get().getForcedPercent(id.toString());
+            if (forcedVal != 0) {
+                return forcedVal < 0 ? -1 : forcedVal;
+            }
+        }
+
+        int specific = switch (cat) {
+            case SWORD -> DurabilityRules.getInt(level, DurabilityRules.DM_PERCENT_SWORDS);
+            case SPEAR -> DurabilityRules.getInt(level, DurabilityRules.DM_PERCENT_SPEARS);
+            case TRIDENT -> DurabilityRules.getInt(level, DurabilityRules.DM_PERCENT_TRIDENTS);
+            case MACE -> DurabilityRules.getInt(level, DurabilityRules.DM_PERCENT_MACES);
+            case BOW -> DurabilityRules.getInt(level, DurabilityRules.DM_PERCENT_BOWS);
+            case CROSSBOW -> DurabilityRules.getInt(level, DurabilityRules.DM_PERCENT_CROSSBOWS);
+            case SHIELD -> DurabilityRules.getInt(level, DurabilityRules.DM_PERCENT_SHIELDS);
+            case WEAPON_GLOBAL -> 0;
+
+            case PICKAXE -> DurabilityRules.getInt(level, DurabilityRules.DM_PERCENT_PICKAXES);
+            case AXE -> DurabilityRules.getInt(level, DurabilityRules.DM_PERCENT_AXES);
+            case SHOVEL -> DurabilityRules.getInt(level, DurabilityRules.DM_PERCENT_SHOVELS);
+            case HOE -> DurabilityRules.getInt(level, DurabilityRules.DM_PERCENT_HOES);
+            case SHEARS -> DurabilityRules.getInt(level, DurabilityRules.DM_PERCENT_SHEARS);
+            case FISHING_ROD -> DurabilityRules.getInt(level, DurabilityRules.DM_PERCENT_FISHING_RODS);
+            case BRUSH -> DurabilityRules.getInt(level, DurabilityRules.DM_PERCENT_BRUSHES);
+            case FLINT_AND_STEEL -> DurabilityRules.getInt(level, DurabilityRules.DM_PERCENT_FLINT_AND_STEEL);
+            case TOOL_GLOBAL -> DurabilityRules.getInt(level, DurabilityRules.DM_PERCENT_TOOLS);
+
+            case HELMET -> DurabilityRules.getInt(level, DurabilityRules.DM_PERCENT_HELMETS);
+            case CHESTPLATE -> DurabilityRules.getInt(level, DurabilityRules.DM_PERCENT_CHESTPLATES);
+            case LEGGINGS -> DurabilityRules.getInt(level, DurabilityRules.DM_PERCENT_LEGGINGS);
+            case BOOTS -> DurabilityRules.getInt(level, DurabilityRules.DM_PERCENT_BOOTS);
+            case ARMOR_GLOBAL -> DurabilityRules.getInt(level, DurabilityRules.DM_PERCENT_ARMOR);
+
+            case ELYTRA -> DurabilityRules.getInt(level, DurabilityRules.DM_PERCENT_ELYTRA);
+            case OTHER -> 0;
+        };
+        if (specific != 0) {
+            return specific < 0 ? -1 : specific;
+        }
+
+        // Tool parent fallback
+        if (cat == ItemCategory.PICKAXE || cat == ItemCategory.AXE || cat == ItemCategory.SHOVEL ||
+                cat == ItemCategory.HOE || cat == ItemCategory.SHEARS || cat == ItemCategory.FISHING_ROD ||
+                cat == ItemCategory.BRUSH || cat == ItemCategory.FLINT_AND_STEEL || cat == ItemCategory.TOOL_GLOBAL) {
+            int toolGlobal = DurabilityRules.getInt(level, DurabilityRules.DM_PERCENT_TOOLS);
+            if (toolGlobal != 0) {
+                return toolGlobal < 0 ? -1 : toolGlobal;
+            }
+        }
+
+        // Armor parent fallback
+        if (cat == ItemCategory.HELMET || cat == ItemCategory.CHESTPLATE ||
+                cat == ItemCategory.LEGGINGS || cat == ItemCategory.BOOTS || cat == ItemCategory.ARMOR_GLOBAL) {
+            int armorGlobal = DurabilityRules.getInt(level, DurabilityRules.DM_PERCENT_ARMOR);
+            if (armorGlobal != 0) {
+                return armorGlobal < 0 ? -1 : armorGlobal;
+            }
+        }
+
+        // Weapons parent fallback
+        if (cat == ItemCategory.SWORD || cat == ItemCategory.SPEAR || cat == ItemCategory.TRIDENT ||
+                cat == ItemCategory.MACE || cat == ItemCategory.BOW || cat == ItemCategory.CROSSBOW ||
+                cat == ItemCategory.WEAPON_GLOBAL) {
+            int weaponGlobal = DurabilityRules.getInt(level, DurabilityRules.DM_PERCENT_WEAPONS);
+            if (weaponGlobal != 0) {
+                return weaponGlobal < 0 ? -1 : weaponGlobal;
+            }
+        }
+
+        int global = DurabilityRules.getInt(level, DurabilityRules.DM_PERCENT_GLOBAL);
+        return global != 0 ? (global < 0 ? -1 : global) : 100;
+    }
+
+    /**
+     * Legacy helper method returning multiplier factor (percent / 100, clamped >= 1).
+     */
+    public static int getEffectiveMultiplier(ServerLevel level, ItemStack stack) {
+        return Math.max(getEffectivePercent(level, stack) / 100, 1);
+    }
+
+    /**
+     * Scale incoming durability damage amount based on effective durability percentage.
+     * Supports both durability boosts (percent > 100) and durability reductions (percent < 100).
+     *
+     * Scale: 100 = 100% normal damage, 200 = 200% durability (50% damage reduction),
+     * 50 = 50% durability (200% damage taken), -1 = single-use (glass mode / instant break).
+     *
+     * Guard against negative or 0 (unless sentinel -1 which is single use).
+     * Saturated 64-bit arithmetic: protects against integer overflow and saturates at Integer.MAX_VALUE.
+     * Freedom Over Anti-Crash: No artificial ceiling caps!
+     *
+     * @param originalDamage incoming raw damage value
+     * @param percentage effective durability percentage (100 = 1x vanilla, 200 = 2x, 50 = 0.5x, -1 = single-use)
+     * @param random random source for remainder distribution
+     * @return scaled damage amount saturated to Integer.MAX_VALUE
+     */
+    public static int calculateScaledDamage(int originalDamage, int percentage, RandomSource random) {
+        if (originalDamage <= 0) {
+            return 0;
+        }
+        if (percentage <= -1) {
+            return Integer.MAX_VALUE;
+        }
+        if (percentage <= 0 || percentage == 100) {
+            return originalDamage;
+        }
+
+        long totalDamageUnits = (long) originalDamage * 100L;
+        long baseDamage = totalDamageUnits / (long) percentage;
+        long remainder = totalDamageUnits % (long) percentage;
+
+        if (remainder > 0 && random != null && random.nextInt(percentage) < remainder) {
+            baseDamage++;
+        }
+
+        if (baseDamage >= Integer.MAX_VALUE) {
+            return Integer.MAX_VALUE;
+        }
+        return (int) baseDamage;
+    }
+
+    /**
+     * Full server-side damage reduction resolution for an ItemStack.
+     */
+    public static int reduceDamage(int originalAmount, ServerLevel level, ItemStack stack) {
+        ItemCategory cat = classifyItem(stack);
+        if (isInfinite(level, stack, cat)) {
+            return 0;
+        }
+        if (isSingleUse(level, stack, cat)) {
+            return Math.max(1, stack.getMaxDamage() - stack.getDamageValue());
+        }
+
+        int percent = getEffectivePercent(level, stack, cat);
+        return calculateScaledDamage(originalAmount, percent, level.getRandom());
+    }
+
+    /**
+     * Check if the tooltip indicator GameRule is enabled.
+     */
+    public static boolean shouldShowTooltip(ServerLevel level) {
+        return DurabilityRules.getBoolean(level, DurabilityRules.DM_SHOW_TOOLTIP);
+    }
+
+    /**
+     * Get the label for the tooltip based on active percentage/infinity/single-use.
+     */
+    public static String getTooltipLabel(ServerLevel level, ItemStack stack) {
+        ItemCategory cat = classifyItem(stack);
+        if (isInfinite(level, stack, cat)) {
+            return "UNBREAKABLE";
+        }
+        if (isSingleUse(level, stack, cat)) {
+            return "SINGLE-USE";
+        }
+
+        int percent = getEffectivePercent(level, stack, cat);
+        return formatTooltip(percent, cat, stack.getHoverName().getString(), DurabilityConfig.get().tooltipFormat);
+    }
+
+    // ==================== Client-Side API (synced cache) ====================
+
+    /** Client-side infinity check using synced GameRule values. */
+    public static boolean isInfiniteClient(ItemStack stack) {
+        ResourceLocation id = BuiltInRegistries.ITEM.getKey(stack.getItem());
+        return DurabilityClientState.isInfinite(classifyItem(stack), id != null ? id.toString() : null);
+    }
+
+    /** Client-side single-use check using synced GameRule values. */
+    public static boolean isSingleUseClient(ItemStack stack) {
+        ResourceLocation id = BuiltInRegistries.ITEM.getKey(stack.getItem());
+        return DurabilityClientState.isSingleUse(classifyItem(stack), id != null ? id.toString() : null);
+    }
+
+    /** Client-side percentage using synced GameRule values. */
+    public static int getEffectivePercentClient(ItemStack stack) {
+        ResourceLocation id = BuiltInRegistries.ITEM.getKey(stack.getItem());
+        return DurabilityClientState.getPercentage(classifyItem(stack), id != null ? id.toString() : null);
+    }
+
+    /** Client-side multiplier using synced GameRule values (legacy helper). */
+    public static int getEffectiveMultiplierClient(ItemStack stack) {
+        return Math.max(getEffectivePercentClient(stack) / 100, 1);
+    }
+
+    /** Client-side tooltip visibility using synced GameRule values. */
+    public static boolean shouldShowTooltipClient() {
+        return DurabilityClientState.showTooltip();
+    }
+
+    /** Client-side tooltip label using synced GameRule values. */
+    public static String getTooltipLabelClient(ItemStack stack) {
+        if (isInfiniteClient(stack)) {
+            return "UNBREAKABLE";
+        }
+        if (isSingleUseClient(stack)) {
+            return "SINGLE-USE";
+        }
+        ItemCategory cat = classifyItem(stack);
+        int percent = getEffectivePercentClient(stack);
+        return formatTooltip(percent, cat, stack.getHoverName().getString(), DurabilityConfig.get().tooltipFormat);
+    }
+
+    /**
+     * Formats the tooltip text according to the selected {@link DurabilityConfig.TooltipFormat}.
+     */
+    public static String formatTooltip(int percent, ItemCategory cat, String itemName, DurabilityConfig.TooltipFormat format) {
+        if (percent <= 0 || percent == 100) {
+            return null;
+        }
+
+        String targetName = (cat == ItemCategory.OTHER) ? itemName : switch (cat) {
+            case SWORD -> "Swords";
+            case SPEAR -> "Spears";
+            case TRIDENT -> "Tridents";
+            case MACE -> "Maces";
+            case BOW -> "Bows";
+            case CROSSBOW -> "Crossbows";
+            case SHIELD -> "Shields";
+            case WEAPON_GLOBAL -> "Weapons";
+
+            case PICKAXE -> "Pickaxes";
+            case AXE -> "Axes";
+            case SHOVEL -> "Shovels";
+            case HOE -> "Hoes";
+            case SHEARS -> "Shears";
+            case FISHING_ROD -> "Fishing Rods";
+            case BRUSH -> "Brushes";
+            case FLINT_AND_STEEL -> "Flint and Steel";
+            case TOOL_GLOBAL -> "Tools";
+
+            case HELMET -> "Helmets";
+            case CHESTPLATE -> "Chestplates";
+            case LEGGINGS -> "Leggings";
+            case BOOTS -> "Boots";
+            case ARMOR_GLOBAL -> "Armor";
+
+            case ELYTRA -> "Elytra";
+            default -> "Items";
+        };
+
+        if (format == null) {
+            format = DurabilityConfig.TooltipFormat.ADAPTIVE;
+        }
+
+        return switch (format) {
+            case PERCENTAGE -> percent + "% " + targetName + " Durability";
+            case MULTIPLIER -> formatMultiplierString(percent) + " " + targetName + " Durability";
+            case ADAPTIVE -> {
+                if (percent > 100 && percent % 100 == 0) {
+                    yield (percent / 100) + "x " + targetName + " Durability";
+                } else {
+                    yield percent + "% " + targetName + " Durability";
+                }
+            }
+        };
+    }
+
+    private static String formatMultiplierString(int percent) {
+        if (percent % 100 == 0) {
+            return (percent / 100) + "x";
+        }
+        return new BigDecimal(percent).divide(new BigDecimal(100)).stripTrailingZeros().toPlainString() + "x";
+    }
+
+    // ==================== Item Classification ====================
+
+    // Conventional & Fabric Tags (#c:*)
+    private static final TagKey<Item> C_SWORDS = TagKey.create(Registries.ITEM, new ResourceLocation("c", "swords"));
+    private static final TagKey<Item> C_MELEE_WEAPONS = TagKey.create(Registries.ITEM, new ResourceLocation("c", "melee_weapons"));
+    private static final TagKey<Item> C_WEAPONS = TagKey.create(Registries.ITEM, new ResourceLocation("c", "weapons"));
+    private static final TagKey<Item> C_SPEARS = TagKey.create(Registries.ITEM, new ResourceLocation("c", "spears"));
+    private static final TagKey<Item> C_TRIDENTS = TagKey.create(Registries.ITEM, new ResourceLocation("c", "tridents"));
+    private static final TagKey<Item> C_MACES = TagKey.create(Registries.ITEM, new ResourceLocation("c", "maces"));
+    private static final TagKey<Item> C_BOWS = TagKey.create(Registries.ITEM, new ResourceLocation("c", "bows"));
+    private static final TagKey<Item> C_CROSSBOWS = TagKey.create(Registries.ITEM, new ResourceLocation("c", "crossbows"));
+    private static final TagKey<Item> C_SHIELDS = TagKey.create(Registries.ITEM, new ResourceLocation("c", "shields"));
+    private static final TagKey<Item> C_TOOLS = TagKey.create(Registries.ITEM, new ResourceLocation("c", "tools"));
+    private static final TagKey<Item> C_PICKAXES = TagKey.create(Registries.ITEM, new ResourceLocation("c", "pickaxes"));
+    private static final TagKey<Item> C_AXES = TagKey.create(Registries.ITEM, new ResourceLocation("c", "axes"));
+    private static final TagKey<Item> C_SHOVELS = TagKey.create(Registries.ITEM, new ResourceLocation("c", "shovels"));
+    private static final TagKey<Item> C_HOES = TagKey.create(Registries.ITEM, new ResourceLocation("c", "hoes"));
+    private static final TagKey<Item> C_SHEARS = TagKey.create(Registries.ITEM, new ResourceLocation("c", "shears"));
+    private static final TagKey<Item> C_MINING_TOOL = TagKey.create(Registries.ITEM, new ResourceLocation("c", "mining_tool"));
+    private static final TagKey<Item> C_ARMORS = TagKey.create(Registries.ITEM, new ResourceLocation("c", "armors"));
+    private static final TagKey<Item> C_HELMETS = TagKey.create(Registries.ITEM, new ResourceLocation("c", "helmets"));
+    private static final TagKey<Item> C_CHESTPLATES = TagKey.create(Registries.ITEM, new ResourceLocation("c", "chestplates"));
+    private static final TagKey<Item> C_LEGGINGS = TagKey.create(Registries.ITEM, new ResourceLocation("c", "leggings"));
+    private static final TagKey<Item> C_BOOTS = TagKey.create(Registries.ITEM, new ResourceLocation("c", "boots"));
+
+    private static final Map<Item, ItemCategory> CATEGORY_CACHE = new ConcurrentHashMap<>();
+
+    /**
+     * Invalidate the classification cache (e.g. on datapack tag reload).
+     */
+    public static void clearCategoryCache() {
+        CATEGORY_CACHE.clear();
+    }
+
+    public static ItemCategory classifyItem(ItemStack stack) {
+        if (stack == null || stack.isEmpty()) {
+            return ItemCategory.OTHER;
+        }
+        return CATEGORY_CACHE.computeIfAbsent(stack.getItem(), item -> classifyItemRaw(stack));
+    }
+
+    private static ItemCategory classifyItemRaw(ItemStack stack) {
+        ResourceLocation id = BuiltInRegistries.ITEM.getKey(stack.getItem());
+        String path = (id != null) ? id.getPath().toLowerCase(Locale.ROOT) : "";
+
+        // 1. Crossbows
+        if (stack.getItem() instanceof CrossbowItem || stack.is(Items.CROSSBOW)
+                || stack.is(C_CROSSBOWS) || path.contains("crossbow")) {
+            return ItemCategory.CROSSBOW;
+        }
+
+        // 2. Bows (excluding crossbows)
+        if (stack.getItem() instanceof BowItem || stack.is(Items.BOW)
+                || stack.is(C_BOWS)
+                || (path.contains("bow") && !path.contains("crossbow") && !path.contains("bowl"))) {
+            return ItemCategory.BOW;
+        }
+
+        // 3. Spears
+        if (stack.is(C_SPEARS)
+                || path.contains("spear") || path.contains("pike")
+                || path.contains("halberd") || path.contains("lance")) {
+            return ItemCategory.SPEAR;
+        }
+
+        // 4. Tridents
+        if (stack.getItem() instanceof TridentItem || stack.is(Items.TRIDENT)
+                || stack.is(C_TRIDENTS) || path.contains("trident")) {
+            return ItemCategory.TRIDENT;
+        }
+
+        // 5. Maces
+        if (stack.is(C_MACES) || path.contains("mace") || path.contains("warhammer")) {
+            return ItemCategory.MACE;
+        }
+
+        // 6. Shields
+        if (stack.getItem() instanceof ShieldItem || stack.is(Items.SHIELD)
+                || stack.is(C_SHIELDS) || path.contains("shield")) {
+            return ItemCategory.SHIELD;
+        }
+
+        // 7. Swords (Executed BEFORE Tool check to prevent sword-to-tool trapping bug)
+        if (stack.getItem() instanceof SwordItem || stack.is(ItemTags.SWORDS) || stack.is(C_SWORDS)
+                || path.endsWith("_sword") || path.contains("sword")
+                || path.contains("katana") || path.contains("saber") || path.contains("sabre")
+                || path.contains("blade") || path.contains("dagger") || path.contains("rapier")
+                || path.contains("claymore") || path.contains("cutlass") || path.contains("glaive")
+                || path.contains("scythe")) {
+            return ItemCategory.SWORD;
+        }
+
+        // 8. Elytra / Glider (Executed BEFORE Armor slot checks so Elytra is not trapped as CHESTPLATE)
+        if (stack.getItem() instanceof ElytraItem || stack.is(Items.ELYTRA)
+                || path.contains("elytra") || path.contains("glider") || path.contains("wings")) {
+            return ItemCategory.ELYTRA;
+        }
+
+        // 9. Granular Armor (via ArmorItem & Equipable resolution)
+        EquipmentSlot slot = null;
+        if (stack.getItem() instanceof ArmorItem armorItem) {
+            slot = armorItem.getEquipmentSlot();
+        } else if (stack.getItem() instanceof Equipable equipable) {
+            slot = equipable.getEquipmentSlot();
+        } else {
+            Equipable equipable = Equipable.get(stack);
+            if (equipable != null) {
+                slot = equipable.getEquipmentSlot();
+            }
+        }
+
+        if (stack.is(C_HELMETS) || slot == EquipmentSlot.HEAD
+                || path.contains("helmet") || path.contains("crown") || path.endsWith("_cap") || path.startsWith("cap_") || path.contains("_cap_") || path.equals("cap") || path.contains("hood") || path.contains("mask")) {
+            return ItemCategory.HELMET;
+        }
+        if (stack.is(C_CHESTPLATES) || slot == EquipmentSlot.CHEST
+                || path.contains("chestplate") || path.contains("tunic") || path.contains("cuirass")
+                || ((path.endsWith("_robe") || path.contains("_robe_") || path.startsWith("robe_") || path.equals("robe")) && !path.contains("wardrobe"))) {
+            return ItemCategory.CHESTPLATE;
+        }
+        if (stack.is(C_LEGGINGS) || slot == EquipmentSlot.LEGS
+                || path.contains("leggings") || path.contains("pants") || path.contains("greaves")) {
+            return ItemCategory.LEGGINGS;
+        }
+        if (stack.is(C_BOOTS) || slot == EquipmentSlot.FEET
+                || path.contains("boots") || path.contains("shoes") || path.contains("sabatons")) {
+            return ItemCategory.BOOTS;
+        }
+        if (stack.is(C_ARMORS) || (slot != null && (slot == EquipmentSlot.HEAD || slot == EquipmentSlot.CHEST || slot == EquipmentSlot.LEGS || slot == EquipmentSlot.FEET))
+                || path.contains("armor")) {
+            return ItemCategory.ARMOR_GLOBAL;
+        }
+
+        // 10. Granular Tools
+        if (stack.getItem() instanceof PickaxeItem || stack.is(ItemTags.PICKAXES) || stack.is(C_PICKAXES)
+                || path.contains("pickaxe") || path.contains("mattock") || path.contains("drill")) {
+            return ItemCategory.PICKAXE;
+        }
+        if (stack.getItem() instanceof AxeItem || stack.is(ItemTags.AXES) || stack.is(C_AXES)
+                || (path.contains("axe") && !path.contains("pickaxe")) || path.contains("hatchet")
+                || ((path.endsWith("_saw") || path.contains("saw_") || path.contains("_saw_") || path.equals("saw") || path.contains("chainsaw") || path.contains("buzzsaw")) && !path.contains("jigsaw"))) {
+            return ItemCategory.AXE;
+        }
+        if (stack.getItem() instanceof ShovelItem || stack.is(ItemTags.SHOVELS) || stack.is(C_SHOVELS)
+                || path.contains("shovel") || path.contains("spade")) {
+            return ItemCategory.SHOVEL;
+        }
+        if (stack.getItem() instanceof HoeItem || stack.is(ItemTags.HOES) || stack.is(C_HOES)
+                || path.contains("hoe") || path.contains("sickle")) {
+            return ItemCategory.HOE;
+        }
+        if (stack.getItem() instanceof ShearsItem || stack.is(Items.SHEARS) || stack.is(C_SHEARS)
+                || path.contains("shears")) {
+            return ItemCategory.SHEARS;
+        }
+        if (stack.getItem() instanceof FishingRodItem || stack.is(Items.FISHING_ROD)
+                || path.contains("fishing_rod")) {
+            return ItemCategory.FISHING_ROD;
+        }
+        if (stack.getItem() instanceof BrushItem || stack.is(Items.BRUSH)
+                || path.contains("brush")) {
+            return ItemCategory.BRUSH;
+        }
+        if (stack.getItem() instanceof FlintAndSteelItem || stack.is(Items.FLINT_AND_STEEL)
+                || path.contains("flint_and_steel")) {
+            return ItemCategory.FLINT_AND_STEEL;
+        }
+        if (stack.getItem() instanceof DiggerItem || stack.is(C_TOOLS) || stack.is(C_MINING_TOOL)
+                || stack.is(Items.CARROT_ON_A_STICK) || stack.is(Items.WARPED_FUNGUS_ON_A_STICK)
+                || stack.getItem() instanceof FoodOnAStickItem
+                || path.contains("wrench") || path.contains("tool")) {
+            return ItemCategory.TOOL_GLOBAL;
+        }
+
+        // 11. General Weapons Fallback
+        if (stack.is(C_MELEE_WEAPONS) || stack.is(C_WEAPONS)
+                || path.contains("weapon")) {
+            return ItemCategory.WEAPON_GLOBAL;
+        }
+
+        return ItemCategory.OTHER;
+    }
+}
