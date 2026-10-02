@@ -31,6 +31,7 @@
     ],
     "custom": {
         "modrinth": {
+            "projectId": "vLdIEU16",
             "slug": "instant-gratification-durability-multiplier"
         },
         "modmenu": {
