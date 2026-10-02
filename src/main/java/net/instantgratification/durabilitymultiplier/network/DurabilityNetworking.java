@@ -1,3 +1,4 @@
+// Copyright (C) 2026 Dasik (Rifaditya) | GNU GPLv3
 package net.instantgratification.durabilitymultiplier.network;
 
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
