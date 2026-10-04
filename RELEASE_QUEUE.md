@@ -5,4 +5,4 @@ Open this file in your editor and change `[ ]` to `[x]` when you publish a versi
 
 ## 🚀 Published & Backlog Queue
 
-- [ ] **`1.0.0+1.21.1`** (Initial MC 1.21.1 release anchor)
+- [x] **`1.0.0+1.21.1`** (Initial MC 1.21.1 release anchor)
