@@ -61,6 +61,8 @@ releases/
 build_log.txt
 build_log_utf8.txt
 *log*
+!*CHANGELOG*.md
+!*BACKLOG*.md
 
 # Hype & Marketing Exclusion Policy
 Doc/Marketing/
