@@ -93,7 +93,7 @@ public final class DurabilityClientState {
     }
 
     /** Apply received payload from the server. */
-    public static void apply(DurabilityPayload payload) {
+    public static synchronized void apply(DurabilityPayload payload) {
         percentGlobal = payload.percentGlobal();
         percentWeapons = payload.percentWeapons();
         percentSwords = payload.percentSwords();
@@ -261,6 +261,16 @@ public final class DurabilityClientState {
 
     public static boolean getDynamicInfinity(String itemKey) {
         return dynamicInfinities.getOrDefault(itemKey, false);
+    }
+
+    /**
+     * Client-side infinity query for a specific item identifier.
+     */
+    public static boolean isItemInfiniteClient(String itemKey) {
+        if (itemKey == null || itemKey.isEmpty()) {
+            return false;
+        }
+        return getDynamicInfinity(itemKey) || net.instantgratification.durabilitymultiplier.config.DurabilityConfig.get().getForcedInfinity(itemKey);
     }
 
     public static boolean getDynamicSingleUse(String itemKey) {
