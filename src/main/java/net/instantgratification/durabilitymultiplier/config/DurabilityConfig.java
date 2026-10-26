@@ -313,7 +313,40 @@ public class DurabilityConfig {
 
     public static synchronized void save() {
         if (CONFIG_PATH == null) return;
+        INSTANCE.pruneUnmodifiedDefaults();
         net.dasik.social.api.config.ConfigHelper.save(CONFIG_PATH, INSTANCE, org.slf4j.LoggerFactory.getLogger("DurabilityMultiplier"));
+    }
+
+    public synchronized void pruneUnmodifiedDefaults() {
+        if (forcedPercentages != null) {
+            forcedPercentages.entrySet().removeIf(e -> e.getValue() == null || e.getValue() == 0);
+        }
+        if (dynamicPercentages != null) {
+            dynamicPercentages.entrySet().removeIf(e -> e.getValue() == null || e.getValue() == 0);
+        }
+        if (forcedInfinities != null) {
+            forcedInfinities.entrySet().removeIf(e -> e.getValue() == null || !e.getValue());
+        }
+        if (dynamicInfinities != null) {
+            dynamicInfinities.entrySet().removeIf(e -> e.getValue() == null || !e.getValue());
+        }
+        if (forcedSingleUses != null) {
+            forcedSingleUses.entrySet().removeIf(e -> e.getValue() == null || !e.getValue());
+        }
+        if (dynamicSingleUses != null) {
+            dynamicSingleUses.entrySet().removeIf(e -> e.getValue() == null || !e.getValue());
+        }
+        if (forcedItems != null) {
+            forcedItems.removeIf(id -> {
+                boolean hasPercent = (forcedPercentages != null && forcedPercentages.containsKey(id))
+                        || (dynamicPercentages != null && dynamicPercentages.containsKey(id));
+                boolean hasInf = (forcedInfinities != null && Boolean.TRUE.equals(forcedInfinities.get(id)))
+                        || (dynamicInfinities != null && Boolean.TRUE.equals(dynamicInfinities.get(id)));
+                boolean hasSingle = (forcedSingleUses != null && Boolean.TRUE.equals(forcedSingleUses.get(id)))
+                        || (dynamicSingleUses != null && Boolean.TRUE.equals(dynamicSingleUses.get(id)));
+                return !hasPercent && !hasInf && !hasSingle;
+            });
+        }
     }
 
     public static synchronized void saveIfDirty() {
