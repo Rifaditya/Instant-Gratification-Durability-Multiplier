@@ -123,7 +123,7 @@ public class DurabilityConfig {
     public java.util.Map<String, Boolean> dynamicInfinities = new java.util.HashMap<>();
     public java.util.Map<String, Boolean> dynamicSingleUses = new java.util.HashMap<>();
 
-    public java.util.Set<String> getAllForcedItemIds() {
+    public synchronized java.util.Set<String> getAllForcedItemIds() {
         java.util.Set<String> ids = new java.util.LinkedHashSet<>();
         if (forcedItems != null) ids.addAll(forcedItems);
         if (forcedPercentages != null) ids.addAll(forcedPercentages.keySet());
@@ -135,7 +135,7 @@ public class DurabilityConfig {
         return ids;
     }
 
-    public int getForcedPercent(String itemId) {
+    public synchronized int getForcedPercent(String itemId) {
         if (forcedPercentages != null && forcedPercentages.containsKey(itemId)) {
             return forcedPercentages.get(itemId);
         }
@@ -145,7 +145,7 @@ public class DurabilityConfig {
         return 0;
     }
 
-    public boolean getForcedInfinity(String itemId) {
+    public synchronized boolean getForcedInfinity(String itemId) {
         if (forcedInfinities != null && forcedInfinities.containsKey(itemId)) {
             return Boolean.TRUE.equals(forcedInfinities.get(itemId));
         }
@@ -155,7 +155,7 @@ public class DurabilityConfig {
         return false;
     }
 
-    public boolean getForcedSingleUse(String itemId) {
+    public synchronized boolean getForcedSingleUse(String itemId) {
         if (forcedSingleUses != null && forcedSingleUses.containsKey(itemId)) {
             return Boolean.TRUE.equals(forcedSingleUses.get(itemId));
         }
@@ -165,7 +165,7 @@ public class DurabilityConfig {
         return false;
     }
 
-    public boolean isForced(String itemId) {
+    public synchronized boolean isForced(String itemId) {
         return getAllForcedItemIds().contains(itemId);
     }
 
