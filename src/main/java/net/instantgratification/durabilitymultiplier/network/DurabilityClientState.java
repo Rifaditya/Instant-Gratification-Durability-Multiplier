@@ -97,13 +97,13 @@ public final class DurabilityClientState {
     }
 
     /** Apply received payload from the server. */
-    public static void apply(DurabilityPayload payload) {
+    public static synchronized void apply(DurabilityPayload payload) {
         if (payload == null) return;
         applyPayload(payload);
     }
 
     /** Apply received payload from the server (alias). */
-    public static void applyPayload(DurabilityPayload payload) {
+    public static synchronized void applyPayload(DurabilityPayload payload) {
         if (payload == null) return;
         percentGlobal = payload.percentGlobal();
         percentWeapons = payload.percentWeapons();
@@ -451,5 +451,15 @@ public final class DurabilityClientState {
 
     public static boolean getDynamicSingleUse(String itemKey) {
         return dynamicSingleUses.getOrDefault(itemKey, false);
+    }
+
+    /**
+     * Client-side infinity query for a specific item identifier.
+     */
+    public static boolean isItemInfiniteClient(String itemKey) {
+        if (itemKey == null || itemKey.isEmpty()) {
+            return false;
+        }
+        return getDynamicInfinity(itemKey) || DurabilityConfig.get().getForcedInfinity(itemKey);
     }
 }
